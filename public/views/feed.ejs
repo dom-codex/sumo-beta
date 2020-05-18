@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> <%= name %>'s feed </title>
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
+    <link href="../css/materialize.min.css" rel="stylesheet" />
+  <link href="/c-user.css" rel="stylesheet" type="text/css"/>
+  <link href="/sidenav.css" rel="stylesheet"/>
+
+</head>
+  <body>
+    <input type="hidden" id="uid" value="<%= uid %>">
+<!--side nav codes-->
+<%- include('sideNav.ejs',{
+  onlineUsers:onlineUsers,
+  name:name,
+  phone:phone
+}) %>
+<!--end of side nav import-->
+<!--code for header-->
+<header>
+  <nav>
+    <div>
+    <h2>Wall</h2>
+     <div class="nav-options">
+      <a id="showdd" class='dropdown-trigger btn' href='#' data-target='dropdown1'><i class="material-icons">dehaze</i></a>
+      <ul id='dropdown1' class='dropdown-content'>
+        <li><a href="/"><i class="material-icons">home</i>home</a></li>
+        <li class="divider" tabindex="-1"></li>
+        <li><a href="/profile/<%=uid%>"><i class="material-icons">account_circle</i>profile</a></li>
+        <li class="divider" tabindex="-1"></li>
+        <li><a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">chat</i>chats</a></li>
+        <li class="divider" tabindex="-1"></li>
+        <li><a href="/logout"><i class="material-icons">keyboard_tabs</i>logout</a></li>
+      </ul>
+     <div id="largeNav">
+       <a href="/"><i class="material-icons">home</i></a>
+       <a href="/profile/<%=uid%>"><i class="material-icons">account_circle</i></a>
+       <a href="/logout"><i class="material-icons">keyboard_tabs</i></a>
+      </div>
+      </div></div>
+  </nav>
+</header>
+
+<!--
+    <heading>
+      <div class="hbw">
+        <div><p>AnonyMessenger</p></div>
+        <div class="hnav">
+          <div><a href="#">Checkout</a></div>
+         nav section use vector icons later to rep the variouslinks
+          <div><nav>
+            <ul>
+              <li><a href="#">Home</a></li>
+              <li><a href="#" class="active">Feed</a></li>
+              <li><a href="#">Wall</a></li>
+              <li><button id="link">Share</button></li>
+            </ul>
+            </nav></div>
+        </div>
+      </div>
+    </heading> -->
+
+    <section class="desktop">
+
+      <div class="window">
+  <div class="mychats">      
+  <ul>
+          <div class="chats">
+            <div class="input-field join">
+              <input type="text" placeholder="enter chat string" id="chatStringLarge"/>
+              <div class="join-btn"><button id="largeStartChat">start chat</button><small class="errdisplay" id="largeErr">fgfg</small></div>
+            </div>
+          <div><h2>Chats</h2></div>
+          <div class="userChats">
+            <!-- chat list code -->
+            <% if(onlineUsers.length>0) { %>
+                <% onlineUsers.forEach((user,i)=>{ %>
+                    <div class="chat list" id="<%=user._id%>" style="background-color:<%= user.isNew ? 'white' : '' %>">
+                        <a href="/chat/<%=user._id%>" >
+                            <input class="chatids" type="hidden" value="<%=user._id%>"/>
+                  <div class="segment">
+                  <div class="liststyle">
+                   <div class="indicator" style="background-color:<%= user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' %>; display:<%= user.status === 'online' || user.anStatus === 'online' ? 'block' : 'none' %>"></div>
+                    <div class="indicator" style="background-color:<%= user.anStatus === 'offline' || user.status === 'offline' ? 'grey' : 'rebeccapurple' %>; display:<%= user.anStatus === 'offline' || user.status === 'offline' ? 'block' : 'none' %>"></div>                
+                      <div class="names"><p><%=user.name%></p></div></div>
+                  <small class="brief"><%=user.message%></small></div>
+                  <div class="message"><small><%=user.time%></small></div>
+                </a>
+                </div>
+                <% })%>
+                <% } %> </div>
+          <div class="pages"><ul>
+              <% if(hasPrev) {%>
+            <li><a href="/userchannel?page=<%=prev%>">Prev</a></li> <%}%>
+            <% if(hasNext) { %>
+            <li><a href="/userchannel?page=<%=next%>">Next</a></li> <%}%>
+            </ul></div>
+    </div>
+  </ul>
+</div>
+       <!-- <div class="chats">
+          <div><h2>Chats</h2></div>
+          <div class="chatlists">
+            <% if(onlineUsers.length>0) { %>
+              <% onlineUsers.forEach((user,i)=>{ %>
+                
+                <div class="chat list" id="<%=user._id%>" style="background-color:<%= user.isNew ? 'white' : '' %>">
+                  <input class="chatids" type="hidden" value="<%=user._id%>"/>
+                <a href="/chat/<%=user._id%>" >
+                <div class="liststyle">
+                <div class="indicator"></div>
+                  <div class="names"><p><%=user.name%></p></div></div>
+                  <div class="message"><small><%=user.time%></small></div></a>
+                  <small class="brief"><%=user.message%></small>
+                </div>
+              <% })%>
+              <% } %> -->
+            <!-- chat list code -->
+           <!-- <div class="chat list">
+              <a href="#">
+              <div class="liststyle">
+              <div class="indicator"></div>
+                <div class="names"><p>dominic</p></div></div>
+                <div class="message"><small>11</small></div></a>
+            </div>            
+            <div class="chat list">
+              <a href="#">
+              <div class="liststyle">
+              <div class="indicator"></div>
+                <div class="names"><p>okoro</p></div></div>
+                <div class="message"><small>2</small></div></a>
+            </div>       
+            <div class="chat list">
+              <a href="#">
+              <div class="liststyle">
+              <div class="indicator"></div>
+                <div class="names"><p>glory</p></div></div>
+                <div class="message"><small>5</small></div></a>
+            </div>
+          </div>
+        </div> -->
+
+        <div class="feeds">
+         <h2>Feeds</h2>
+
+          <% if(feed.length > 0) { %>
+            <% feed.forEach((p,i)=>{ %>
+              <% if(!p) { %> <div></div> <%}else{ %>
+               <div class="feedcard">
+                <div><p>Message:</p></div>
+                <div class="cardb">
+                  <p><%= p.message %></p>
+                </div>
+                <div class="cardf"><small>#<%= i+1 %></small> <i>sent: <%=p.time%></i></div>
+              </div> <%}%> 
+            <% })%>
+            <% } %>
+        </div>
+      </div>
+    </section>
+    <script src="../js/materialize.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <%- include('feedScript.ejs') %>
+    <script src="effect.js"></script>
+  </body>
+</html> 

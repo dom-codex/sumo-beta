@@ -1,0 +1,217 @@
+<script>
+  var instance = M.Tabs.init(document.querySelector('.tabs'));
+  $(document).ready(function () {
+    M.updateTextFields();
+  const elems = document.querySelectorAll('.dropdown-trigger');
+  const instances = M.Dropdown.init(elems);
+  });
+  document.addEventListener('DOMContentLoaded', function() {
+  var elems = document.querySelectorAll('.modal');
+  var instances = M.Modal.init(elems);
+});
+
+  const Handler = (e, inputedit) => {
+    if (inputedit === "name") {
+      document.querySelector('#name').disabled = false;
+      nameCancel.style.display = "inline-block";
+      nameDone.style.display = "inline-block";
+      e.style.display = "none";
+    }
+    else if (inputedit === "phone") {
+      document.querySelector('#phone').disabled = false;
+      phoneCancel.style.display = "inline-block";
+      phoneDone.style.display = "inline-block";
+      e.style.display = "none";
+    }
+    else if (inputedit === "email") {
+      document.querySelector('#email').disabled = false;
+      emailCancel.style.display = "inline-block";
+      emailDone.style.display = "inline-block";
+      e.style.display = "none";
+    }
+    else if (inputedit === "desc") {
+      document.querySelector('#desc').disabled = false;
+      descCancel.style.display = "inline-block";
+      descDone.style.display = "inline-block";
+      e.style.display = "none";
+    }      
+    else if (inputedit === "chat") {
+      document.querySelector('#chat').disabled = false;
+      chatCancel.style.display = "inline-block";
+      chatDone.style.display = "inline-block";
+      e.style.display = "none";
+    }      
+    else if (inputedit === "anonymous") {
+      document.querySelector('#anonymous').disabled = false;
+      anonymousCancel.style.display = "inline-block";
+      anonymousDone.style.display = "inline-block";
+      e.style.display = "none";
+    }
+  }
+
+  let timer;
+  const socket = io();
+  
+  socket.on('disconnect', (reason) => {
+    //refresh browser if server socket disconnects
+   if(reason === 'transport close'){
+    timer = setTimeout(()=>{
+    alert(reason)
+    },2000)
+   } 
+  });
+socket.on('connect', () => {
+clearTimeout(timer)
+});
+
+  nameDone.addEventListener('click', () => {
+    const newName = document.querySelector('#name').value;
+    socket.emit('newname', newName, () => {
+      document.querySelector('#name').disabled = true;
+      document.querySelector('#nameedit').style.display = 'inline-block'
+      nameCancel.style.display = "none";
+      nameDone.style.display = "none";
+      document.querySelector('h2').textContent = newName;
+    });
+  })
+
+  phoneDone.addEventListener('click', () => {
+    const newPhone = document.querySelector('#phone').value;
+    socket.emit('newPhone', newPhone, () => {
+      document.querySelector('#phone').disabled = true;
+      document.querySelector('#phoneedit').style.display = 'inline-block'
+      phoneCancel.style.display = "none";
+      phoneDone.style.display = "none";
+    });
+  })
+
+  descDone.addEventListener('click', () => {
+    const newdesc = document.querySelector('#desc').value;
+    socket.emit('newdesc', newdesc, () => {
+      document.querySelector('#desc').disabled = true;
+      document.querySelector('#descedit').style.display = 'inline-block'
+      descCancel.style.display = "none";
+      descDone.style.display = "none";
+    });
+  })
+  emailDone.addEventListener('click', () => {
+    const newEmail = document.querySelector('#email').value;
+    socket.emit('newemail', newEmail, () => {
+      document.querySelector('#email').disabled = true;
+      document.querySelector('#emailedit').style.display = 'inline-block'
+      emailCancel.style.display = "none";
+      emailDone.style.display = "none";
+    });
+  })    
+  chatDone.addEventListener('click', () => {
+    const newChat = document.querySelector('#chat').value;
+    socket.emit('newchat', newChat, (declined) => {
+    if(declined){
+      //tell user that chat string is already taken
+      $('#declined').css('display','block')
+    }else{
+      $('#declined').css('display','none')
+      document.querySelector('#chat').disabled = true;
+      document.querySelector('#chatedit').style.display = 'inline-block'
+      chatCancel.style.display = "none";
+      chatDone.style.display = "none";
+    }
+    });
+  })   
+   anonymousDone.addEventListener('click', () => {
+    const newAnonymous = document.querySelector('#anonymous').value;
+    socket.emit('newanonymous', newAnonymous, () => {
+      document.querySelector('#anonymous').disabled = true;
+      document.querySelector('#anonymousedit').style.display = 'inline-block'
+      anonymousCancel.style.display = "none";
+      anonymousDone.style.display = "none";
+    });
+  })
+
+//event listeners for the various modal buttons
+const removeHandler = (e,idToRemove)=>{
+const yes = $('.modal-footer button:nth-child(2)');
+yes.on('click',()=>{
+const form = e.parentNode.parentNode.childNodes[1];
+form.submit()
+})
+}
+//script for toggle element
+const elems = document.querySelector('#modal2');
+const instances = M.Modal.init(elems);
+const switcher = $('#switch');
+const toggler = $('.toggle');
+const declineBtn = $('#decline')
+const continueBtn = $('#continue')
+//const modal2 = M.Modal.getInstance($('#modal2'));
+
+switcher.on('click',()=>{
+if(!switcher.attr('checked')){
+  return instances.open()
+}
+socket.emit('goAnonymous', null, () => {
+      switcher.prop('checked',false)
+    })
+})
+declineBtn.on('click',()=>{
+if(switcher.attr('checked')){
+  switcher.prop("checked", true);
+  instances.close();
+}else{
+  switcher.prop("checked", false);
+ instances.close();
+}
+
+})
+continueBtn.on('click',()=>{
+continueBtn.text('switching...')
+socket.emit('goAnonymous', null, () => {
+      window.location.reload()
+    })
+})
+//script for change password
+const changePasswordRevealer = $('.password button');
+changePasswordRevealer.on('click',()=>{
+$('#cpf').toggleClass('change')
+const note = $('.open button').text();
+if(note ==='change password'){
+  $('.open button').text('close')
+}else{
+  $('.open button').text('change password')
+}
+})
+  
+const feedString = $('#feedstring');
+const feedLink = `${window.location.origin}/sendmsg/${feedString.val()}`;
+const feedShareInput = $('#feeds');
+const chatLink = $('#chatlink');
+feedShareInput.val(feedLink);
+//function will dismiss copy notifier
+const dismissCopy = ()=>{
+$('.notifier').css('visibility','hidden')
+}
+$('#copy1').on('click',()=>{
+/* Select the text field */
+const feedShare = document.querySelector('#feeds');
+feedShare.focus();
+feedShare.select();
+feedShare.setSelectionRange(0, 99999);
+/* Copy the text inside the text field */
+document.execCommand("copy");
+$('.notifier').css('visibility','visible')
+setTimeout(dismissCopy,1300)
+
+}) 
+$('#copy2').on('click',()=>{
+/* Select the text field */
+const chatShare = document.querySelector('#chatlink');
+chatShare.focus();
+chatShare.select();
+chatShare.setSelectionRange(0, 99999);
+/* Copy the text inside the text field */
+document.execCommand("copy");
+$('.notifier').css('visibility','visible')
+setTimeout(dismissCopy,2000)
+}) 
+
+</script>

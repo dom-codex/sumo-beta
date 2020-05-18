@@ -1,0 +1,319 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+  outline: none;
+  font-family:Rubik;
+}
+body{
+  height:100vh;
+  font-family: Rubik;
+}
+nav{
+  background-color:rebeccapurple;
+}
+h2{
+  margin:0;
+  font-size:2.3rem;
+  padding-left: 15px; 
+}
+h2::first-letter{
+  text-transform: uppercase;
+}
+nav div{
+  display:flex;
+  justify-content: space-between;
+  align-items: center
+}
+.nav-options{
+  display:none
+}
+.nav-options a{
+  margin-right:25px;
+}
+.nav-options a:hover, .nav-options a:focus{
+  color:orange
+}
+#showdd{
+  height:100%;
+  background: none;
+  box-shadow: none;
+  margin-right:20px
+}
+.dropdown-content{
+  min-width: 200px;
+  overflow: hidden
+}
+.dropdown-content  li a, .dropdown-content  li a i{
+  color:rebeccapurple!important
+}
+.dropdown-content a{
+  display: flex;
+}
+.window{
+  margin-top: 20px;}
+.info{
+  margin-top: 30px;
+  margin-left:20px;
+}
+input,textarea{
+  border:none;
+  border-bottom:thin solid #ccc;
+  display:inline-block;
+  width:60%;
+  max-width:350px;
+  background-color:#fff;
+}
+.input-field{
+  width:76%
+}
+.wrappers{
+  display: flex;
+  align-items: center;
+}
+.ctrl, .cont{
+  margin-bottom:8px
+}
+.ctrl{
+  display:inline-block;
+}
+.temp{
+  display:none;
+}
+.ctrl button{
+  border:none;
+  background-color:transparent;
+  margin:0 10px
+}
+.ctrl button:hover{
+  border:thin solid grey;
+  padding:2px;
+  border-radius: 5px;
+}
+
+.copy-btn{
+  display:flex;
+  justify-content: flex-end;
+  margin-bottom:17px;
+}
+.copy-btn button{
+  background: none;
+  border: 2px solid rebeccapurple;
+  padding:10px;
+  color:rebeccapurple;
+  border-radius:5px;
+  font-weight:bold
+}
+.copy-btn button:hover{
+  background-color: rebeccapurple;
+  color:#fff;
+}
+.notifier{
+  display:flex;
+  justify-content: center;
+  visibility: hidden;
+}
+.notifier p{
+  color:#fff;
+  padding:8px;
+  background-color: rgba(0,0,0,.7);
+  border-radius:5px;
+  margin-top:24px;
+}
+#settingspage{
+  margin-top:20px;
+  margin-left:20px;
+}
+.anonymous{
+  margin:30px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.password.open{
+  margin-bottom:35px;
+}
+.password.open button{
+  background: none;
+  border: none;
+  color:indigo
+}
+.password{
+  margin-bottom:10px;
+}
+.change{
+  display:none
+}
+label{
+  display:block;
+}
+.changepassbtn{
+  margin:10px 0;
+  display: flex;
+  justify-content: flex-end;
+  width:85%;
+}
+.changepassbtn button{
+  padding:7px;
+  background: none;
+  border-radius: 5px;
+  border:2px solid rebeccapurple;
+  color: rebeccapurple;
+}
+.changepassbtn button:hover, .changepassbtn button:active{
+  border:2px solid rebeccapurple;
+  background-color: rebeccapurple;
+  color:#fff
+}
+#declined{
+  color:red;
+  margin-left:40px;
+  display:none;
+}
+.logout{
+  margin-bottom: 50px;
+}
+.logout{
+  display:flex;
+  justify-content: flex-end;
+  margin-right: 30px;
+}
+.logout a{
+  border: 2px solid rebeccapurple;
+  color:rebeccapurple;
+  padding:8px;
+  border-radius:5px;
+}
+.logout a:hover{
+  color:#fff;
+  background-color: rebeccapurple;
+}
+
+/*new configs */
+.window{
+  width:85%;
+  min-height:72vh;
+  margin:auto;
+  border-radius: 5px;
+  border:thin solid rgba(0,0,0,.015);
+  margin-top:20px;
+  max-width:680px;
+  min-width:320px;
+}
+.tabs{
+  display: flex;
+}
+
+.chat.list a{
+  display:flex;
+}
+.chat.list{
+  width:85%;
+  padding:10px;
+}
+.chat.list a{
+  display:flex;
+  color:black;
+  justify-content: space-between;
+  padding-right:20px;
+  padding-left:15px;
+  
+}
+.liststyle{
+  display:flex;
+  align-items: center;
+}
+.indicators{
+  width:10px;
+  height:10px;
+  border-radius:5px;
+  background-color:rebeccapurple;
+  margin-right:5px
+}
+.names p{font-size:1.3em}
+.chatCard{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  width:95%;
+  margin:auto;
+  margin-top:20px;
+  border:thin solid #ccc;
+  border-radius:5px;
+}
+.about{
+  margin-left:25px;
+}
+.btncont{
+  margin-right:15px;
+}
+.btncont button{
+  border:none;
+  background: none;
+  color:deeppink
+}
+/*style for modal*/
+.modal, .modal-content{
+  padding:0!important;
+}
+.modal-content h4 {
+  display:flex;
+  align-items: center;
+  height:75px;
+  color:#fff;
+  background-color: rebeccapurple;
+  padding-left:15px
+}
+.modal-content p , .modal-content ul, .modal-content small{
+  padding-left: 15px!important;
+}
+/*toggle css*/
+
+/* toggle in label designing */ 
+.toggle { 
+  position : relative ; 
+  display : inline-block; 
+  width : 70px; 
+  height : 25px; 
+  background-color:#ccc; 
+  border-radius: 30px; 
+  margin-right: 15px;
+} 
+      
+/* After slide changes */ 
+.toggle:after { 
+  content: ''; 
+  position: absolute; 
+  width: 30px; 
+  height: 21px; 
+  border-radius: 22px; 
+  background-color:#fff; 
+  top: 2px;  
+  left: 2px; 
+  transition:  all 0.5s; 
+}     
+/* Checkbox cheked effect */ 
+.checkbox:checked + .toggle::after { 
+  left : 35px; 
+  background-color:#fff ;
+} 
+      
+/* Checkbox cheked toggle label bg color */ 
+.checkbox:checked + .toggle { 
+  background-color:rebeccapurple 
+} 
+      
+/* Checkbox vanished */ 
+.checkbox {  
+  display : none; 
+} 
+/*media queries */
+@media all and (min-width:720px){
+  #showdd{
+    display:none;
+  }
+  .nav-options{
+    display:flex;
+  }
+ 
+}

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> <%= name %>'s feed </title>
+      <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
+
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="../css/materialize.min.css" rel="stylesheet" />
+  <link href="/effects.css" rel="stylesheet" type="text/css"/>
+  <link href="/c-user.css" rel="stylesheet" type="text/css"/>
+  <link href="/sidenav.css" rel="stylesheet"/>
+  <link href="/sumoUser.css" rel="stylesheet"/>
+
+</head>
+  <body>
+    <input type="hidden" id="uid" value="<%= uid %>">
+    <div id="myModal" class="modal">
+      <div id="modal-wrap">
+<!-- dialog box content -->
+<div class="modal-content">
+<span class="close">&times;</span>
+<div class="content body">
+  <a href="/sendmsg/<%=sharelink%>">link</a>
+ <!-- <a href="/chatme/<%=chat%>">link</a> -->
+ <input type="text" placeholder="enter chat string" id="chatString"/>
+ <button id="startchat">start chat</button>
+</div>
+</div></div></div>
+<!--side nav codes-->
+<%- include('sideNav.ejs',{onlineUsers:onlineUsers}) %>
+<!--end of side nav import-->
+    <heading>
+      <div class="hbw">
+        <div><p>AnonyMessenger</p></div>
+        <div class="hnav">
+          <div><a href="#">Checkout</a></div>
+          <!-- nav section use vector icons later to rep the variouslinks-->
+          <div><nav>
+            <ul>
+              <li><a href="#">Home</a></li>
+              <li><a href="#" class="active">Feed</a></li>
+              <li><a href="#">Wall</a></li>
+              <li><button id="link">Share</button></li>
+            </ul>
+            </nav></div>
+        </div>
+      </div>
+    </heading>
+    <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+
+    <section class="desktop">
+   <!--   <div>
+        <sidebar>
+          <div >
+            <p>Live chats</p>
+          </div>
+          <div>
+            <ul>
+              <li>
+                <div><p>dominic</p></div>
+              </li>
+              <li>
+                <div><p>west</p></div>
+              </li>
+            </ul>
+          </div>
+        </sidebar>
+      </div> -->
+      <div class="window">
+       <!-- <div class="chats">
+          <div><h2>Chats</h2></div>
+          <div class="chatlists">
+            <% if(onlineUsers.length>0) { %>
+              <% onlineUsers.forEach((user,i)=>{ %>
+                
+                <div class="chat list" id="<%=user._id%>" style="background-color:<%= user.isNew ? 'white' : '' %>">
+                  <input class="chatids" type="hidden" value="<%=user._id%>"/>
+                <a href="/chat/<%=user._id%>" >
+                <div class="liststyle">
+                <div class="indicator"></div>
+                  <div class="names"><p><%=user.name%></p></div></div>
+                  <div class="message"><small><%=user.time%></small></div></a>
+                  <small class="brief"><%=user.message%></small>
+                </div>
+              <% })%>
+              <% } %> -->
+            <!-- chat list code -->
+           <!-- <div class="chat list">
+              <a href="#">
+              <div class="liststyle">
+              <div class="indicator"></div>
+                <div class="names"><p>dominic</p></div></div>
+                <div class="message"><small>11</small></div></a>
+            </div>            
+            <div class="chat list">
+              <a href="#">
+              <div class="liststyle">
+              <div class="indicator"></div>
+                <div class="names"><p>okoro</p></div></div>
+                <div class="message"><small>2</small></div></a>
+            </div>       
+            <div class="chat list">
+              <a href="#">
+              <div class="liststyle">
+              <div class="indicator"></div>
+                <div class="names"><p>glory</p></div></div>
+                <div class="message"><small>5</small></div></a>
+            </div>
+          </div>
+        </div> -->
+        <div class="feeds">
+          <% if(feed.length > 0) { %>
+            <% feed.forEach((p,i)=>{ %>
+              <% if(!p) { %> <div></div> <%}else{ %>
+               <div class="feedcard">
+                <div><p>Message:</p></div>
+                <div class="cardb">
+                  <p><%= p.message %></p>
+                </div>
+                <div class="cardf"><small>#<%= i+1 %></small> <i>sent: 3:45pm</i></div>
+              </div> <%}%> 
+            <% })%>
+            <% } %>
+        </div>
+        
+        <div class="pages"><ul>
+          <li>prev</li>
+          <li>next</li>
+          </ul></div>
+      </div>
+    </section>
+    <script src="../js/materialize.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      //script for side nav
+     document.addEventListener('DOMContentLoaded', function() {
+   var ele = document.querySelectorAll('.sidenav');
+   var instances = M.Sidenav.init(ele);
+ });
+ </script>
+    <script>
+      
+      const socket = io();
+      socket.on("connect",(socketio)=>{
+        const uid = document.querySelector('#uid');
+        socket.emit("identify",uid.value);
+      })
+
+      socket.on("notification", (data)=>{
+      $('.feeds').append(` 
+       <div class="feedcard">
+          <div><p>Message:</p></div>
+          <div class="cardb">
+          <p>${data.message}</p>
+          </div> df
+          <div class="cardf"><small>#${data.length}</small> <i>sent: 3:45pm</i></div>
+        </div> `);
+feedList.scrollTop = feedList.scrollHeight;
+});
+// tell others you are online
+//const id = document.querySelector('#uid').value;
+socket.on('reload',()=>{
+  window.location.reload();
+})
+socket.on("online", (data) => {   
+ //to notify other connected sockets
+ const uid = document.querySelector('#uid').value;
+
+ const chatsids = [];
+ const inputs = $('.chatids');
+ for(let i=0;i<inputs.length;i++){
+   chatsids.push(inputs[i].value);
+ }
+ const isRendered = chatsids.some(id=>id === data.fid)
+ console.log(isRendered)
+ if(!isRendered || uid == data.fid ){
+  $('.chatlists').append( `            
+   <div class="chat list" id="${data.fid}">
+    <input class="chatids" type="hidden" value="${data.fid}"/>
+  <a href="/chat/${data.fid}" >
+  <div class="liststyle">
+  <div class="indicator"></div>
+    <div class="names"><p>${data.name}</p></div></div>
+    <div class="message"><small></small></div></a>
+    <small class="brief"></small>
+
+    </div> `);
+  }
+});
+
+socket.on('activeUsers',(data)=>{
+  //for emitting socket
+  const uid = document.querySelector('#uid');
+  data.forEach(user => {
+    if(user._id == uid.value){
+      return
+    }
+    $('.chatlists').append( `            
+   <div class="chat list" id="${user._id}">
+    <input class="chatids" type="hidden" value="${user._id}"/>
+  <a href="/chat/${user._id}" >
+  <div class="liststyle">
+  <div class="indicator"></div>
+    <div class="names"><p>${user.name}</p></div></div>
+    <div class="message"><small></small></div></a>
+    <small class="brief"></small>
+
+    </div> `);
+  });
+})
+//gets start chat button
+const chatBtn = $('#startchat');
+chatBtn.on('click',()=>{
+  //obtain the inputed chat string
+  const chatString = $('#chatString').val();
+ //emit to server we want to add a chat, send chat string along
+ //callback will receive the details of the person whose chat
+ //string we inputed so that our chat ui is updated
+  socket.emit('joinChat',{chatString:chatString},(chatuser)=>{
+    //user details is appended to the ui
+    $('.chatlists').append( `            
+   <div class="chat list" id="${chatuser._id}">
+    <input class="chatids" type="hidden" value="${chatuser._id}"/>
+  <a href="/chat/${chatuser._id}" >
+  <div class="liststyle">
+  <div class="indicator"></div>
+    <div class="names"><p>${chatuser.name}</p></div></div>
+    <div class="message"><small></small></div></a>
+    <small class="brief"></small>
+</div> `)
+  })
+})
+
+
+socket.on('left',(id)=>{
+/*
+const cids = $('body').find('.chatids');
+for(let i = 0; i<cids.length;i++){
+  let cid = cids[i];
+  if(cid.value === id){
+    const parent = document.querySelector('.chatlists');
+  parent.removeChild(cid.parentNode);
+  }else{
+    continue;
+  } 
+}*/
+})
+  socket.on('disconnect',()=>{
+    socket.disconnect(true);
+    socket.removeAllListeners('connect')
+  })    
+const feedList = document.querySelector(".feeds");
+feedList.scrollTop = feedList.scrollHeight;
+    socket.on('notify',(data)=>{
+    //data should contain the last message in the list
+    //data should also contain the no of new messages
+
+    const cids = $('body').find('.chatids');
+  
+    for(let i = 0; i<cids.length;i++){
+    let cid = cids[i];
+    if(cid.value.toString() === data.id.toString()){
+      console.log('here')
+     const small = cid.parentNode.childNodes[5];
+     const messageIdicator = cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+     messageIdicator.textContent = ''
+     messageIdicator.textContent = data.time
+     small.textContent = ' '
+     small.textContent = data.msg ;
+  //move the notification to the top
+  const notificationTile = cid.parentNode;
+  const parent = document.querySelector('.chatlists');
+  parent.removeChild(cid.parentNode);
+  //add to the top  of the list
+  cid.parentNode.style.backgroundColor = '#fff'
+  const content = cid.parentNode;
+  parent.prepend(content);
+  }else{
+    continue;
+  } 
+    }
+  })
+  </script>
+    <script src="effect.js"></script>
+  </body>
+</html> 

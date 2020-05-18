@@ -1,0 +1,103 @@
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+}
+.emoticons{
+  display:none;
+}
+.link-active{
+  background-color:rgba(0,0,0,.05);
+}
+.tab-body a{
+  text-decoration: none;
+  font-size:1.2rem;
+  height:100%;
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+.tab-content{
+  min-height:70px;
+}
+.emoji p{
+  padding-left:56px
+}
+#search{
+  overflow-y: scroll
+}
+.emoji{
+  display: none;
+  width: 100%;
+}
+:target{
+  overflow-y:scroll;
+  height:120px;
+}
+:target, .tabs, #search, .isActive{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  cursor:pointer;
+  /*set max height for target later */
+}
+.tabs{
+  height:40px
+}
+.emoji p{
+  font-size:1.5rem;
+  color:gold;
+}
+#face{
+  height:120px;
+  overflow-y: scroll;
+}
+.emoji-footer{
+  background-color:rgb(118, 69, 167);
+  padding:12px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+.emoji-footer button{
+  margin:0 5px;
+  padding:4px;
+  background: none;
+  border:none;
+  color:rgb(68, 67, 67);
+  outline:none;
+}
+.emoji-footer button:hover{
+  color:rgba(0,0,0,.69);
+  font-weight: bold
+}
+.input_anime{
+  animation: fadeIn 1.3s;
+  animation-fill-mode: forwards;
+}
+.cancel{
+ opacity:0;
+}
+@keyframes fadeIn{
+  from{
+    opacity:0
+  }
+  to{
+    opacity: 1;
+    padding-left:7px;
+  }
+}
+.emoji-footer input{
+  margin-left:10px;
+  height:25px;
+  opacity:0;
+  outline:none;
+  border-radius:15px;
+  border:none;
+  transition: opacity 1.3s ;
+}
+a[href="#food"] i{
+  width: 100% !important;
+  height:100% !important;
+  display:flex;
+  padding:10px
+}

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.1">
+    <title>Home</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link 
+href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
+    <link href="/css/materialize.min.css" rel="stylesheet"/>
+    <link href="./inputs-color.css" rel="stylesheet"/>
+    <link href="./newhome.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<main>
+    <div class="background">
+      <div id="modal2" class="modal modal-fixed-footer">
+        <div class="modal-content">
+          <div class="h4"><h4>SUGGESTION BOX</h4></div>
+          <form method="POST" action="admin/suggestion">
+            <p>Suggestion body</p>
+            <div class="input-field col s12">
+              <textarea id="suggestion" name="suggestion" class="materialize-textarea" placeholder="suggestion..."></textarea>                 
+             </div>     
+           </form>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-close waves-effect waves-green btn-flat" id="cancel">cancel</button>
+          <button class="waves-effect waves-green btn-flat" id="send">Send</button>
+        </div>
+      </div>
+      <!--modal bottom sheet-->
+      <div id="modal3" class="modal bottom-sheet">
+        <div class="modal-content">
+          <h5>Enter link to user's feed</h5>
+          <div id="link"><input id="linktext" type="text"/></div>
+        </div>
+        <div class="modal-footer">
+          <a id="go" href="#!" class="modal-close waves-effect waves-green btn-flat">go</a>
+        </div>
+      </div>
+      <header>
+        <nav>
+          <a id="showdd" class='dropdown-trigger btn' href='#' data-target='dropdown1'><i class="material-icons">dehaze</i></a>
+          <ul id="firstul">
+            <li><a href="/" style="color:rgb(255, 136, 0)">HOME</a></li>
+            <li><a href="#" style="color:grey">ABOUT</a></li>
+            <li> <a class="modal-trigger bottom" href="#modal3">SEND COMPLIMENT</a>
+            </li>
+            <li><a href="/getstarted">JOIN NOW</a></li>
+          </ul>
+          <ul id='dropdown1' class='dropdown-content'>
+            <li><a href="/" style="color:rgb(255, 136, 0)">HOME</a></li>
+            <li class="divider" tabindex="-1"></li>
+            <li><a href="#" style="color:grey">ABOUT</a></li>
+            <li class="divider" tabindex="-1"></li>
+            <li> <a class="modal-trigger bottom" href="#modal3">SEND COMPLIMENT</a>
+            </li>
+            <li class="divider" tabindex="-1"></li>
+            <li><a href="/getstarted">REGISTER</a></li>
+          </ul>
+         
+        </nav>
+      </header>
+      <section>
+        <div class="showcase">
+          <h2>SUMO MESSENGER!</h2>
+           <div class="container"> 
+  
+  <!-- Full-width images with caption text -->
+  <div class="image-sliderfade fade">  
+    <div class="text">
+      <p>Receive anonymous compliments </p>
+      <p>from friends and loved ones </p>
+    </div> 
+  </div> 
+             
+    <div class="image-sliderfade fade"> 
+    <div class="text">
+    <p>Real time messaging with users</p>
+    </div> 
+  </div>              
+    <div class="image-sliderfade fade"> 
+    <div class="text">
+    <p>Chat anonymously with users</p>
+    </div> 
+  </div>  
+  
+</div> 
+<br> 
+  
+<!-- The dots/circles -->
+<div style="text-align:center"> 
+  <span class="dot"></span>  
+  <span class="dot"></span>  
+  <span class="dot"></span>    
+ 
+</div>
+   </div>
+      </section>
+      <div class="join"><a href="/getstarted">JOIN NOW</a></div>
+      <div id="notifier" class="<%=save.length > 0? 'save': '' %>"><p>sent successfully!!!</p></div>
+      <div id="sub-cont"><div class="sub"><button data-target="modal2" class="btn modal-trigger"><i class="material-icons">comment</i></button></div>
+  </div>
+    </div>
+
+  </main> 
+  <script src="/js/materialize.min.js"></script>
+  <script src="/js/jquery-3.4.1.min.js"></script>
+
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems);
+    var elems = document.querySelectorAll('.dropdown-trigger');
+    var instances = M.Dropdown.init(elems);
+  });
+    
+    
+var slideIndex = 0; 
+showSlides(); // call showslide method 
+   
+function showSlides() 
+{ 
+    var i; 
+  
+    // get the array of divs' with classname image-sliderfade 
+    var slides = document.getElementsByClassName("image-sliderfade");  
+      
+    // get the array of divs' with classname dot 
+    var dots = document.getElementsByClassName("dot");  
+  
+    for (i = 0; i < slides.length; i++) { 
+        // initially set the display to  
+        // none for every image. 
+        slides[i].style.display = "none";  
+    } 
+   
+     // increase by 1, Global variable 
+    slideIndex++;  
+   
+     // check for boundary 
+    if (slideIndex > slides.length)  
+    { 
+        slideIndex = 1; 
+    } 
+   
+    for (i = 0; i < dots.length; i++) { 
+        dots[i].className = dots[i].className. 
+        replace(" active", ""); 
+    } 
+   
+    slides[slideIndex - 1].style.display = "flex"; 
+    dots[slideIndex - 1].className += " active"; 
+  
+    // Change image every 2 seconds 
+    setTimeout(showSlides, 3000);  
+} 
+//script for submitting suggestions
+const sendBtn = $('#send')
+sendBtn.on('click',()=>{
+  $('form').submit()
+})
+//script for bottom sheet
+const goBtn = $('#go')
+goBtn.on('click',()=>{
+  const link = $('#linktext').val();
+  window.location.href = link
+
+})
+  </script>
+</body>
+</html>

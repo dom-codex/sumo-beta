@@ -1,0 +1,113 @@
+*{
+  padding:0;
+  margin:0;
+  font-family: Rubik;
+}
+nav{
+  background-color: indigo;
+  height:inherit;
+  color:#fff;
+}
+h2{
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight:bold;
+  margin-left:15px;
+  padding:5px;
+}
+nav div{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.home{
+  margin-right:20px;
+}
+.view{
+  font-size:1.7em;
+}
+.resetNav{
+  margin-right:20px;
+}
+.resetNav a:nth-child(1){
+  margin-right:35px
+}
+.forgotPass{
+  display:flex;
+  justify-content: flex-end;
+  padding-top:15px;
+  padding-right: 18px;
+}
+.forgotPass a:hover{
+  color:rebeccapurple;
+  text-decoration: underline;
+}
+.warning-board, .success{
+  justify-content: center;
+  margin-top:10px;
+  display: none;
+  opacity:0;
+  transition:opacity 10s
+}
+.warning-board p {
+  background-color: rgba(214, 87, 87,.3);
+  padding:12px;
+  color:red;
+  border-radius: 5px;
+
+}
+.none{
+  opacity: 0;
+}
+.success p{
+  padding:12px;
+  background-color: rgba(106, 173, 106, 0.445);
+  color:green;
+}
+.form-body{
+  width:75%;
+  max-width:550px;
+  margin:auto;
+  margin-top:35px;
+  padding-bottom:30px;
+  margin-bottom:20px;
+}
+#login{
+  margin-top:5px;
+}
+#signup,#login{
+  padding-top:5px;
+  padding-right:20px;
+}
+.warn small{
+  margin-left:39px;
+}
+
+.button{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.button button{
+  padding:10px;
+  background: none;
+  border-radius: 5px;
+  border:none;
+  background: indigo;
+  color:#fff;
+  font-weight: 600;
+}
+@keyframes show{
+  from{
+    opacity:1
+  }
+  to{
+    opacity:0;
+    display:none
+  }
+}
+.display{
+  animation-name: show;
+  animation-duration: 10s;
+  display:flex
+}

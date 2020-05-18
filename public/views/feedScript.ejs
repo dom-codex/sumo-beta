@@ -1,0 +1,217 @@
+<script>
+  const feedWindow = document.querySelector('.feeds')
+  feedWindow.scrollTop = feedWindow.scrollHeight
+    //script for side nav
+   document.addEventListener('DOMContentLoaded', function() {
+ const ele = document.querySelectorAll('.sidenav');
+ const sidenav = M.Sidenav.init(ele);
+ const elems = document.querySelectorAll('.dropdown-trigger');
+  const dropdown = M.Dropdown.init(elems);
+});
+
+  const feedList = document.querySelector('.feeds')
+  feedList.scrollTop = feedList.scrollHeight;
+
+    const socket = io();
+    let timer;
+  socket.on('disconnect', (reason) => {
+    //refresh browser if server socket disconnects
+   if(reason === 'transport close'){
+    timer = setTimeout(()=>{
+      alert(reason)
+    },2000)
+   } 
+  });
+socket.on('connect', (error) => {
+clearTimeout(timer)
+});
+//event for status
+socket.on('offline',(data)=>{
+  const cids = $('body .sidenav').find('.chatids');
+for(let i = 0; i<cids.length;i++){
+let cid = cids[i];
+if(cid.value.toString() === data.chat.toString()){
+  const indicator = cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1].childNodes[1];
+  const indicator2 = cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1].childNodes[3];
+  indicator.style.backgroundColor = 'grey'
+  indicator2.style.backgroundColor = 'grey'
+}
+}
+   })
+
+socket.on('active',data=>{
+const cids = $('body .sidenav').find('.chatids');
+for(let i = 0; i<cids.length;i++){
+let cid = cids[i];
+if(cid.value.toString() === data.chat.toString()){
+const indicator = cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1].childNodes[1];
+const indicator2 = cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1].childNodes[3];
+indicator.style.backgroundColor = 'rebeccapurple'
+indicator2.style.backgroundColor = 'rebeccapurple'
+}
+}
+   }) 
+   //detector for  large screen
+   socket.on('offline',(data)=>{
+  const cids = $('.window').find('.chatids');
+for(let i = 0; i<cids.length;i++){
+let cid = cids[i];
+if(cid.value.toString() === data.chat.toString()){
+  const indicator = cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1].childNodes[1];
+  const indicator2 = cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1].childNodes[3];
+  indicator.style.backgroundColor = 'grey'
+  indicator2.style.backgroundColor = 'grey'
+}
+}
+   })
+
+socket.on('active',data=>{
+const cids = $('.window').find('.chatids');
+for(let i = 0; i<cids.length;i++){
+let cid = cids[i];
+if(cid.value.toString() === data.chat.toString()){
+const indicator = cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1].childNodes[1];
+const indicator2 = cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1].childNodes[3];
+indicator.style.backgroundColor = 'rebeccapurple'
+indicator2.style.backgroundColor = 'rebeccapurple'
+}
+}
+   })
+//end of event for status
+    socket.on("connect",(socketio)=>{
+      const uid = document.querySelector('#uid');
+      socket.emit("identify",uid.value);
+    })
+
+    socket.on("notification", (data)=>{
+    $('.feeds').append(` 
+     <div class="feedcard">
+        <div><p>Message:</p></div>
+        <div class="cardb">
+        <p>${data.message}</p>
+        </div>
+        <div class="cardf"><small>#${data.length}</small> <i>sent: ${data.time}</i></div>
+      </div> `);
+});
+// tell others you are online
+//const id = document.querySelector('#uid').value;
+socket.on('denied',(data)=>{
+$('.errdisplay').text(data.message);
+$('.errdisplay').css('display','inline'); 
+ $('#largeErr').text(data.message);
+$('#largeErr').css('display','inline');
+setTimeout(()=>{
+  $('.errdisplay').css('display','none'); 
+  $('#largeErr').css('display','none');
+},2600)
+})
+socket.on("online", (data) => {   
+//to notify other connected sockets
+const uid = document.querySelector('#uid').value;
+
+const chatsids = [];
+const inputs = $('.chatids');
+for(let i=0;i<inputs.length;i++){
+ chatsids.push(inputs[i].value);
+}
+const isRendered = chatsids.some(id=>id === data.fid)
+if(!isRendered || uid == data.fid ){
+$('.userChats').append( `            
+ <div class="chat list" id="${data.fid}">
+  <input class="chatids" type="hidden" value="${data.fid}"/>
+<a href="/chat/${data.fid}" >
+<div class="liststyle">
+<div class="indicator" style="background-color:${ data.status === 'online' || data.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }; display:${ data.status === 'online' || data.anStatus === 'online' ? 'block' : 'none' }"></div>
+ <div class="indicator" style="background-color:${ data.anStatus === 'offline' || data.status === 'offline' ? 'grey' : 'rebeccapurple' }; display:${ data.anStatus === 'offline' || data.status === 'offline' ? 'block' : 'none' }"></div>          
+  <div class="names"><p>${data.name}</p></div></div>
+  <div class="message"><small></small></div></a>
+  <small class="brief"></small>
+
+  </div> `);
+}
+});
+
+socket.on('activeUsers',(data)=>{
+//for emitting socket
+const uid = document.querySelector('#uid');
+data.forEach(user => {
+  if(user._id == uid.value){
+    return
+  }
+  $('.userChats').append( `            
+ <div class="chat list" id="${user._id}">
+  <input class="chatids" type="hidden" value="${user._id}"/>
+<a href="/chat/${user._id}" >
+<div class="liststyle"> 
+<div class="indicator" style="background-color:${user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }; display:${ user.status === 'online' || user.anStatus === 'online' ? 'block' : 'none' }"></div>
+<div class="indicator" style="background-color:${user.anStatus === 'offline' || user.status === 'offline' ? 'grey' : 'rebeccapurple' }; display:${ user.anStatus === 'offline' || user.status === 'offline' ? 'block' : 'none' }"></div>          
+  <div class="names"><p>${user.name}</p></div></div>
+  <div class="message"><small></small></div></a>
+  <small class="brief"></small>
+
+  </div> `);
+});
+})
+//gets start chat button
+const joinHandler = (fieldtoselect) =>{
+//obtain the inputed chat string
+const chatString = $(fieldtoselect).val();
+//emit to server we want to add a chat, send chat string along
+//callback will receive the details of the person whose chat
+//string we inputed so that our chat ui is updated
+socket.emit('joinChat',{chatString:chatString},(chatuser)=>{
+  //user details is appended to the ui
+  $('.userChats').append( `            
+ <div class="chat list" id="${chatuser._id}">
+  <input class="chatids" type="hidden" value="${chatuser._id}"/>
+<a href="/chat/${chatuser._id}" >
+<div class="liststyle">
+<div class="indicator" style="background-color:${ chatuser.status === 'online' || chatuser.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }; display:${ chatuser.status === 'online' || chatuser.anStatus === 'online' ? 'block' : 'none' }"></div>
+ <div class="indicator" style="background-color:${ chatuser.anStatus === 'offline' || chatuser.status === 'offline' ? 'grey' : 'rebeccapurple' }; display:${ chatuser.anStatus === 'offline' || chatuser.status === 'offline' ? 'block' : 'none' }"></div>          
+  <div class="names"><p>${chatuser.name}</p></div></div>
+  <div class="message"><small></small></div></a>
+  <small class="brief"></small>
+</div> `)
+$(fieldtoselect).val(' ')
+})
+}
+const chatBtn = $('#startchat');
+const largeChatBtn = $('#largeStartChat');
+chatBtn.on('click',()=>
+joinHandler('#chatString'))
+largeChatBtn.on('click',()=>
+joinHandler('#chatStringLarge'))
+
+socket.on('disconnect',()=>{
+  socket.disconnect(true);
+  socket.removeAllListeners('connect')
+})    
+  socket.on('notify',(data)=>{
+  //data should contain the last message in the list
+  //data should also contain the no of new messages
+
+  const cids = $('body').find('.chatids');
+
+  for(let i = 0; i<cids.length;i++){
+  let cid = cids[i];
+  if(cid.value.toString() === data.id.toString()){
+   const small = cid.parentNode.childNodes[5];
+   const messageIdicator = cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+   messageIdicator.textContent = ''
+   messageIdicator.textContent = data.msg
+   small.textContent = ' '
+   small.textContent = data.time ;
+//move the notification to the top
+const notificationTile = cid.parentNode;
+const parent = document.querySelector('.userChats');
+parent.removeChild(cid.parentNode);
+//add to the top  of the list
+cid.parentNode.style.backgroundColor = '#fff'
+const content = cid.parentNode;
+parent.prepend(content);
+}else{
+  continue;
+} 
+  }
+})
+</script>

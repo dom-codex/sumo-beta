@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message <%=name%></title>
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
+    <link href="/css/materialize.min.css" rel="stylesheet"/>
+    <link href="/emoji.css" rel="stylesheet"/>
+    <link href="/inputs-color.css" rel="stylesheet"/>
+  <link href="/anonyreply.css" rel="stylesheet" type="text/css" />
+</head>
+  <body>
+    <header>
+      <nav>
+        <div>
+          <h2>SUMO</h2>
+          <a href="/" class="home"><i class="material-icons">home</i></a>
+        </div>
+        </nav>
+      </header>
+    <section>
+     <section>
+      <div class="form-body">
+          <form action="/feed/<%=fid%>" method="POST">
+            <input type="hidden" value="<%=csrfToken%>" name="_csrf">
+            <div id="ccf"><p>Message <%=name%>'s channel</p></div>
+            <div class="row">
+              <div class="button wrap smiley"><button type="button"><i class="material-icons">insert_emoticon</i></button></div>
+                  <div class="input-field col s12">
+                    <textarea id="msg" name="message" class="materialize-textarea" placeholder="enter message"></textarea>                 
+                   </div>
+                  <div class="button wrap"><button type="submit"><i class="material-icons">send</i></button></div>
+            </div>
+        <div class="emoji-container"> <%- include('emoji.ejs') %></div>
+             <div>
+              </div>
+            </form>
+            <div>
+            </div>
+
+      </div></section>
+    </section>
+    <script src="/js/materialize.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script>
+      const showSmiley = document.querySelector('.smiley button');
+      showSmiley.addEventListener('click',()=>{
+        document.querySelector('.emoticons').style.display = 'block'
+      })
+      const inputArea = document.querySelector('textarea')
+      inputArea.addEventListener('focus',()=>{
+        document.querySelector('.emoticons').style.display = 'none'
+      })
+    </script>
+  </body></html>

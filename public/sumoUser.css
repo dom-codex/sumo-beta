@@ -1,0 +1,89 @@
+.feeds{display: none;}
+*{
+  margin:0;
+  padding:0;
+  font-family:Rubik
+  
+}
+body{height:76vh; font-family:monospace;}
+section{height:100%}
+.window{
+  height:100%;
+}
+.active{color:darkorange!important;}
+.hbw{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  padding:0 15px 10px 15px;
+  border-bottom: 4px solid rebeccapurple;
+}
+.hbw div:nth-child(1) p{
+  font-size:2em;
+  color:rebeccapurple;
+  font-weight: bold;
+}
+.hnav div:nth-child(1){
+  padding:10px;
+  margin-top:5px;
+  display:flex;
+  flex-direction: row-reverse
+}
+a{text-decoration: none;}
+.hnav div:nth-child(1) a{
+  background-color:rgba(0,0,0,.3);
+  padding:5px;
+  border-radius:5px;
+  color:ghostwhite;
+}
+.hnav div:nth-child(2) ul {
+  list-style:none;
+}
+.hnav div:nth-child(2) ul li {
+  display:inline-block;
+  margin-right:9px
+}
+.hnav div:nth-child(2) ul li a{
+  color:rebeccapurple;
+  font-weight:bold;
+}
+.hnav div:nth-child(2) ul li a:hover{
+  color:darkorange;
+}
+section.desktop{
+  height:100%;
+  background-color: rgba(0,0,0,.03); 
+  padding-top:10px;
+}
+.feedcard{
+  width:95%;
+  margin: auto;
+  margin-bottom:10px;
+  border:thin solid rgba(0,0,0,.1);
+  padding:5px 8px;
+  min-height:66px;
+  box-shadow:2px,2px,9px,black;
+}
+.feedcard div:nth-child(1){
+  margin-bottom:7px;
+}
+.feedcard div:nth-child(1) p{
+  font-size:1.5em;
+  color:rgba(0,0,0,.85)
+}
+.cardb{
+  margin-bottom:6px;
+}
+.cardf{
+  display: flex;
+  justify-content: space-between
+}
+small{
+  font-size:.89rem
+}
+/* chat window css settings */
+.feeds{
+  display: flex;
+  flex-direction: column;
+  min-height:100%;
+}

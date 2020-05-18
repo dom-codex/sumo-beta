@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.1">
+    <title>SignUp | Login </title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link 
+href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
+    <link href="css/materialize.min.css" rel="stylesheet"/>
+    <link href="newChannelForm.css" rel="stylesheet"/>
+  </head>
+  <body>
+    <header>
+    <nav>
+      <div>
+        <h2>SUMO</h2>
+        <a href="#!" class="home"><i class="material-icons">home</i></a>
+      </div>
+      </nav>
+    </header>
+    <section>
+      <div class="form-body z-depth-2">
+        
+    <div class="row">
+    <div class="col s12 m12 l12">
+      <ul class="tabs">
+        <li class="tab col s3 m6 "><a href="#signup">Signup</a></li>
+        <li class="tab col s3 m6 "><a href="#login" class="active">login</a></li>
+      </ul>
+    </div>
+    <div id="signup" class="col s12">
+      <form action='/createUserChannel' method="post">
+            
+            <div class="input wrapper input-field">
+            <i class="material-icons prefix">account_circle</i>
+              <label for="name">Name</label> 
+              <input name="name" type="text" ></div> 
+            <div class="input wrapper input-field">
+               <i class="material-icons prefix">email</i>
+               <label for="email">Email</label>
+              <input name="email" type="email" > </div>
+             <div class="input wrapper input-field">
+               <i class="material-icons prefix">lock</i>
+              <label for="pwd">password</label> 
+               <input name="pwd" type="password" > </div>
+              <div class="input wrapper input-field">
+              <i class="material-icons prefix">enhanced_encryption</i>
+               <label for="cpwd">comfirm password</label> 
+                <input name="cpwd" type="password" ></div>
+              <div class="button wrap"><button type="submit" class="z-depth-2">Submit</button></div>
+          </form>
+      </div>
+    <div id="login" class="col s12">
+      <form action='/loginuser' method="post" autocomplete="off">
+        
+            <div class="input wrapper input-field">
+               <i class="material-icons prefix">account_circle</i>
+               <label for="email">Email</label> 
+              <input name="email" type="email" > </div>
+             <div class="input wrapper input-field">
+              <i class="material-icons prefix">lock</i>
+              <label for="pwd">password</label> 
+               <input name="pwd" type="password" > </div>
+              <div class="button wrap"><button type="submit">Submit</button></div>
+          </form>
+      </div>
+  </div>
+      </div>
+    </section>
+    <script src="js/materialize.min.js"></script>
+    <script src="newChannelForm.js"></script>
+  </body></html>

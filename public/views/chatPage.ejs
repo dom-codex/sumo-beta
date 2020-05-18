@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chat room</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <link href="/css/materialize.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
+    <link href="/emoji.css" rel="stylesheet" type="text/css"/>
+  <link href="/chat.css" rel="stylesheet" type="text/css">
+
+</head>
+  <body>
+    <section>
+    <input type="hidden" value="<%= fid%>" id="friendId">
+        <heading>
+      <div class="hbw">
+        <div>
+          <p><%=friend%></p>
+          <small id="status"><%=status%></small>
+        </div>
+        <div class="hnav">
+          <!-- nav section use vector icons later to rep the variouslinks-->
+          <div><nav>
+            <ul>
+              <li><a href="/"><i class="material-icons">home</i></a></li>
+              <li><a href="/userchannel/<%=uid%>"><i class="material-icons">rss_feed</i></a></li>
+            </ul>
+            </nav></div>
+        </div>
+      </div>
+    </heading>
+
+      <div class="chats">
+        <% if(meChats.length > 0) { %>
+          <% meChats.forEach((msg,i)=> { %>
+            <% if(msg.receiver.toString() === fid.toString()) { %> 
+               <span class="u2 chat"><%=msg.body%>
+                <div class="time"><%=msg.time%></div>
+              </span>
+              <%}else{ %>
+                <span class="u1 chat"><%=msg.body%>
+                  <div class="time"><%=msg.time%></div>
+                </span>
+                <% } %>
+          <% })%>
+          <% } %>
+      </div>
+      
+      <div class="input">
+        <div class="ctrl">
+        <button class="openEmoji" type="button"><i class="material-icons">insert_emoticon</i></button>
+        <input type="hidden" value="<%= fid %>">
+        <textarea  id="msg" class="materialize-textarea" name="message" placeholder="Enter message"></textarea>
+        <!-- replace with a vector icon later -->
+        <button type="submit"><i class="material-icons">send</i></button></div>
+        <div class="emoji-container">
+          <%- include('emoji.ejs')%>
+        </div>
+      </div>
+    </section>
+    <script src="/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <%- include('chatScript.ejs') %>
+  </body>
+</html>

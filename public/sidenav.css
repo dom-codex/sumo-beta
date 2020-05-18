@@ -1,0 +1,80 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+}
+.sidenav{
+  background-color:rgba(255,255,255,.94)
+}
+.user-view{
+  background:indigo;
+}
+.join{
+  width:80%;
+  margin:auto
+}
+.join-btn{
+  display: flex;
+  flex-direction: row-reverse;
+}
+small.errdisplay{
+color: red;
+margin-right:15px;
+display:none;
+}
+.chats div:nth-child(1) h2{
+  font-size:2em;
+  padding-left:10px;
+}
+.userChats{
+  min-height:30%;
+}
+.chat.list{
+  padding:10px;
+  border-bottom:thin solid #ccc;
+}
+.chat.list a{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color:black;
+  padding-right:20px;
+  padding-left:15px;
+  
+}
+.liststyle{
+  display:flex;
+  align-items: center;
+}
+.indicator{
+  width:10px;
+  height:10px;
+  border-radius:5px;
+  
+  margin-right:5px
+}
+.names p{font-size:1.3em}
+.message{
+  border-radius:14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color:#000;
+  height:100%;
+  padding:2px;
+}
+.brief{
+  margin:0;
+  padding:0;
+  margin-left:15px;
+  font-size:.76rem;
+  color:rosybrown;
+}
+.pages{
+  display: flex;
+  justify-content: center;
+}
+.pages li{
+  display: inline-block;
+  margin-left: 10px;
+}

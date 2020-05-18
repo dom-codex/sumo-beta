@@ -5,6 +5,10 @@ const express = require("express");
 const app = express();
 const server = http.createServer(app);
 
+//template engine configuration
+app.set("view engine", "ejs");
+app.set("views", "public/views");
+
 app.use((req,res,next)=>{
 //this will allow no caching of our rendered files
 res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.

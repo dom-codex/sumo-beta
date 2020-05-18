@@ -1,0 +1,63 @@
+<script>
+    const socket = io();
+         let timer;
+    socket.on('disconnect', (reason) => {
+      //refresh browser if server socket disconnects
+     if(reason === 'transport close'){
+      timer = setTimeout(()=>{
+      //  window.location.reload()
+      },1000)
+     } 
+    });
+socket.on('connect', (error) => {
+  clearTimeout(timer)
+});
+      socket.on('chatMsg',(data)=>{
+      
+        const msgWindow = $('.chats');
+        msgWindow.append( `
+        <span class="u1 chat">${data.message}
+          <div class="time">${data.time}</div>
+          </span>`)
+        socket.emit('received',null);
+      
+      })
+      socket.on('offline',(data)=>{
+      $('#status').text(data.status)
+      })
+      socket.on('active',(data)=>{
+      $('#status').text(data.status)
+      })
+      const btn = document.querySelector('button[type="submit"]');
+      btn.addEventListener('click',(e)=>{
+        console.log('here')
+        e.preventDefault();
+        const message = document.querySelector('#msg').value;
+        const cid = document.querySelector('#friendId').value;
+        const msgWindow = $('.chats');
+        msgWindow.scrollTop = msgWindow.scrollHeight
+        const input = document.querySelector('textarea')
+        if(!input.value || input.value == " ") {
+          return }
+        const time = moment().format('LT');
+        msgWindow.append(`
+        <span class="u2 chat">
+          ${message}
+          <div class="time">${time}</div>
+          </span>
+      `);
+      input.value =''
+        socket.emit('chat',{message:message,fid:cid,time:time},()=>{
+        // const  smalls = document.querySelectorAll('small');
+         //const lastSmall = smalls[smalls.length - 1];
+         //lastSmall.textContent  = Date.now() +' delivered'
+        });
+      })
+     const emojiBtn = $('.openEmoji');
+     emojiBtn.on('click',()=>{
+       $('.emoticons').css('display','block')
+     })
+     $('#msg').on('focus',()=>{
+       $('.emoticons').css('display','none')
+     })
+    </script>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.1">
+    <title>Document</title>
+<link 
+href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
+    <link href="css/materialize.min.css" rel="stylesheet"/>
+    <link href="./newhome.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<main>
+    <div class="background">
+      <header>
+        <nav>
+          <ul>
+            <li><a href="#">HOME</a></li>
+            <li><a href="#">ABOUT</a></li>
+            <li><a href="#">SEND COMPLIMENT</a></li>
+            <li><a href="#">JOIN NOW</a></li>
+          </ul>
+        </nav>
+      </header>
+      <section>
+        <div class="showcase">
+          <h2>SUMO MESSENGER!</h2>
+           <div class="container"> 
+  
+  <!-- Full-width images with caption text -->
+  <div class="image-sliderfade fade">  
+    <div class="text">
+      <p>Receive anonymous compliments </p>
+      <p>from friends and loved ones </p>
+    </div> 
+  </div> 
+             
+    <div class="image-sliderfade fade"> 
+    <div class="text">
+    <p>Real time messaging with users</p>
+    </div> 
+  </div>              
+    <div class="image-sliderfade fade"> 
+    <div class="text">
+    <p>Chat anonymously with users</p>
+    </div> 
+  </div>  
+  
+</div> 
+<br> 
+  
+<!-- The dots/circles -->
+<div style="text-align:center"> 
+  <span class="dot"></span>  
+  <span class="dot"></span>  
+  <span class="dot"></span>    
+ 
+</div>
+   </div>
+      </section>
+      <div class="join"><a>JOIN NOW</a></div>
+    </div>
+  </main> 
+  <script src="js/materialize.min.js"></script>
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.carousel');
+    var instances = M.Carousel.init(elems);
+  });
+    
+    
+var slideIndex = 0; 
+showSlides(); // call showslide method 
+   
+function showSlides() 
+{ 
+    var i; 
+  
+    // get the array of divs' with classname image-sliderfade 
+    var slides = document.getElementsByClassName("image-sliderfade");  
+      
+    // get the array of divs' with classname dot 
+    var dots = document.getElementsByClassName("dot");  
+  
+    for (i = 0; i < slides.length; i++) { 
+        // initially set the display to  
+        // none for every image. 
+        slides[i].style.display = "none";  
+    } 
+   
+     // increase by 1, Global variable 
+    slideIndex++;  
+   
+     // check for boundary 
+    if (slideIndex > slides.length)  
+    { 
+        slideIndex = 1; 
+    } 
+   
+    for (i = 0; i < dots.length; i++) { 
+        dots[i].className = dots[i].className. 
+                            replace(" active", ""); 
+    } 
+   
+    slides[slideIndex - 1].style.display = "flex"; 
+    dots[slideIndex - 1].className += " active"; 
+  
+    // Change image every 2 seconds 
+    setTimeout(showSlides, 3000);  
+} 
+  </script>
+</body>
+</html>

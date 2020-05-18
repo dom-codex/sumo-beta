@@ -1,0 +1,168 @@
+
+*{
+  margin:0;
+  padding:0;
+  
+}
+body{
+  height:100vh; 
+  width:100vw;
+  font-family:Rubik;
+  min-width:312px;
+  overflow-x: hidden;
+  overflow: hidden;
+}
+section{
+  height:100%;
+  margin:auto;
+}
+.window{
+  height:100%;
+}
+/* nav code */
+nav, header{
+  background-color:rebeccapurple;
+  widows: 100vw !important;
+}
+h2{
+  margin:0;
+  font-size:2.3rem;
+  padding-left: 15px; 
+}
+nav div{
+  display:flex;
+  justify-content: space-between;
+  align-items: center
+}
+.nav-options{
+  width:37%;
+  max-width:350px;
+}
+.nav-options i:hover, .nav-options i:focus{
+  color:orange;
+}
+nav i{
+  color:#fff;
+}
+section.desktop{
+  padding-top:10px;
+  
+}
+/* chat window css settings */
+.feeds{
+  height:calc(100vh - 100px);
+  overflow-y: scroll;
+}
+.mychats{
+  display:none;
+}
+.feeds h2{
+  margin-bottom: 5px;
+  text-align: center;
+}
+.feedcard{
+  width:95%;
+  margin: auto;
+  margin-bottom:10px;
+  margin-left:10px;
+  border:thin solid rgba(0,0,0,.1);
+  padding:5px 8px;
+  min-height:85px;
+  box-shadow:2px,2px,9px,black;
+}
+
+.feedcard div:nth-child(1) p{
+  font-size:1.5em;
+  color:rgba(0,0,0,.85)
+}
+.cardb{
+  margin-bottom:6px;
+}
+.cardb p {
+  word-wrap: break-word;
+  word-break: break-all;
+}
+.cardf{
+  display: flex;
+  justify-content: space-between
+}
+small{
+  font-size:.89rem
+}
+@media all and (min-width:781px){
+
+#largeNav{
+display: flex;
+justify-content: space-evenly;
+width:100%;
+}
+.mychats{
+  display:block;
+  width:30%;
+  height:calc(100vh - 100px);
+  background-color:rgba(0,0,0,.01);
+  overflow-y: scroll;
+}
+.feeds{
+  width:70%;
+  height:calc(100vh - 100px);
+  overflow-y: scroll;
+}
+.window{
+  display: flex;
+  height: 100%;
+}
+.feedcard{
+  width:85%;
+  margin: 10px auto;
+}
+}
+/* style for dropdown */
+#showdd{
+  display:none
+}
+@media all and (max-width: 780px){
+  #showdd{
+    display: block;
+  }
+  .nav-options{
+   display: flex;
+   justify-content: flex-end;
+   padding-right:26px;
+  }
+  #showdd{
+    display: flex;
+    align-items: center;
+    background-color:transparent;
+    box-shadow: none;
+    height:100%
+  }
+  #largeNav{
+    display:none
+  }
+  nav{
+    justify-content: flex-start;
+    padding-left:30px;
+  }
+  h2{
+    padding-left:2px;
+  }
+  .dropdown-content{
+    min-width: 200px;
+    overflow: hidden
+  }
+  ul li a{
+    color:rebeccapurple!important
+  }
+  ul li{
+    margin:0;
+  }
+  ul li i{
+    color:indigo!important
+  }
+  .sidenav-trigger{
+    width:100%;
+    margin:0!important;
+  }
+
+}

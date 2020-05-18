@@ -1,0 +1,42 @@
+  
+  <ul id="slide-out" class="sidenav">
+    <li>
+      <div class="user-view">
+      <div class="background">
+      </div>
+      <a href="#name"><span class="white-text name"><%=name%></span></a>
+      <a href="#email"><span class="white-text email"><%=phone%></span></a>
+    </div>
+  </li>
+  <div class="input-field join">
+  <input type="text" placeholder="enter chat string" id="chatString"/>
+  <div class="join-btn"><button id="startchat">start chat</button><small class="errdisplay"></small></div>
+</div>
+          <div class="chats">
+          <div><h2>Chats</h2></div>
+          <div class="userChats">
+            <!-- chat list code -->
+            <% if(onlineUsers.length>0) { %>
+                <% onlineUsers.forEach((user,i)=>{ %>
+                    <div class="chat list" id="<%=user._id%>" style="background-color:<%= user.isNew ? 'white' : '' %>">
+                        <a href="/chat/<%=user._id%>" >
+                            <input class="chatids" type="hidden" value="<%=user._id%>"/>
+                  <div class="segment">
+                  <div class="liststyle">
+                  <div class="indicator" style="background-color:<%= user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' %>; display:<%= user.status === 'online' || user.anStatus === 'online' ? 'block' : 'none' %>"></div>
+                  <div class="indicator" style="background-color:<%= user.anStatus === 'offline' || user.status === 'offline' ? 'grey' : 'rebeccapurple' %>; display:<%= user.anStatus === 'offline' || user.status === 'offline' ? 'block' : 'none' %>"></div>
+                  <div class="names"><p><%=user.name%></p></div></div>
+                  <small class="brief"><%=user.message%></small></div>
+                  <div class="message"><small><%=user.time%></small></div>
+                </a>
+                </div>
+                <% })%>
+                <% } %> </div>
+          <div class="pages"><ul>
+              <% if(hasPrev) {%>
+            <li><a href="/userchannel?page=<%=prev%>">Prev</a></li> <%}%>
+            <% if(hasNext) { %>
+            <li><a href="/userchannel?page=<%=next%>">Next</a></li> <%}%>
+            </ul></div>
+    </div>
+  </ul>

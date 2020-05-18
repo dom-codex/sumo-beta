@@ -1,0 +1,508 @@
+
+<div class="emoticons container">
+  <div class="tab-body">
+        <div class="tabs">
+      <a href="#face" class="link-active material-icons">tag_faces</a>
+      <a href="#food" class="material-icons">restaurant_menu</a>
+      <a href="#util" class="material-icons">timeline</a>
+      <a href="#express" class="material-icons">toys</a>
+  </div>
+  <div class="tab-content">
+  <div id="face"  class="emoji isActive"> </div>
+    <div id="food"  class="emoji"> </div>
+    <div id="util"  class="emoji"> </div>
+    <div id="express"  class="emoji"> </div>
+    <div id="search" class="emoji"> </div>
+    </div></div>
+  <div class="emoji-footer">
+    <button id="btn-search" type="button">search</button>
+    <input type="text" id="esearch"> <button class="cancel" type="button">X</button>
+  </div>
+</div>
+<script>
+  const emojis = [
+    {
+      name:'grinning face',
+      code:' &#x1f600 ',
+      category:'face'
+    },    
+    {
+      name:'grinning face with big eyes',
+      code:' &#x1f6003 ',
+      category:'face'
+    },  
+    {
+      name:'grinning face with smiling eyes',
+      code:' &#x1f604 ',
+      category:'face'
+    },   
+    {
+      name:'beaming face with smiling eyes',
+      code:' &#x1f601 ',
+      category:'face'
+    },    
+    {
+      name:'grinning squinting face',
+      code:' &#x1f606 ',
+      category:'face'
+    },     
+    {
+      name:'grinning face with sweat',
+      code:' &#x1f605 ',
+      category:'face'
+    },      {
+      name:'rolling on the floor laughing',
+      code:' &#x1f923 ',
+      category:'face'
+    },      
+    {
+      name:'face with tears of joy',
+      code:' &#x1f602 ',
+      category:'face'
+    },     
+    {
+      name:' slighty smilling face',
+      code:'&#x1f642 ',
+      category:'face'
+    },  
+    {
+      name:'upside down face',
+      code:' &#x1f643 ',
+      category:'face'
+    },      
+    {
+      name:'winking face',
+      code:' &#x1f609 ',
+      category:'face'
+    },     
+    {
+      name:'smiling face with smiling eyes',
+      code:' &#x1f60A ',
+      category:'face'
+    },    
+    {
+      name:'smiling face with halo',
+      code:' &#x1f970 ',
+      category:'face'
+    },      
+    {
+      name:'smiling face with hearts',
+      code:' &#x1f970 ',
+      category:'face'
+    },      {
+      name:' smiling face with heart eyes',
+      code:' &#x1f60D ',
+      category:'face'
+    },      
+    {
+      name:'star-struck',
+      code:' &#x1f605 ',
+      category:'face'
+    },      
+    {
+      name:'face blowing a kiss',
+      code:' &#x1f618 ',
+      category:'face'
+    },  
+    {
+      name:'kissing face',
+      code:' &#x1f617 ',
+      category:'face'
+      
+    },      
+    {
+      name:'smilling face',
+      code:' &#x263A ',
+      category:'face'
+    },      
+    {
+      name:'kissing face with closed eyes',
+      code:' &#x1f61A ',
+      category:'face'
+    },      
+    {
+      name:'smiling face with tear',
+      code:' &#x1f972 ',
+      category:'face'
+    },      
+    {
+      name:'face savoring food',
+      code:' &#x1f60B ',
+      category:'face'
+    },      
+    {
+      name:'face with tongue',
+      code:' &#x1f61B ',
+      category:'face'
+    },      
+    {
+      name:'squinting face with tongue',
+      code:' &#x1f61D ',
+      category:'face'
+    },      
+    {
+      name:'face with raised eyebrow',
+      code:' &#x1f928 ',
+      category:'face'
+    },      
+    {
+      name:'neutral face',
+      code:' &#x1f610 ',
+      category:'face'
+    },      
+    {
+      name:'expressionless face',
+      code:' &#x1f611 ',
+      category:'face'
+    },      
+    {
+      name:'unamused face',
+      code:' &#x1f644 ',
+      category:'face'
+    },      
+    {
+      name:'grimacing face',
+      code:' &#x1f62C ',
+      category:'face-smiling'
+    },      
+    {
+      name:'pensive face',
+      code:' &#x1f614 ',
+      category:'face'
+    },      
+    {
+      name:'drolling face',
+      code:' &#x1f924 ',
+      category:'face'
+    },      
+    {
+      name:'cool face',
+      code:' &#x1f60E ',
+      category:'face'
+    },      
+    {
+      name:'crying face',
+      code:' &#x1f62D ',
+      category:'face'
+    },      
+    {
+      name:'weary face',
+      code:' &#x1f629 ',
+      category:'face'
+    },
+    {    
+      name:'angry face',
+      code:' &#x1f621 ',
+      category:'face'
+    },      
+    {
+      name:'vexed',
+      code:'&#x1f620',
+      category:'face-smiling'
+    },      
+    {
+      name:'cat heart eyes',
+      code:'&#x1f63B',
+      category:'animal'
+    },      
+    {
+      name:'kissing cat',
+      code:'&#x1f61A',
+      category:'animal'
+    },      
+    {
+      name:'shy monkey',
+      code:'&#x1f648',
+      category:'animal'
+    },      
+    {
+      name:'love heart',
+      code:'&#x2764',
+      category:'expression'
+    },      
+    {
+      name:'broken heart',
+      code:'&#x1f494',
+      category:'expression'
+    },      
+    {
+      name:'kiss mark',
+      code:'&#x1f488',
+      category:'expression'
+    },      
+    {
+      name:'sparkling heart',
+      code:'&#x1f496',
+      category:'expression'
+    },      
+    {
+      name:'orange heart',
+      code:'&#x1f49B',
+      category:'expression'
+    },      
+    {
+      name:'rat',
+      code:'&#x1f42D',
+      category:'animal'
+    },      
+    {
+      name:'bear',
+      code:'&#x1f43B',
+      category:'animal'
+    },      
+    {
+      name:'chicken',
+      code:'&#x1f413',
+      category:'animal'
+    },      
+    {
+      name:'chick',
+      code:'&#x1f424',
+      category:'animal'
+    },      
+    {
+      name:'frog',
+      code:'&#x1f438',
+      category:'animal'
+    },      
+    {
+      name:'tortoise',
+      code:'&#x1f422',
+      category:'animal'
+    },      
+    {
+      name:'fish',
+      code:'&#x1f41F',
+      category:'animal'
+    },      
+    {
+      name:'butterfly',
+      code:'&#x1f49B',
+      category:'animal'
+    },      
+    {
+      name:'flower',
+      code:'&#x1f490',
+      category:'util'
+    },      
+    {
+      name:'rose',
+      code:'&#x1f339',
+      category:'util'
+    },      
+    {
+      name:'water melon',
+      code:'&#x1f349',
+      category:'food'
+    },    
+    {
+      name:'orange',
+      code:'&#x1f34A',
+      category:'food'
+    },      
+    {
+      name:'banana',
+      code:'&#x1f34C',
+      category:'food'
+    },      
+    {
+      name:'apple',
+      code:'&#x1f34E',
+      category:'food'
+    },      
+    {
+      name:'peach',
+      code:'&#x1f351',
+      category:'food'
+    },      
+    {
+      name:'curry rice',
+      code:'&#x1f35B',
+      category:'food'
+    },      
+    {
+      name:'spaghetti',
+      code:'&#x1f35D',
+      category:'food'
+    },      
+    {
+      name:'ice cream',
+      code:'&#x1f366',
+      category:'food'
+    },      
+    {
+      name:'doughnut',
+      code:' &#x1f369 ',
+      category:'food'
+    },      
+    {
+      name:'sweet',
+      code:'&#x1f36C',
+      category:'food'
+    },
+  ];
+const insertAtCaret = (text) =>{
+  var txtarea = document.getElementById('msg');
+		var scrollPos = txtarea.scrollTop;
+		var strPos = 0;
+		var br = ((txtarea.selectionStart || txtarea.selectionStart == '0') ? 
+			"ff" : (document.selection ? "ie" : false ) );
+		if (br == "ie") { 
+			txtarea.focus();
+			var range = document.selection.createRange();
+			range.moveStart ('character', -txtarea.value.length);
+			strPos = range.text.length;
+		}
+		else if (br == "ff") strPos = txtarea.selectionStart;
+	
+		var front = (txtarea.value).substring(0,strPos);  
+		var back = (txtarea.value).substring(strPos,txtarea.value.length); 
+		txtarea.value=front+text+back;
+		strPos = strPos + text.length;
+		if (br == "ie") { 
+			txtarea.focus();
+			var range = document.selection.createRange();
+			range.moveStart ('character', -txtarea.value.length);
+			range.moveStart ('character', strPos);
+			range.moveEnd ('character', 0);
+			range.select();
+		}
+		else if (br == "ff") {
+			txtarea.selectionStart = strPos;
+			txtarea.selectionEnd = strPos;
+		//	txtarea.focus();
+		}
+		txtarea.scrollTop = scrollPos;
+}
+  emojis.forEach(emoji=>{
+    document.querySelector('#food').style.display = 'none'
+    const p = document.createElement('p');
+    p.innerHTML = emoji.code
+    p.addEventListener('click',()=>{
+      insertAtCaret(p.innerHTML)
+     // document.querySelector('#msg').value += " "+ p.innerHTML;
+      M.textareaAutoResize(document.querySelector('#msg'));
+
+    })
+    if(emoji.category === 'face'){
+    document.querySelector('#face').append(p)
+    } 
+    else if(emoji.category === 'food'){
+    document.querySelector('#food').append(p)
+    } 
+    else if(emoji.category === 'util'){
+    document.querySelector('#util').append(p)
+    } 
+    else if(emoji.category === 'expression'){
+    document.querySelector('#express').append(p)
+    }
+  })
+  const anchors = document.querySelectorAll('.tabs a');
+  
+  const reRenderList = () =>{
+    emojis.forEach(emoji=>{
+    const p = document.createElement('p');
+    p.innerHTML = emoji.code
+    p.addEventListener('click',()=>{
+      insertAtCaret(p.innerHTML)
+
+    //  document.querySelector('#msg').value+= " " + p.innerrHTML;
+      M.textareaAutoResize(document.querySelector('#msg'));
+    })
+      if(emoji.category === 'face'){
+    document.querySelector('#face').append(p)
+    } 
+    else if(emoji.category === 'food'){
+    document.querySelector('#food').append(p)
+    } 
+    else if(emoji.category === 'util'){
+    document.querySelector('#util').append(p)
+    } 
+    else if(emoji.category === 'expression'){
+    document.querySelector('#express').append(p)
+    }
+  })
+  }
+      //tab indicator script
+  const updateIndicator = (e)=>{
+    const emojiss = document.querySelectorAll('.emoji');
+    for(let i = 0;i <emojiss.length; i++){
+      emojiss[i].innerHTML = ''
+      emojiss[i].style.display = 'none';
+    }
+  for(let i = 0; i < anchors.length; i++){
+    anchors[i].classList.remove('link-active');
+  }
+      e.target.style.display='flex';
+      e.target.classList.add('link-active');
+      const idname = e.target.href.split('#')[1];
+      console.log(idname)
+      document.querySelector(`#${idname}`).style.display = 'grid'
+      reRenderList()
+  }
+  
+  for(let i = 0; i < anchors.length; i++){
+    anchors[i].addEventListener('click',updateIndicator)
+  }
+ 
+  //script for emoji search
+  const searchBtn = document.querySelector('.emoji-footer button');
+  const input =   document.querySelector('.emoji-footer input')
+  const cancel = document.querySelector('.cancel');
+  //event for cancel button
+  cancel.addEventListener('click',()=>{
+    input.classList.remove('input_anime')
+    cancel.classList.remove('input_anime')
+    document.querySelector('.tabs').style.display = 'grid';
+    reRenderList();
+    document.querySelector('#search').style.display = 'none';
+    document.querySelector('#face').style.display = 'grid';
+    
+  })
+  searchBtn.addEventListener('click',()=>{
+    //hide tabs
+    document.querySelector('.tabs').style.display = 'none';
+    //add animation class to input and button
+    input.classList.add('input_anime')
+    cancel.classList.add('input_anime')
+    //add listener as user type
+    input.addEventListener('input',(e)=>{
+      //retrieve value
+      const val = e.target.value
+      const tabs = document.querySelectorAll('.emoji');
+      //get list of emojis
+      let list = [...emojis];
+      //initialize list with emojis whose names match
+      list = list.map(emo=>{
+        if(emo.name.search(val) !== -1){
+          return emo.code
+        }
+      })
+      //remove undefined items from list
+      list = list.filter(item=>item !=undefined)
+      //hide all tab window
+      tabs.forEach(tab=>{
+        tab.style.display = 'none';
+      })
+      //clear the search tab body
+      document.querySelector('#search.emoji').innerHTML = '';
+      //set its display to grid i.e make it visible
+      document.querySelector('#search.emoji').style.display = 'grid';
+      //add search result to search tab body
+      list.forEach(item=>{
+        const p = document.createElement('p');
+    p.innerHTML = item
+    p.addEventListener('click',()=>{
+      insertAtCaret(p.innerHTML)
+     // document.querySelector('#msg').value+= " " + p.innerHTML;
+      M.textareaAutoResize(document.querySelector('#msg'));
+
+    })
+    document.querySelector('#search').style.height = '120px';
+    document.querySelector('#search').append(p)
+      })
+    })
+    
+  })
+
+</script>

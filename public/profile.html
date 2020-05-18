@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>profile</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
+  <link href="css/materialize.min.css" rel="stylesheet"/>
+    <link href="sumoProfile.css" type="text/css" rel="stylesheet"/>
+  </head>
+  <body>
+  <!--modal with footer-->
+  <div id="modal2" class="modal modal-fixed-footer">
+    <div class="modal-content">
+      <h4>Modal Header</h4>
+      <p>A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-close waves-effect waves-green btn-flat" id="decline"> Decline</button>
+      <button class="modal-close waves-effect waves-green btn-flat" id="continue">Continue</button>
+    </div>
+  </div>
+  <!-- end of modal with footer-->
+  
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <h4>Confirmation!!!</h4>
+      <p>Are you sure you want to remove this chat?</p>
+    </div>
+    <div class="modal-footer">
+      <button  class="modal-close waves-effect waves-green btn-flat">No</button>
+      <button  class="modal-close waves-effect waves-green btn-flat">Yes</button>
+    </div>
+  </div>
+
+  <heading>
+          <nav>
+            <div>
+            <h2>NAME</h2>
+             <div class="nav-options">
+               <a href=""><i class="material-icons">home</i></a>
+               <a href=""><i class="material-icons">rss_feed</i></a>
+               <a href=""><i class="material-icons">keyboard_tabs</i></a>
+              </div>
+              </div>
+          </nav>
+  </heading>
+  <section>
+    <div class="window z-depth-0">
+      <div class="row">
+        <div class="col s12">
+          <ul class="tabs">
+            <li class="tab col s3"><a href="#test1">General info</a></li>
+            <li class="tab col s3"><a href="#test2" class="active">Chats</a></li>
+            <li class="tab col s3"><a href="#test4">Settings</a></li>
+          </ul>
+        </div>
+
+        <div id="test1" class="col s12">
+          <div class="info">
+
+            <div class="input-field">
+               <i class="material-icons prefix">account_circle</i>
+                  <label for="name" class="active">Name</label>
+              <input id="name" name="name" value="<%=user.name%>" class="validate" data-length="15" disabled>
+            </div>
+            <div class="ctrl"><button id="nameedit" onclick="Handler(this,'name')">edit</button>
+              <button class="temp" id="namecancel">cancel</button>
+              <button class="temp" id="namedone">save</button></div>
+
+            <div class="input-field">
+            <i class="material-icons prefix">account_circle</i>
+              <input id="phone" value="<%=user.phone%>" class="validate" disabled>
+              <label for="phone" class="active">phone</label>
+            </div>
+            <div class="ctrl"><button id="phoneedit" onclick="Handler(this,'phone')">edit</button><button class="temp"
+                id="phonecancel">cancel</button><button class="temp" id="phonedone">done</button></div>
+
+            <div class="input-field">
+              <i class="material-icons prefix">account_circle</i>
+              <input id="email" value="<%=user.email%>" disabled>
+              <label for="email" class="active">email</label>
+            </div>
+            <div class="ctrl"><button onclick="Handler(this,'email')" id="emailedit">edit</button><button class="temp"
+                id="emailcancel">cancel</button><button class="temp" id="emaildone">done</button></div>
+
+            <div class="input-field">
+               <i class="material-icons prefix">account_circle</i>
+              <textarea id="desc" disabled class="materialize-textarea"><%= user.desc%></textarea>
+              <label for="desc" class="active">About</label>
+            </div>
+            <div class="ctrl"><button onclick="Handler(this,'desc')" id="descedit">edit</button><button class="temp"
+                id="desccancel">cancel</button><button class="temp" id="descdone">done</button></div>
+          </div>
+        </div>
+
+
+        <div id="test2" class="col s12">
+          <% if(chats.length>0) { %>
+          <% chats.forEach((user,i)=>{ %>
+          <div class="chatCard">
+            <form method="POST" action="/removeachat">
+              <input type="hidden" value="<%=user._id%>" name="uid">
+            </form>
+            <div class="chat list">
+              <a href="#">
+                <div class="liststyle">
+                  <div class="indicators"></div>
+                  <div class="names">
+                    <p><%=user.name%></p>
+                  </div>
+                </div>
+                <div class="message"></div>
+              </a>
+              <small class="about"><%=user.desc%></small>
+
+            </div>
+          <div class="btncont"><button onclick="removeHandler(this,'dom')" data-target="modal1" class="btn modal-trigger">remove</button></div>
+          </div>
+          <% })%>
+          <% } %>
+          <!--pagination codes-->
+          <div class="pages">
+               <% if(hasPrev) { %> 
+                <a href="/profile?page=<%=prev%>">prev</a>
+                <% } %>
+                <% if(hasNext) { %> 
+                  <a href="/profile?page=<%=next%>">next</a>
+                  <% } %>
+          </div>
+        </div>
+
+        <div id="test4" class="col s12">
+          <div id="settingspage">
+
+            <div class="anonymous"><div ><p>Go anonymous</p></div><%-include('switch.ejs',{isAnonymous:user.isAnonymous})%></div>
+           <!-- <div class="anonymous"><button id="go">go anonymous</button></div> -->
+
+            <div class="password"><button>change password</button></div>
+            <div class="change password form" id="cpf">
+              <form method="POST" action="/changepassword">
+                <input name="uid" type="hidden" value="<%=user._id%>"/>
+              <label>old password</label>
+              <input name="old" type="text"> <br />
+              <label>new password</label>
+              <input name="new" type="text">
+              <div class="changepassbtn"><button>submit</button></div>
+            </div></form>
+
+            <div class="input-field">
+              <input id="chat" value="<%=user.chatShare
+              %>" disabled>
+              <label for="chat" class="active">chatID</label>
+            </div>
+            <div class="ctrl"><button onclick="Handler(this,'chat')" id="chatedit">edit</button><button class="temp"
+                id="chatcancel">cancel</button><button class="temp" id="chatdone">done</button></div>
+
+                <div class="input-field">
+                  <input id="anonymous" value="<%=user.anonymousName%>" disabled>
+                  <label for="anonymous" class="active">anonymousName</label>
+                </div>
+                <div class="ctrl"><button onclick="Handler(this,'anonymous')" id="anonymousedit">edit</button><button class="temp"
+                    id="anonymouscancel">cancel</button><button class="temp" id="anonymousdone">done</button></div>
+            <div class="logout"><a href="/logout">logout</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script src="../js/materialize.min.js"></script>
+  <script src="../js/jquery-3.4.1.min.js"></script>
+
+  <script>
+    var instance = M.Tabs.init(document.querySelector('.tabs'));
+    $(document).ready(function () {
+      M.updateTextFields();
+    });
+    $(document).ready(function () {
+      // $('input#name, textarea#desc').characterCounter();
+    });
+
+
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="profile.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems);
+  });
+
+    const Handler = (e, inputedit) => {
+      if (inputedit === "name") {
+        document.querySelector('#name').disabled = false;
+        nameCancel.style.display = "inline-block";
+        nameDone.style.display = "inline-block";
+        e.style.display = "none";
+      }
+      else if (inputedit === "phone") {
+        document.querySelector('#phone').disabled = false;
+        phoneCancel.style.display = "inline-block";
+        phoneDone.style.display = "inline-block";
+        e.style.display = "none";
+      }
+      else if (inputedit === "email") {
+        document.querySelector('#email').disabled = false;
+        emailCancel.style.display = "inline-block";
+        emailDone.style.display = "inline-block";
+        e.style.display = "none";
+      }
+      else if (inputedit === "desc") {
+        document.querySelector('#desc').disabled = false;
+        descCancel.style.display = "inline-block";
+        descDone.style.display = "inline-block";
+        e.style.display = "none";
+      }      
+      else if (inputedit === "chat") {
+        document.querySelector('#chat').disabled = false;
+        chatCancel.style.display = "inline-block";
+        chatDone.style.display = "inline-block";
+        e.style.display = "none";
+      }      
+      else if (inputedit === "anonymous") {
+        document.querySelector('#anonymous').disabled = false;
+        anonymousCancel.style.display = "inline-block";
+        anonymousDone.style.display = "inline-block";
+        e.style.display = "none";
+      }
+    }
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    nameDone.addEventListener('click', () => {
+      const newName = document.querySelector('#name').value;
+      socket.emit('newname', newName, () => {
+        document.querySelector('#name').disabled = true;
+        document.querySelector('#nameedit').style.display = 'inline-block'
+        nameCancel.style.display = "none";
+        nameDone.style.display = "none";
+        document.querySelector('h2').textContent = newName;
+      });
+    })
+
+    phoneDone.addEventListener('click', () => {
+      const newPhone = document.querySelector('#phone').value;
+      socket.emit('newPhone', newPhone, () => {
+        document.querySelector('#phone').disabled = true;
+        document.querySelector('#phoneedit').style.display = 'inline-block'
+        phoneCancel.style.display = "none";
+        phoneDone.style.display = "none";
+      });
+    })
+
+    descDone.addEventListener('click', () => {
+      const newdesc = document.querySelector('#desc').value;
+      socket.emit('newdesc', newdesc, () => {
+        document.querySelector('#desc').disabled = true;
+        document.querySelector('#descedit').style.display = 'inline-block'
+        descCancel.style.display = "none";
+        descDone.style.display = "none";
+      });
+    })
+
+    emailDone.addEventListener('click', () => {
+      const newEmail = document.querySelector('#email').value;
+      socket.emit('newemail', newEmail, () => {
+        document.querySelector('#email').disabled = true;
+        document.querySelector('#emailedit').style.display = 'inline-block'
+        emailCancel.style.display = "none";
+        emailDone.style.display = "none";
+      });
+    })    
+    chatDone.addEventListener('click', () => {
+      const newChat = document.querySelector('#chat').value;
+      socket.emit('newchat', newChat, () => {
+        document.querySelector('#chat').disabled = true;
+        document.querySelector('#chatedit').style.display = 'inline-block'
+        chatCancel.style.display = "none";
+        chatDone.style.display = "none";
+      });
+    })   
+     anonymousDone.addEventListener('click', () => {
+      const newAnonymous = document.querySelector('#anonymous').value;
+      socket.emit('newanonymous', newAnonymous, () => {
+        document.querySelector('#anonymous').disabled = true;
+        document.querySelector('#anonymousedit').style.display = 'inline-block'
+        anonymousCancel.style.display = "none";
+        anonymousDone.style.display = "none";
+      });
+    })
+
+//event listeners for the various modal buttons
+const removeHandler = (e,idToRemove)=>{
+  const yes = $('.modal-footer button:nth-child(2)');
+yes.on('click',()=>{
+  const form = e.parentNode.parentNode.childNodes[1];
+  form.submit()
+})
+}
+//script for toggle element
+const elems = document.querySelector('#modal2');
+const instances = M.Modal.init(elems);
+const switcher = $('#switch');
+const toggler = $('.toggle');
+const declineBtn = $('#decline')
+const continueBtn = $('#continue')
+//const modal2 = M.Modal.getInstance($('#modal2'));
+
+switcher.on('click',()=>{
+  if(!switcher.attr('checked')){
+    return instances.open()
+  }
+  socket.emit('goAnonymous', null, () => {
+        switcher.prop('checked',false)
+      })
+})
+declineBtn.on('click',()=>{
+  if(switcher.attr('checked')){
+    switcher.prop("checked", true);
+    instances.close();
+  }else{
+    switcher.prop("checked", false);
+   instances.close();
+  }
+
+})
+continueBtn.on('click',()=>{
+  continueBtn.text('switching...')
+  socket.emit('goAnonymous', null, () => {
+        window.location.reload()
+      })
+})
+//script for change password
+const changePasswordRevealer = $('.password button');
+changePasswordRevealer.on('click',()=>{
+  $('#cpf').toggleClass('change')
+})
+
+  </script>
+
+</body>
+  </html>

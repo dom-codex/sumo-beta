@@ -1,0 +1,87 @@
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%;/* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.5); /* Black w/ opacity */  
+  margin:0;  
+}
+#modal-wrap{
+    display:flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+/* Modal Content/Box */
+.modal-content {
+  opacity: 1;
+  background-color:rgba(255,255,255,.99);
+  margin: 0 auto; /* 15% from the top and centered */
+  padding: 10px;
+  border-radius:3px;
+  width: 85%; /* Could be more or less, depending on screen size */
+  min-width: 250px;
+  max-width:350px;
+  height:380px;
+  font-family:Rubik;
+}
+
+#type{
+  text-align: center;
+  font-size:1.6em;
+  color:black;
+  font-weight:bold;
+  padding-top:20px;
+  padding-left:10px;
+  margin-top: 20px;
+}
+#type div{
+    height:1px;
+    width:50%;
+    margin: auto;
+    background-color: #ccc;
+    margin-top: 5px;
+}
+
+.close {
+  color: black;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  padding-right: 5px;
+}
+
+.close:hover,
+.close:focus {
+  color: grey;
+  text-decoration: none;
+  cursor: pointer;
+}
+.contact,.contacts{
+    display: flex;
+    align-items: center;
+    margin:29px 0;
+    color:black;
+}
+.contacts{justify-content: center;}
+
+.contacts a{
+    text-decoration: none!important;
+    color:rgba(0,0,0,.9);
+}
+.contact span{
+    margin-left: 10px;
+}
+.contact-info{
+    color:rgba(0,0,0,.9);
+    font-size:.89em;
+    padding-left: 10px;
+    letter-spacing: 1px;
+}
+i{
+    color:green;
+}

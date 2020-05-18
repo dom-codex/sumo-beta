@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>admin panel</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
+  <link href="/css/materialize.min.css" rel="stylesheet"/>
+    <link href="/tabs.css" type="text/css" rel="stylesheet"/>
+    <link href="/inputs-color.css" type="text/css" rel="stylesheet"/>
+    <style type="text/css" rel="stylesheet">
+      .feedcard{
+  width:95%;
+  margin: auto;
+  margin-bottom:10px;
+  margin-left:10px;
+  border:thin solid rgba(0,0,0,.1);
+  padding:5px 8px;
+  min-height:85px;
+  box-shadow:2px,2px,9px,black;
+}
+
+.feedcard div:nth-child(1) p{
+  font-size:1.5em;
+  color:rgba(0,0,0,.85)
+}
+.cardb{
+  margin-bottom:6px;
+}
+.cardb p {
+  word-wrap: break-word;
+  word-break: break-all;
+}
+.cardf{
+  display: flex;
+  justify-content: space-between
+}
+small{
+  font-size:.89rem
+}
+.button{
+  display: flex;
+  justify-content: flex-end;
+  width:75%;
+  max-width:400px
+}
+
+.button button{
+  padding:10px;
+  background: none;
+  border-radius: 5px;
+  border:none;
+  background: indigo;
+  color:#fff;
+  font-weight: 600; 
+}
+    </style>
+    <link href="/sumoProfile.css" type="text/css" rel="stylesheet"/>
+  <style rel="stylesheet" type="text/css">
+    #test3{
+  padding-top:5px;
+  padding-left:20px;
+}
+  </style>
+  </head>
+  <body>
+  <heading>
+          <nav>
+            <div>
+            <h2>admin</h2>
+             <div class="nav-options">
+               <a href="/"><i class="material-icons">home</i></a>
+               <a href="/admin/logout"><i class="material-icons">keyboard_tabs</i></a>
+              </div>
+              </div>
+          </nav>
+  </heading>
+  <section>
+    <div class="window z-depth-0">
+      <div class="row">
+        <div class="col s12">
+          <ul class="tabs">
+            <li class="tab col s3"><a href="#test1">Suggestions<span id="badge"><%=sTotal%></span></a></li>
+            <li class="tab col s3"><a href="#test3">New admin</a></li>
+            <li class="tab col s3"><a href="#test2" class="active" >Users <span id="badge"><%=uTotal%></span></a></li>
+            <li class="tab col s3"><a href="#test4">Settings</a></li>
+          </ul>
+        </div>
+
+       <div id="test1" class="col s12">
+        <% if(suggestions.length > 0) { %>
+          <% suggestions.forEach((suggestion,i)=>{ %>
+            <% if(!suggestion) { %> <div></div> <%}else{ %>
+             <div class="feedcard">
+              <div><p>Message:</p></div>
+              <div class="cardb">
+                <p><%= suggestion.body %></p>
+              </div>
+              <div class="cardf"><small>#<%= i+1 %></small> <i>sent: <%=suggestion.time%></i></div>
+            </div> <%}%> 
+          <% })%>
+          <% } %>
+        <div class="pages">
+          <% if(sHasPrev) { %> 
+           <a href="/admin/me/dashboard/<%=id%>?sPage=<%=sPrev%>">prev</a>
+           <% } %>
+           <% if(sHasNext) { %> 
+             <a href="/admin/me/dashboard/<%=id%>?sPage=<%=sNext%>">next</a>
+             <% } %>
+     </div>
+       </div>
+        <div id="test2" class="col s12">
+          <% if(users.length>0) { %>
+          <% users.forEach((user,i)=>{ %>
+          <div class="chatCard">
+            <form method="POST" action="/removeachat">
+              <input type="hidden" value="<%=user._id%>" name="uid">
+            </form>
+            <div class="chat list">
+              <a href="#">
+                <div class="liststyle">
+                  <div class="indicators" style="background-color:<%= user.status === 'online'  ? 'rebeccapurple' : 'grey' %>"></div>
+                  <div class="names">
+                    <p><%=user.name%></p>
+                  </div>
+                </div>
+                <div class="message"></div>
+              </a>
+              <small class="about"><%=user.desc%></small>
+
+            </div>
+          <div class="btncont">
+            <button onclick="removeHandler(this,'dom')" data-target="modal1" class="btn modal-trigger">remove</button></div>
+          </div>
+          <% })%>
+          <% } %>
+          <!--pagination codes-->
+          <div class="pages">
+               <% if(uHasPrev) { %> 
+                <a href="/admin/me/dashboard/<%=id%>?uPage=<%=uPrev%>">prev</a>
+                <% } %>
+                <% if(uHasNext) { %> 
+                  <a href="/admin/me/dashboard/<%=id%>?uPage=<%=uNext%>">next</a>
+                  <% } %>
+          </div>
+        </div>
+        <div id="test3" class="col s12 m12 l12">
+          <form action='/admin/auth/create' method="post">
+                
+                <div class="input wrapper input-field">
+                <i class="material-icons prefix">account_circle</i>
+                  <label for="name">Name</label> 
+                  <input id="name" name="name" type="text" >
+                </div> 
+    
+                <div class="input wrapper input-field">
+                   <i class="material-icons prefix">email</i>
+                   <label for="email">Email</label>
+                  <input id="email" name="email" type="email"> 
+                </div>
+    
+                  
+                  <div class="input wrapper input-field">
+                   <i class="material-icons prefix">phone</i>
+                   <label for="phone">phone</label>
+                  <input id="phone" name="phone" type="number" required>
+                 </div>
+                 <div class="input wrapper input-field">
+                   <i class="material-icons prefix">lock</i>
+                  <label for="pwd">password</label> 
+                   <input id="pwd" name="pwd" type="password" required> 
+                  </div>
+    
+                  <div class="input wrapper input-field">
+                  <i class="material-icons prefix">enhanced_encryption</i>
+                   <label for="cpwd">comfirm password</label> 
+                    <input id="cpwd" name="cpwd" type="password" required>
+                  </div>
+                  <div class="button wrap"><button type="submit" class="z-depth-2">Submit</button></div>
+              </form>
+          </div>
+        
+        <div id="test4" class="col s12">
+          <div id="settingspage">
+
+            <div class="password open"><button>change password</button></div>
+            <div class="change password form" id="cpf">
+              <form method="POST" action="/admin/changepassword">
+              <label>old password</label>
+              <input name="old" type="text"> <br />
+              <label>new password</label>
+              <input name="new" type="text">
+              <div class="changepassbtn"><button>submit</button></div>
+            </form></div>
+          <div class="divider" style="margin-bottom: 40px"></div>
+            <div class="logout"><a href="/admin/logout">logout</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script src="/js/materialize.min.js"></script>
+  <script src="/js/jquery-3.4.1.min.js"></script>
+
+  <script>
+    var instance = M.Tabs.init(document.querySelector('.tabs'));
+    $(document).ready(function () {
+      M.updateTextFields();
+    });
+    $(document).ready(function () {
+      // $('input#name, textarea#desc').characterCounter();
+    });
+
+
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/profile.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems);
+  });
+  </script>
+  <script>
+
+    let timer;
+    const socket = io();
+
+
+//event listeners for the various modal buttons
+const removeHandler = (e,idToRemove)=>{
+  const yes = $('.modal-footer button:nth-child(2)');
+yes.on('click',()=>{
+  const form = e.parentNode.parentNode.childNodes[1];
+  form.submit()
+})
+}
+//script for change password
+const changePasswordRevealer = $('.password button');
+changePasswordRevealer.on('click',()=>{
+  $('#cpf').toggleClass('change')
+  const note = $('.open button').text();
+  if(note ==='change password'){
+    $('.open button').text('close')
+  }else{
+    $('.open button').text('change password')
+  }
+})  
+  </script>
+
+</body>
+  </html>

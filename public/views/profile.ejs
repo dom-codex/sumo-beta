@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>profile</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
+  <link href="/css/materialize.min.css" rel="stylesheet"/>
+    <link href="/tabs.css" type="text/css" rel="stylesheet"/>
+    <link href="/inputs-color.css" type="text/css" rel="stylesheet"/>
+    <link href="/sumoProfile.css" type="text/css" rel="stylesheet"/>
+  </head>
+  <body>
+    <input type="hidden" id="uid" value="<%=user._id%>">
+  <!--modal with footer-->
+  <div id="modal2" class="modal modal-fixed-footer">
+    <div class="modal-content">
+      <h4>Note</h4>
+      <p>you are about switching to anonymous mode as such the following changes will take effect:</p>
+      <ul>
+        <li> - Open chats won't be accessible</li>
+        <li> - you will apppear offline to your open chats</li>
+        <li> - you will have to re-add whoever you want to chat with</li>
+        <li> - As soon as you switch to normal mode you won't be able to access your chat history while in anonymous mode</li>
+      </ul>
+      <small>ensure you have your anonymous name set or the default will be used</small> <br/>
+      <small>chat responsibly and ensure you don't reveal your identity by accident</small>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-close waves-effect waves-green btn-flat" id="decline"> Decline</button>
+      <button class="modal-close waves-effect waves-green btn-flat" id="continue">Continue</button>
+    </div>
+  </div>
+  <!-- end of modal with footer-->
+  
+ <input type="hidden" id ="chatstring" value="<%=user.chatShare%>">
+ <input type="hidden" id ="feedstring" value="<%=user.share%>"> 
+
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <h4>Confirmation!!!</h4>
+      <p>Are you sure you want to remove this chat?</p>
+    </div>
+    <div class="modal-footer">
+      <button  class="modal-close waves-effect waves-green btn-flat">No</button>
+      <button  class="modal-close waves-effect waves-green btn-flat">Yes</button>
+    </div>
+  </div>
+
+  <heading>
+          <nav>
+            <div>
+            <h2><%=user.name%></h2>
+            <a id="showdd" class='dropdown-trigger btn' href='#' data-target='dropdown1'><i class="material-icons">dehaze</i></a>
+            <ul id='dropdown1' class='dropdown-content'>
+              <li><a href="/"><i class="material-icons">home</i>home</a></li>
+              <li class="divider" tabindex="-1"></li>
+              <li><a href="/userchannel/<%=user._id%>"><i class="material-icons">rss_feed</i>feeds</a></li>
+              <li class="divider" tabindex="-1"></li>
+              <li><a href=""><i class="material-icons">keyboard_tabs</i>logout</a></li>
+            </ul>
+             <div class="nav-options">
+               <a href="/"><i class="material-icons">home</i></a>
+               <a href="/userchannel/<%=user._id%>"><i class="material-icons">rss_feed</i></a>
+               <a href=""><i class="material-icons">keyboard_tabs</i></a>
+              </div>
+              </div>
+          </nav>
+  </heading>
+  <section>
+    <div class="window z-depth-0 col s12">
+      <div class="row">
+        <div class="col s12">
+          <ul class="tabs">
+            <li class="tab col s3"><a href="#test1">info</a></li>
+            <li class="tab col s3"><a href="#test2" class="active" >Chats <span id="badge"><%=total%></span></a></li>
+            <li class="tab col s3"><a href="#test3" >Links</a></li>
+            <li class="tab col s3"><a href="#test4">Settings</a></li>
+          </ul>
+        </div>
+
+        <div id="test1" class="col s12">
+          <div class="info">
+
+            <div class="input-field">
+               <i class="material-icons prefix">account_circle</i>
+                  <label for="name" class="active">Name</label>
+              <input id="name" type="text" name="name" value="<%=user.name%>" class="validate" data-length="15" disabled>
+            </div>
+            <div class="ctrl"><button id="nameedit" onclick="Handler(this,'name')">edit</button>
+              <button class="temp" id="namecancel">cancel</button>
+              <button class="temp" id="namedone">save</button></div>
+
+            <div class="input-field">
+            <i class="material-icons prefix">account_circle</i>
+              <input id="phone" value="<%=user.phone%>" type="tel" class="validate" disabled>
+              <label for="phone" class="active">phone</label>
+            </div>
+            <div class="ctrl"><button id="phoneedit" onclick="Handler(this,'phone')">edit</button><button class="temp"
+                id="phonecancel">cancel</button><button class="temp" id="phonedone">done</button></div>
+
+            <div class="input-field">
+              <i class="material-icons prefix">account_circle</i>
+              <input id="email" type="email" value="<%=user.email%>" disabled>
+              <small style="display:<%= user.email.length > 0? 'none': 'block' %>;margin-left:30px">add email for password recovery purpose</small>
+              <label for="email" class="active">email</label>
+            </div>
+            <div class="ctrl"><button onclick="Handler(this,'email')" id="emailedit">edit</button><button class="temp"
+                id="emailcancel">cancel</button><button class="temp" id="emaildone">done</button></div>
+
+            <div class="input-field">
+               <i class="material-icons prefix">account_circle</i>
+              <textarea id="desc" disabled class="materialize-textarea"><%= user.desc%></textarea>
+              <label for="desc" class="active">About</label>
+            </div>
+            <div class="ctrl"><button onclick="Handler(this,'desc')" id="descedit">edit</button><button class="temp"
+                id="desccancel">cancel</button><button class="temp" id="descdone">done</button></div>
+          </div>
+        </div>
+
+
+        <div id="test2" class="col s12">
+          <% if(chats.length>0) { %>
+          <% chats.forEach((user,i)=>{ %>
+          <div class="chatCard">
+            <form method="POST" action="/removeachat">
+              <input type="hidden" value="<%=user._id%>" name="uid">
+            </form>
+            <div class="chat list">
+              <a href="#">
+                <div class="liststyle">
+                  <div class="indicators" style="background-color:<%= user.status === 'online'  ? 'rebeccapurple' : 'grey' %>"></div>
+                  <div class="names">
+                    <p><%=user.name%></p>
+                  </div>
+                </div>
+                <div class="message"></div>
+              </a>
+              <small class="about"><%=user.desc%></small>
+
+            </div>
+          <div class="btncont">
+            <button onclick="removeHandler(this,'dom')" data-target="modal1" class="btn modal-trigger">remove</button></div>
+          </div>
+          <% })%>
+          <% } %>
+          <!--pagination codes-->
+          <div class="pages">
+               <% if(hasPrev) { %> 
+                <a href="/profile?page=<%=prev%>">prev</a>
+                <% } %>
+                <% if(hasNext) { %> 
+                  <a href="/profile?page=<%=next%>">next</a>
+                  <% } %>
+          </div>
+        </div>
+
+        <div id="test3" class="col s12">
+          <div class="info">
+            <div class="input-field copy">
+               <i class="material-icons prefix">rss_feed</i>
+                  <label for="name" class="active">Feeds Link</label>
+                  <input id="feeds" type="text">
+              <div class="copy-btn"><button id="copy1">Copy</button></div>
+            </div>
+
+            <div class="input-field">
+            <i class="material-icons prefix">chat_outlined</i>
+              <input value="<%=user.chatShare%>" id="chatlink">
+              <label for="phone" class="active">Chat Link</label>
+              <div class="copy-btn"><button id="copy2">Copy</button></div>
+            </div>
+            <div class="notifier"><p>copied!</p></div>
+        </div>
+      </div>
+
+        <div id="test4" class="col s12">
+          <div id="settingspage">
+
+            <div class="anonymous"><div >
+              <p>Go anonymous <i class="material-icons">airplanemode_inactive</i></p></div><%-include('switch.ejs',{isAnonymous:user.isAnonymous})%></div>
+           <!-- <div class="anonymous"><button id="go">go anonymous</button></div> -->
+
+            <div class="password open"><button>change password</button></div>
+            <div class="change password form" id="cpf">
+              <form method="POST" action="/changepassword">
+                <input type="hidden" value="<%=csrfToken%>" name="_csrf">   
+                <input name="uid" type="hidden" value="<%=user._id%>"/>
+              <label>old password</label>
+              <input name="old" type="text"> <br />
+              <label>new password</label>
+              <input name="new" type="text">
+              <div class="changepassbtn"><button>submit</button></div>
+            </form></div>
+          <div class="divider" style="margin-bottom: 40px"></div>
+            <div class="input-field">
+              <i class="material-icons prefix">chat</i>
+              <input id="chat" type="text" value="<%=user.chatShare
+              %>" disabled>
+              <small id="declined">chat id already taken try another</small>
+              <label for="chat" class="active">chatId</label>
+            </div>
+            <div class="ctrl"><button onclick="Handler(this,'chat')" id="chatedit">edit</button><button class="temp"
+                id="chatcancel">cancel</button><button class="temp" id="chatdone">done</button></div>
+
+                <div class="input-field">
+                  <i class="material-icons prefix">airplanemode_inactive</i>
+
+                  <input id="anonymous" value="<%=user.anonymousName%>" disabled>
+                  <label for="anonymous" class="active">anonymousName</label>
+                </div>
+                <div class="ctrl"><button onclick="Handler(this,'anonymous')" id="anonymousedit">edit</button><button class="temp"
+                    id="anonymouscancel">cancel</button><button class="temp" id="anonymousdone">done</button></div>
+            <div class="logout"><a href="/logout">logout</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script src="/js/materialize.min.js"></script>
+  <script src="/js/jquery-3.4.1.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/profile.js"></script>
+  <%-include('profileScript.ejs') %>
+  
+</body>
+  </html>
