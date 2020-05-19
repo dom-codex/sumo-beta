@@ -56,6 +56,7 @@ module.exports.createUserChannel = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.pwd;
   const phone = req.body.phone;
+  
   //generate chat hash
   crypto.randomBytes(10, (err, buffer) => {
     const chatString = buffer.toString("hex");

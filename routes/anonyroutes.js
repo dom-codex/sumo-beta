@@ -23,6 +23,15 @@ check('email').custom((val,{req})=>{
 }),
 check('phone').custom((val,{req})=>{
     return validators.comfirmNewUserPhone(val);
+}),    
+check('phone').custom((val,{req})=>{
+    return User.findOne({ phone: req.body.phone  })
+    .then((user) => {
+        if(user){
+           return Promise.reject('phone number already taken')
+        }
+        return true
+    })
 }),
 check('pwd').custom((val,{req})=>{
     return validators.comfirmNewUserPassword(val,req)
