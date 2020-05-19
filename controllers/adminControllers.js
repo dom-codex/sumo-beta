@@ -6,6 +6,7 @@ const moment = require("moment");
 module.exports.adminAuthPage = (req, res, next) => {
   res.render("adminAuth");
 };
+//controller for creating an admin
 module.exports.createAdmin = (req, res, next) => {
   const name = req.body.name;
   const password = req.body.pwd;
@@ -23,7 +24,7 @@ module.exports.createAdmin = (req, res, next) => {
       return admin.save();
     })
     .then((user) => {
-      return res.redirect("/getstarted");
+      return res.redirect(`/admin/me/dashboard/${admin._id}`);
     })
     .catch((err) => {
       next(err);
