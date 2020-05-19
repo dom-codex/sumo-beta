@@ -56,8 +56,8 @@
     //refresh browser if server socket disconnects
    if(reason === 'transport close'){
     timer = setTimeout(()=>{
-    alert(reason)
-    },2000)
+    alert('underlying connection lost please reload')
+    },3000)
    } 
   });
 socket.on('connect', () => {
@@ -151,6 +151,7 @@ if(!switcher.attr('checked')){
 }
 socket.emit('goAnonymous', null, () => {
       switcher.prop('checked',false)
+      window.location.reload()
     })
 })
 declineBtn.on('click',()=>{
