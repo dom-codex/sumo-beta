@@ -224,7 +224,6 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
                 }
             //set up socket connection listener
             io().once("connect", (socket) => {
-              //  socket.join(req.session.user.anonyString); //add anonychatstring
             //set up online trigger
               detectors.goOnline(req.session.user.anonyString,socket)
               socket.on('disconnect',()=>{
@@ -234,7 +233,8 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
               //join a room with the user token and the chat id  
               //this is meant to ensure uniqueness when broadcasting
               socket.join(`${req.session.user.anonyString}${id}`); //add anonychatstring
-                socket.on('receive', () => {
+              //listener for marking all new messages as old  
+              socket.on('receive', () => {
                     //set all isNew field in the mesage
                     //to false
                     User.findById(req.session.user._id)
@@ -245,24 +245,25 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
                                 if (msg.isNew === true) {
                                     msg.isNew = false
                                     return msg
-                                } else return msg
+                                } else return msg // retain old messages
                             })
                             user.save()
+                        }).catch(err=>{
+                            //do nothing
                         })
                 })
                 //chat listener
                 socket.on("chat", (data, fns) => {
-                    //save message to db
-
+                    //save message to sender doc
                     User.findById(req.session.user._id)
                         .then((user) => {
                             //retrive the chats array from senders details
                             let friends = user.anonyChats;
                             friends = friends.map((chats) => {
+                                //fid === friend id
                                 if (chats.chatId.toString() === data.fid.toString()) {
                                     //add message to messages array
-                                    console.log("saving messages1");
-                                    let msgs = chats.messages;
+                                    let msgs = chats.messages; //.messages is an array
                                     msgs.push({
                                         sender: req.session.user._id,
                                         receiver: id,
@@ -272,7 +273,7 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
                                     chats.messages = msgs;
                                     return chats;
                                 } else {
-                                    return chats; //to keep all other chats
+                                    return chats; //keep all other chats
                                 }
                             });
                             user.anonyChats = friends;
@@ -295,7 +296,6 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
                                     chats.chatId.toString() === req.session.user.anonyString.toString()
                                 ) {
                                     //add message to messages array
-                                    console.log("saving messages");
                                     let msgs = chats.messages;
                                     msgs.push({
                                         sender: req.session.user.anonyString,
@@ -316,12 +316,13 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
                             throw err;
                         })
                         .then((result) => {
+                            //listener to update the ui of receipient if in the userchannel window 
                             socket.broadcast
                                 .to(id)
                                 .emit("notify", { time: data.time, msg: data.message, id: req.session.user.anonyString });
                             //in the notify emitter return the friend id
 
-                            //update ui of receipient
+                            //update ui of receipient if in chat room
                             socket.broadcast.to(`${id}${req.session.user.anonyString}`).emit("chatMsg", {
                                 message: data.message,
                                 time: data.time
@@ -356,15 +357,18 @@ module.exports.normalUserMode = (req, res, next, io) => {
     User.findOne({ _id: req.session.user._id })
         .then((user) => {
             me = user
+            //extract all chat ids in user chats array
             const chatid = user.chats.map((id) => {
                 return id.chatId;
             });
             chatids = chatid;
+            //get a count of the total chats user has
             return User.find({ _id: { $in: chatids } }).countDocuments()
         })
         .then((nOpenChats) => {
             //online user will be docs of the with the specified ids
             nTotalOpenChats = nOpenChats;
+            //get a count of the total anonymous chats user has
             return User.find({ anonyString: { $in: chatids } }).countDocuments()
         })
         .then(nAnonyusers => {
@@ -372,21 +376,24 @@ module.exports.normalUserMode = (req, res, next, io) => {
             return
         })
         .then(_ => {
+            //query db for the chats but limiting the results based on the page user is in
             User.find({ _id: { $in: chatids } }).skip((page - 1) * 2)
                 .limit(2)
                 .then((onlineUser) => {
+                //query db for anonymous chat but limiting the result based on the page user is in
                     User.find({ anonyString: { $in: chatids } }).skip((page - 1) * 2).limit(2)
                         .then(anonyusers => {
+                            //reform the anonymous user docs
                             if (anonyusers.length > 0) {
                                 anonymous = anonyusers.map((a, i) => {
                                     const myChatsWithUser = me.chats.find(chat => chat.chatId.toString() === a.anonyString.toString())
                                     return {
-                                        name: 'anonymous' + i,
+                                        name: a.anonymousName,
                                         _id: a.anonyString,
                                         anStatus:a.anonymousStatus,
-                                        message: myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].body : 'hey',
-                                        isNew: myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].isMsgNew : false,
-                                        time: myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].time : ''
+                                        message:myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].body : 'anonymous chat',
+                                        isNew:myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].isMsgNew : false,
+                                        time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].time : ''
 
                                     }
                                 })
@@ -394,11 +401,12 @@ module.exports.normalUserMode = (req, res, next, io) => {
                             const feedRoom = io();
                             feedRoom.once("connect", (socket) => {
                                 detectors.goOnline(me._id, socket)
-                                 console.log('fedding')
+                                
                                 //once a socket is connected it joins a room
                                 //which is formed by thr user id
-                                socket.join("userChannels");
-                                socket.join(me._id);
+                            
+                                socket.join(me._id); //user joins a specific room via their id
+                                //listener to inform chats user is online
                                 socket.on("identify", (id) => {
                                     //query db for user returning only the chats field
                                     //we iterate through the ids and emit the online event
@@ -408,8 +416,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                             .to(element)
                                             .emit("online", { name: me.name, fid: id });
                                     });
-                                    // socket.broadcast.emit("online",{name:user.name,fid:id,})
-                                    //   socket.emit("activeUsers", onlineUser);
+
                                 });
                                 //join  chat listener
                                 socket.on("joinChat", (data, fn) => {
@@ -428,28 +435,29 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                                 newChat = user; //intialize variable with owner of chat string
                                                 const chats = user.chats; //initialize variable with the chats array of user
                                                 chats.push({
-                                                    chatId: req.session.user._id,
+                                                    chatId: req.session.user._id, //add the id of the user requesting to join a chat to the requested chat array
                                                     messages: [],
-                                                }); //add the id of the user requesting to join a chat to the chats array
-                                                uid = user._id;
-                                                user.chats = chats;
+                                                });
+                                                uid = user._id; //store a copy of the requested  chat id
+                                                user.chats = chats; //store updated version of the requested chat array
                                                 return user.save();
-                                            } //add else curly brace
+                                            }
                                         })
                                         .catch((err) => {
+                                            //emit a denied event this will be used to update the ui of user that they can't add their self
                                             socket.emit('denied', { message: err.message })
                                             throw new Error()
                                         })
                                         .then((_) => {
-                                            //retrieve our own details on the db
+                                            //retrieve requesting user details on the db
                                             return User.findById(req.session.user._id);
                                         })
                                         .catch((err) => {
                                             throw err;
                                         })
                                         .then((user) => {
-                                            //update chat requestees chats field with the id of
-                                            //the user we want to chat with
+                                            //update chat array of requesting user field with the id of
+                                            // chat 
                                             me = user;
                                             const chats = user.chats;
                                             chats.push({
@@ -462,12 +470,11 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                             throw err;
                                         })
                                         .then((_) => {
-                                            //call the callback function passed when requestee
-                                            //trys to join a chat with the details of the
-                                            //requested chat
-                                            //fn(newChat);
-                                            //inform the user who we want to chat with
-                                            //that we have joined their chat thus
+                                            //call the callback function passed when requesting user
+                                            //trys to add a chat with the details of the
+                                            //chat
+                                            //inform the chat
+                                            //that user have joined their chat thus
                                             //their ui can be updated accordingly
                                             socket.broadcast.to(newChat._id).emit("online", {
                                                 name: req.session.user.name,
@@ -475,23 +482,22 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                                 status: 'online'
                                             
                                             });
-                                            fn(newChat);
+                                            fn(newChat); //this is the callback and will update the ui of requesting user
                                         })
                                         .catch((err) => {
-                                            console.log('this is the')
+                                        //do nothing for now
                                         });
                                 });
                                 //end of join chat
                                 socket.on("disconnect", () => {
-                                    socket.broadcast.emit("left", me._id);
+                                  //  socket.broadcast.emit("left", me._id);
                                     detectors.goOffline(me._id, socket)
                                     socket.disconnect(true);
                                 });
                             });
+                            //reformat the user list adding the last message recieved or sent ,the time and state
                             const reformedChatList = onlineUser.map(aUser => {
-                                //const myChatsWithUser = aUser.chats.find(chat=>chat.chatId.toString() === req.session.user._id.toString())
                                 const myChatsWithUser = me.chats.find(chat => chat.chatId.toString() === aUser._id.toString())
-                                //console.log(myChatsWithUser.messages[myChatsWithUser.messages.length - 1].isMsgNew)
                                 return {
                                     name: aUser.name,
                                     _id: aUser._id,
@@ -535,35 +541,33 @@ module.exports.normalUserMode = (req, res, next, io) => {
 
 //normal chat mode
 module.exports.normalChatMode = (req, res, next, io) => {
-    //load messages from db for the given user
     const id = req.params.chatId;
     let friend;
     let status;
     let anStatus;
-    //fetch chats on loading
-
     User.findById(req.session.user._id)
         .then((me) => {
+            //retrieve the location of chat in our chats array
             const index = me.chats.findIndex(member => member.chatId.toString() === id.toString())
+            //retrieve actual docs of chat and current user
             let chatUser = me.chats.find(chat => chat.chatId.toString() == id.toString())
-            console.log('this is user', chatUser)
+            //get user messages with chat
             let messagesWithUser = chatUser.messages;
-            // let messagesWithUser = me.chats.find(chat => chat.chatId.toString() === id.toString())?me.chats.find(chat => chat.chatId.toString() === id.toString()).messages : [];
+            //set all new message to false
             messagesWithUser = messagesWithUser.map(msg => {
                 if (msg.isMsgNew === true) {
                     msg.isMsgNew = false
                     return msg
                 } else return msg
             })
-            chatUser.messages = messagesWithUser;
-            me.chats[index] = chatUser;
-            me.save()
-
-
+            chatUser.messages = messagesWithUser; //initialize with updated message array
+            me.chats[index] = chatUser; //add the updated docs back to its location
+            me.save(); //dont wait for promise
             const mychats = me.chats;
-            const pal = mychats.find(
+            const pal = chatUser
+            /*mychats.find(
                 (chats) => chats.chatId.toString() === id.toString()
-            );
+            );*/
 
             const palmsgs = pal ? pal.messages : [];
             return palmsgs
@@ -572,11 +576,11 @@ module.exports.normalChatMode = (req, res, next, io) => {
             throw err;
         })
         .then((msgs) => {
-
-
             User.findById(id).
             then(myf => {
+                //myf === myfriend
                 if (myf) {
+                    //get friend name and online status if in normal mode
                     friend = myf.name;
                     status = myf.status;
 
@@ -586,23 +590,24 @@ module.exports.normalChatMode = (req, res, next, io) => {
                 }
             }).then(myf => {
                 if (myf) {
-                    friend = 'anonymous';
+                    //get anonymous name and online status 
+                    friend = myf.anonymousName;
                     status = myf.anonymousStatus;
                     
                 }
-
-
                 io().once("connect", (socket) => {
-                    console.log("chat connect");
-                  //  socket.join(req.session.user._id);
+                    //online trigger
                   detectors.goOnline(req.session.user._id,socket)
                   socket.on('disconnect',()=>{
+                      //offline trigger
                       detectors.goOffline(req.session.user._id,socket)
                   })  
+                  //user joins room corresponding to their id and that of the chats
+                  //this to maintain uniqueness
                   socket.join(`${req.session.user._id}${id}`);
                     socket.on('receive', () => {
                         //set all isNew field in the mesage
-                        //to false
+                        //to false if user reads message immediately
                         User.findById(req.session.user._id)
                             .then(user => {
                                 let messagesWithUser = user.chats.find(chat => chat.chatId.toString() === id.toString()).messages
@@ -616,8 +621,8 @@ module.exports.normalChatMode = (req, res, next, io) => {
                                 user.save();
                             })
                     })
+                    //listener when user sends a message
                     socket.on("chat", (data, fns) => {
-                        //save message to db
                         User.findById(req.session.user._id)
                             .then((user) => {
                                 //retrive the chats array from senders details
@@ -625,7 +630,6 @@ module.exports.normalChatMode = (req, res, next, io) => {
                                 friends = friends.map((chats) => {
                                     if (chats.chatId.toString() === data.fid.toString()) {
                                         //add message to messages array
-                                        console.log("saving messages1");
                                         let msgs = chats.messages;
                                         msgs.push({
                                             sender: req.session.user._id,
@@ -647,23 +651,21 @@ module.exports.normalChatMode = (req, res, next, io) => {
                                 throw err;
                             })
                             .then((_) => {
-                                // return User.findById(data.fid.toString());
+                                //get chat depending if they are in normal mode or anonymous mode
                                 return User.findOne({ $or: [{ _id: data.fid }, { anonyString: data.fid }] });
                             })
                             .catch((err) => {
                                 throw err;
                             })
                             .then((sendee) => {
-                                //find a way to refactor log
+                            //check if user is anonymous and execute appropriate code
                                 if (sendee.anonyString.toString() == data.fid.toString()) {
-                                    console.log('im here')
                                     let friends = sendee.anonyChats;
                                     friends = friends.map((chats) => {
                                         if (
                                             chats.chatId.toString() === req.session.user._id.toString()
                                         ) {
-                                            //add message to messages array
-                                            console.log("saving messages");
+                                            
                                             let msgs = chats.messages;
                                             msgs.push({
                                                 sender: req.session.user_id,
@@ -682,14 +684,14 @@ module.exports.normalChatMode = (req, res, next, io) => {
                                     return sendee.save();
 
                                 } else {
-
+                                    //to be execute if user in normal mode
                                     let friends = sendee.chats;
                                     friends = friends.map((chats) => {
                                         if (
                                             chats.chatId.toString() === req.session.user._id.toString()
                                         ) {
                                             //add message to messages array
-                                            console.log("saving messages");
+                                            
                                             let msgs = chats.messages;
                                             msgs.push({
                                                 sender: req.session.user_id,
@@ -713,15 +715,14 @@ module.exports.normalChatMode = (req, res, next, io) => {
                                 throw err;
                             })
                             .then((result) => {
+                                //inform user of new message if not in chat window
                                 socket.broadcast
                                     .to(id)
-                                    .emit("notify", { id: req.session.user._id, len: 20, msg: data.message, time: data.time });
+                                    .emit("notify", { id: req.session.user._id, msg: data.message, time: data.time });
                                 //in the notify emitter return the friend id
 
-                                //update ui of receipient
-                                //socket.broadcast.to(`${req.session.user._id}${id}`).emit("chatMsg", {
-                                //  message: data.message,
-                                //});
+                                //update ui of receipient if in chat room
+                            
                                 socket.to(`${id}${req.session.user._id}`).emit("chatMsg", {
                                     message: data.message,
                                     time: data.time
@@ -731,7 +732,8 @@ module.exports.normalChatMode = (req, res, next, io) => {
                             .catch((err) => { });
                         //chat event end
                         socket.on("disconnect", () => {
-                            socket.emit("reload", null);
+                            detectors.goOffline(me._id, socket)
+                            socket.disconnect(true);
                         });
                     });
                 });
