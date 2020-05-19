@@ -467,24 +467,6 @@ module.exports.getProfilePage = (req, res, next) => {
             });
         });
       });
-      /*User.findById(req.session.user._id)
-        .then((user) => {
-          const chatids = user.chats.map((id) => {
-            return id.chatId;
-        });
-        //get the users which we  openly chat with
-        User.find({ _id: { $in: chatids } })
-        .then(myChats=>{
-          //get users that chatted with us anonymously
-          User.find({ anonyString: { $in: chatids } })
-          .then(anonymousChats=>{
-    
-    
-          res.render("profile", { user: user, chats:[...myChats,...anonymousChats] });
-          })
-        })
-        }) *///end of user then block
-
       //pagination implementation
       User.findById(req.session.user._id)
         .then((user) => {

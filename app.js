@@ -47,7 +47,7 @@ app.use(
 );
 
 app.use(flash());
-app.use(csrfProtection)
+app.use(csrfProtection) 
 
 //middleare for serving static files
 app.use(express.static(path.join(__dirname, "/", "public")));

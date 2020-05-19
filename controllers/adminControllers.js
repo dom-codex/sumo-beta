@@ -32,23 +32,7 @@ module.exports.createAdmin = (req, res, next) => {
 module.exports.logAdmin = (req, res, next) => {
   const phone = req.body.phone;
   const password = req.body.pwd;
-  // const errors = validationResult(req)
-  /*  if (errors.array().length > 0) {
-      console.log(errors)
-      //reformat the errors if any
-      const error = errors.errors.map(err => {
-        return {
-          param: err.param,
-          message: err.msg,
-        }
-      })
-      const err = {
-        errors:error,
-        mode:'login'
-      }
-      req.flash('erros',err);
-      return res.redirect('/admin/me')
-    } */
+
   Admin.findOne({ phone: phone })
     .then((admin) => {
       bcrypt.compare(password, admin.password).then((result) => {
