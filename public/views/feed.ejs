@@ -62,26 +62,6 @@
       </div></div>
   </nav>
 </header>
-
-<!--
-    <heading>
-      <div class="hbw">
-        <div><p>AnonyMessenger</p></div>
-        <div class="hnav">
-          <div><a href="#">Checkout</a></div>
-         nav section use vector icons later to rep the variouslinks
-          <div><nav>
-            <ul>
-              <li><a href="#">Home</a></li>
-              <li><a href="#" class="active">Feed</a></li>
-              <li><a href="#">Wall</a></li>
-              <li><button id="link">Share</button></li>
-            </ul>
-            </nav></div>
-        </div>
-      </div>
-    </heading> -->
-
     <section class="desktop">
 
       <div class="window">
@@ -110,7 +90,9 @@
                 </a>
                 </div>
                 <% })%>
-                <% } %> </div>
+                <% } else { %>
+                  <div class="new"><h3>No chats!!!</h3></div>
+                  <% } %> </div>
           <div class="pages"><ul>
               <% if(hasPrev) {%>
             <li><a href="/userchannel?page=<%=prev%>">Prev</a></li> <%}%>
@@ -120,48 +102,6 @@
     </div>
   </ul>
 </div>
-       <!-- <div class="chats">
-          <div><h2>Chats</h2></div>
-          <div class="chatlists">
-            <% if(onlineUsers.length>0) { %>
-              <% onlineUsers.forEach((user,i)=>{ %>
-                
-                <div class="chat list" id="<%=user._id%>" style="background-color:<%= user.isNew ? 'white' : '' %>">
-                  <input class="chatids" type="hidden" value="<%=user._id%>"/>
-                <a href="/chat/<%=user._id%>" >
-                <div class="liststyle">
-                <div class="indicator"></div>
-                  <div class="names"><p><%=user.name%></p></div></div>
-                  <div class="message"><small><%=user.time%></small></div></a>
-                  <small class="brief"><%=user.message%></small>
-                </div>
-              <% })%>
-              <% } %> -->
-            <!-- chat list code -->
-           <!-- <div class="chat list">
-              <a href="#">
-              <div class="liststyle">
-              <div class="indicator"></div>
-                <div class="names"><p>dominic</p></div></div>
-                <div class="message"><small>11</small></div></a>
-            </div>            
-            <div class="chat list">
-              <a href="#">
-              <div class="liststyle">
-              <div class="indicator"></div>
-                <div class="names"><p>okoro</p></div></div>
-                <div class="message"><small>2</small></div></a>
-            </div>       
-            <div class="chat list">
-              <a href="#">
-              <div class="liststyle">
-              <div class="indicator"></div>
-                <div class="names"><p>glory</p></div></div>
-                <div class="message"><small>5</small></div></a>
-            </div>
-          </div>
-        </div> -->
-
         <div class="feeds">
          <h2>Feeds</h2>
 
@@ -176,7 +116,11 @@
                 <div class="cardf"><small>#<%= i+1 %></small> <i>sent: <%=p.time%></i></div>
               </div> <%}%> 
             <% })%>
-            <% } %>
+            <% }else{ %>
+              <div class="new"><h3>No feeds yet, New headover to your
+                profile grab your link and start sharing
+              </h3></div>
+               <% } %>
         </div>
       </div>
     </section>

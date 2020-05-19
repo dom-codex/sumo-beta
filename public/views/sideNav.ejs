@@ -31,7 +31,11 @@
                 </a>
                 </div>
                 <% })%>
-                <% } %> </div>
+                <% } else {%> 
+                  <div class="new">
+                    <h3>No chats yet !!!</h3>
+                  </div>
+                  <%}%></div>
           <div class="pages"><ul>
               <% if(hasPrev) {%>
             <li><a href="/userchannel?page=<%=prev%>">Prev</a></li> <%}%>
