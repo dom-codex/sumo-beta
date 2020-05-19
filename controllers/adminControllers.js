@@ -3,11 +3,13 @@ const User = require("../models/user");
 const Suggestion = require("../models/suggestion");
 const bcrypt = require("bcryptjs");
 const moment = require("moment");
+
 module.exports.adminAuthPage = (req, res, next) => {
   res.render("adminAuth");
 };
 //controller for creating an admin
 module.exports.createAdmin = (req, res, next) => {
+  //extract details from body
   const name = req.body.name;
   const password = req.body.pwd;
   const phone = req.body.phone;
@@ -62,6 +64,7 @@ module.exports.suggestion = (req, res, next) => {
   if (!suggestion) {
     return res.redirect("/");
   }
+  //create new suggestion docs
   const newSuggestion = Suggestion({
     body: suggestion,
     time: moment().format("LT"),
@@ -73,6 +76,7 @@ module.exports.suggestion = (req, res, next) => {
 };
 module.exports.dashboard = (req, res, next) => {
   const id = req.params.id;
+  //validate admin id
   Admin.findById(id)
     .then((admin) => {
       if (!admin) {
@@ -84,11 +88,13 @@ module.exports.dashboard = (req, res, next) => {
       throw err;
     })
     .then((_) => {
+      //variables to carry out pagination
       let nUsers;
       let nSuggestions;
       let suggestions;
       const uPage = +req.query.uPage || 1;
       const sPage = +req.query.sPage || 1;
+      //get a count of total users
       User.find()
         .countDocuments()
         .then((number) => {
@@ -96,21 +102,25 @@ module.exports.dashboard = (req, res, next) => {
           return;
         })
         .then((_) => {
+          //get a count of suggestion
           return Suggestion.find().countDocuments();
         })
         .then((num) => {
           nSuggestions = num;
+          //extra validation
           return Admin.findOne({ phone:req.session.admin.phone })
           .then(
             (admin) => {
               if (!admin) {
                 return res.redirect("/admin/me");
               }
+              //retrieve suggestion based on some a chosen pagination rule
               return Suggestion.find()
                 .skip((sPage - 1) * 2)
                 .limit(2)
                 .then((mysuggestions) => {
                   suggestions = mysuggestions;
+                  //retrieve suggestion based on some a chosen pagination rule
                   return User.find()
                     .skip((uPage - 1) * 2)
                     .limit(2);
