@@ -8,6 +8,7 @@
 body{
   height:100vh;
   font-family: Rubik;
+  overflow:hidden
 }
 nav{
   background-color:rebeccapurple;
@@ -51,7 +52,22 @@ nav div{
   display: flex;
 }
 .window{
-  margin-top: 20px;}
+  margin-top: 20px;
+    width:85%;
+    min-height:72vh;
+    margin:auto;
+    border-radius: 5px;
+    border:thin solid rgba(0,0,0,.015);
+    margin-top:20px;
+    max-width:680px;
+    min-width:320px;
+}.row{
+  height:72vh;
+}
+#test1, #test2, #test3, #test4{
+  overflow-y: scroll;
+  height:100%;
+}
 .info{
   margin-top: 30px;
   margin-left:20px;
@@ -198,22 +214,9 @@ label{
   color:#fff;
   background-color: rebeccapurple;
 }
-
-/*new configs */
-.window{
-  width:85%;
-  min-height:72vh;
-  margin:auto;
-  border-radius: 5px;
-  border:thin solid rgba(0,0,0,.015);
-  margin-top:20px;
-  max-width:680px;
-  min-width:320px;
-}
 .tabs{
   display: flex;
 }
-
 .chat.list a{
   display:flex;
 }

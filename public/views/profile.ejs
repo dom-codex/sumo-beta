@@ -142,6 +142,7 @@
           <% chats.forEach((user,i)=>{ %>
           <div class="chatCard">
             <form method="POST" action="/removeachat">
+              <input type="hidden" value="<%=csrfToken%>" name="_csrf">   
               <input type="hidden" value="<%=user._id%>" name="uid">
             </form>
             <div class="chat list">

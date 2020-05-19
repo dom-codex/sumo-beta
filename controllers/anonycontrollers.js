@@ -593,6 +593,17 @@ module.exports.removeAChat = (req, res, next) => {
       next(err)
     })
 };
+module.exports.removeAChat = (req, res, next) => {
+  User.findById(req.session.user._id)
+    .then(user => {
+      const filteredList = user.chats.filter(chat => chat.chatId.toString() !== req.body.uid.toString())
+      user.chats = filteredList
+      return user.save()
+    })
+    .then(user => {
+      res.redirect(`profile/${req.session.user._id}`)
+    })
+};
 module.exports.changePassword = (req, res, next) => {
   //retrieve user inputs
   const oldPassword = req.body.old;

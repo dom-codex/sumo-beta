@@ -91,6 +91,7 @@ indicator2.style.backgroundColor = 'rebeccapurple'
         <div class="cardf"><small>#${data.length}</small> <i>sent: ${data.time}</i></div>
       </div> `);
       feedWindow.scrollTop = feedWindow.scrollHeight
+      $('.newfeedwindow').css('display','none')
 });
 // tell others you are online
 //const id = document.querySelector('#uid').value;
@@ -127,6 +128,7 @@ $('.userChats').append( `
   <small class="brief"></small>
 
   </div> `);
+  $('.newchatwindow').css('display','none')
 }
 });
 
@@ -149,6 +151,7 @@ data.forEach(user => {
   <small class="brief"></small>
 
   </div> `);
+  $('.newchatwindow').css('display','none')
 });
 })
 //gets start chat button
@@ -172,6 +175,7 @@ socket.emit('joinChat',{chatString:chatString},(chatuser)=>{
   <small class="brief"></small>
 </div> `)
 $(fieldtoselect).val(' ')
+$('.new').css('display','none')
 })
 }
 const chatBtn = $('#startchat');
@@ -199,7 +203,7 @@ socket.on('disconnect',()=>{
    messageIdicator.textContent = ''
    messageIdicator.textContent = data.msg
    small.textContent = ' '
-   small.textContent = data.time ;
+   small.textContent = data.time;
 //move the notification to the top
 const notificationTile = cid.parentNode;
 const parent = document.querySelector('.userChats');
