@@ -86,6 +86,9 @@ section.desktop{
   display: flex;
   justify-content: space-between
 }
+.cardf i, .cardf small{
+  color:royalblue
+}
 small{
   font-size:.89rem
 }

@@ -1,6 +1,4 @@
 <script>
-  const feedWindow = document.querySelector('.feeds')
-  feedWindow.scrollTop = feedWindow.scrollHeight
     //script for side nav
    document.addEventListener('DOMContentLoaded', function() {
  const ele = document.querySelectorAll('.sidenav');
@@ -92,6 +90,7 @@ indicator2.style.backgroundColor = 'rebeccapurple'
         </div>
         <div class="cardf"><small>#${data.length}</small> <i>sent: ${data.time}</i></div>
       </div> `);
+      feedWindow.scrollTop = feedWindow.scrollHeight
 });
 // tell others you are online
 //const id = document.querySelector('#uid').value;
