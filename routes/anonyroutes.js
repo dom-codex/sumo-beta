@@ -17,13 +17,13 @@ router.post('/createUserChannel', [
 //input validators for the various input fields
 check('name').custom((value,{req})=>{
     return validators.comfirmNewUserName(value)
-}),
+}).trim(),
 check('email').custom((val,{req})=>{
     return validators.comfirmNewUserEmail(val);
-}),
+}).normalizeEmail(),
 check('phone').custom((val,{req})=>{
     return validators.comfirmNewUserPhone(val);
-}),    
+}).trim(),    
 check('phone').custom((val,{req})=>{
     return User.findOne({ phone: req.body.phone  })
     .then((user) => {
@@ -32,10 +32,10 @@ check('phone').custom((val,{req})=>{
         }
         return true
     })
-}),
+}).trim(),
 check('pwd').custom((val,{req})=>{
     return validators.comfirmNewUserPassword(val,req)
-})
+}).trim()
 ]
 ,
 controller.createUserChannel);
@@ -43,11 +43,11 @@ controller.createUserChannel);
 router.post('/loginuser',[
     check('phone').custom((val,{req})=>{
         return validators.comfirmNewUserPhone(val);
-    }),
+    }).trim(),
     check('pwd').custom((val,{req})=>{
         return validators.assertLoginCredentials(val,req)
     }),
-    //stopped at login validation
+    //validate phone number
     check('phone').custom((val,{req})=>{
         return User.findOne({ phone: req.body.phone  })
         .then((user) => {
@@ -64,7 +64,7 @@ router.post('/loginuser',[
             }).catch(err=>{
                 
             })
-    })
+    }).trim()
 ] ,controller.loginUser);
 router.get('/channel',channelRedirect)
 router.get('/userchannel/:id', 
