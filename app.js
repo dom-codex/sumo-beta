@@ -17,7 +17,7 @@ const adminrouter = require("./routes/adminRoutes");
 const errorController = require('./controllers/erros')
 //models
 const User = require("./models/user");
-const uri = `mongodb+srv://dominic:1234567890@sumo-nd9pi.gcp.mongodb.net/test?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://dominic:compressor@sumo-nd9pi.gcp.mongodb.net/test?retryWrites=true&w=majority`;
 
 //template engine configuration
 app.set("view engine", "ejs");
@@ -39,7 +39,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store:new MongoStore({ 
-      url: 'mongodb+srv://dominic:1234567890@sumo-nd9pi.gcp.mongodb.net/test?retryWrites=true&w=majority' }) , 
+      url: 'mongodb+srv://dominic:compressor@sumo-nd9pi.gcp.mongodb.net/test?retryWrites=true&w=majority' }) , 
       cookie:{
         maxAge:60*60*1000*24*7 //session will last for a week
       }, 
@@ -54,10 +54,14 @@ app.use(express.static(path.join(__dirname, "/", "public")));
 app.use(express.static(path.join(__dirname, "/", "assets")));
 //routers for user and admin
 app.use("/admin", adminrouter);
+app.use('/500',(req,res,next)=>{
+  res.render('techError')
+})
 app.use("/", anonyrouter);
+
 //express error middleware
 app.use((err,req,res,next)=>{
-  res.render('techError')
+  res.redirect('/500')
 })
 //404 page not found middleware
 app.use(errorController.get404)
