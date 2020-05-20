@@ -35,7 +35,8 @@
 <%- include('sideNav.ejs',{
   onlineUsers:onlineUsers,
   name:name,
-  phone:phone
+  phone:phone,
+  uid:uid
 }) %>
 <!--end of side nav import-->
 <!--code for header-->
@@ -95,9 +96,9 @@
                   <% } %> </div>
           <div class="pages"><ul>
               <% if(hasPrev) {%>
-            <li><a href="/userchannel?page=<%=prev%>">Prev</a></li> <%}%>
+            <li><a href="/userchannel/<%=uid%>?page=<%=prev%>">Prev</a></li> <%}%>
             <% if(hasNext) { %>
-            <li><a href="/userchannel?page=<%=next%>">Next</a></li> <%}%>
+            <li><a href="/userchannel/<%=uid%>?page=<%=next%>">Next</a></li> <%}%>
             </ul></div>
     </div>
   </ul>

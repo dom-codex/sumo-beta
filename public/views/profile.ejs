@@ -168,10 +168,10 @@
           <!--pagination codes-->
           <div class="pages">
                <% if(hasPrev) { %> 
-                <a href="/profile?page=<%=prev%>">prev</a>
+                <a href="/profile/<%=user._id%>?page=<%=prev%>">prev</a>
                 <% } %>
                 <% if(hasNext) { %> 
-                  <a href="/profile?page=<%=next%>">next</a>
+                  <a href="/profile/<%=user._id%>?page=<%=next%>">next</a>
                   <% } %>
           </div>
         </div>
