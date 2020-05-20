@@ -385,91 +385,6 @@ module.exports.getProfilePage = (req, res, next) => {
               next(err)
             })
         });
-        //listener to switch users mode
-        socket.on("goAnonymous", (_, fn) => {
-          //find associated user
-          User.findById(req.session.user._id)
-            .then((user) => {
-              if (user.isAnonymous) {
-                //check user current mode
-                //if user is anonymous we switch them
-                //to normal mode
-                //update their normal status
-                user.isAnonymous = false;
-                user.status = 'online';
-                user.anonymousStatus = 'offline'
-                //clear the anonymous chats
-                user.anonyChats = []
-                req.session.user = user
-                req.session.save(()=>{
-                  res.redirect(`profile/${req.session.user._id}`)
-                  return user.save();
-                })
-              } else {
-                //if useris not anonymous we switch them
-                //to anonymous mode
-                user.isAnonymous = true;
-                user.status = 'offline';
-                user.anonymousStatus = 'online'
-                return user.save();
-              }
-            }).catch(err => {
-              //send a technical error
-              throw err
-            })
-            .then((user) => {
-              if (user.isAnonymous) {
-                /*if user is anonymous then we send a
-                notification to their open chats indicating their
-                offline(not truish)*/
-                const myChats = [...user.chats];
-                myChats.forEach(chats => {
-                  socket.broadcast.to(chats.chatId)
-                    .emit('offline', { chat: user._id })
-                  socket.broadcast.to(`${chats.chatId}${user._id}`)
-                    .emit('offline', { status: 'offline' })
-                })
-                //tell anonymous chats user is online
-                /*although seems redundant but proper implementation
-                will be looked into later */
-                const myAchats = [...user.anonyChats];
-                myAchats.forEach(chats => {
-                  socket.broadcast.to(chats.chatId)
-                    .emit('active', { chat: user.anonyString })
-                  socket.broadcast.to(`${chats.chatId}${user._id}`)
-                    .emit('active', { status: 'online' })
-                })
-              } else {
-                //if user was in anonymous mode
-                //before switching appear offline to anonymous chats
-
-                const myChats = [...user.anonyChats];
-                myChats.forEach(chats => {
-                  socket.broadcast.to(chats.chatId)
-                    .emit('offline', { chat: user.anonyString })
-                  socket.broadcast.to(`${chats.chatId}${user.anonyString}`)
-                    .emit('offline', { status: 'offline' })
-                  //tell client the open Auser is offline
-                })
-                //notify openchats of users presence
-                const myoChats = [...user.chats];
-                myoChats.forEach(chats => {
-                  socket.broadcast.to(chats.chatId)
-                    .emit('active', { chat: user._id })
-                  socket.broadcast.to(`${chats.chatId}${user._id}`)
-                    .emit('active', { status: 'online' })
-                })
-              }
-              //update anonymous mode property in  session
-              req.session.user.isAnonymous = user.isAnonymous;
-              req.session.save((err) => {
-                fn();
-                //function to notify switching user that switching process is done
-              });
-            }).catch(err=>{
-              next(err)
-            });
-        });
       });
       //pagination implementation
       User.findById(req.session.user._id)
@@ -570,7 +485,97 @@ module.exports.getProfilePage = (req, res, next) => {
       next(err)
     })
 };
+module.exports.goAnonymous = (req,res,next)=>{
+    //find associated user
+    User.findById(req.session.user._id)
+      .then((user) => {
+        if (user.isAnonymous) {
+          //check user current mode
+          //if user is anonymous we switch them
+          //to normal mode
+          //update their normal status
+          user.isAnonymous = false;
+          user.status = 'online';
+          user.anonymousStatus = 'offline'
+          //clear the anonymous chats
+          user.anonyChats = []
+          req.session.user = user
+          req.session.save(()=>{
+           // return user.save();
+          })
+          return user.save();
 
+        } else {
+          //if useris not anonymous we switch them
+          //to anonymous mode
+          user.isAnonymous = true;
+          user.status = 'offline';
+          user.anonymousStatus = 'online'
+          req.session.user = user
+          req.session.save(()=>{
+           // return user.save();
+          })
+          return user.save();
+
+        }
+      }).catch(err => {
+        //send a technical error
+        throw err
+      })
+      .then((user) => {
+        if (user.isAnonymous) {
+          /*if user is anonymous then we send a
+          notification to their open chats indicating their
+          offline(not truish)*/
+          const myChats = [...user.chats];
+          myChats.forEach(chats => {
+            io().to(chats.chatId)
+              .emit('offline', { chat: user._id })
+            io().to(`${chats.chatId}${user._id}`)
+              .emit('offline', { status: 'offline' })
+          })
+          //tell anonymous chats user is online
+          /*although seems redundant but proper implementation
+          will be looked into later */
+          const myAchats = [...user.anonyChats];
+          myAchats.forEach(chats => {
+            io().to(chats.chatId)
+              .emit('active', { chat: user.anonyString })
+            io().to(`${chats.chatId}${user._id}`)
+              .emit('active', { status: 'online' })
+          })
+        } else {
+          //if user was in anonymous mode
+          //before switching appear offline to anonymous chats
+
+          const myChats = [...user.anonyChats];
+          myChats.forEach(chats => {
+            io().to(chats.chatId)
+              .emit('offline', { chat: user.anonyString })
+            io().to(`${chats.chatId}${user.anonyString}`)
+              .emit('offline', { status: 'offline' })
+            //tell client the open Auser is offline
+          })
+          //notify openchats of users presence
+          const myoChats = [...user.chats];
+          myoChats.forEach(chats => {
+           io().to(chats.chatId)
+              .emit('active', { chat: user._id })
+            io().to(`${chats.chatId}${user._id}`)
+              .emit('active', { status: 'online' })
+          })
+        }
+        //update anonymous mode property in  session
+        req.session.user.isAnonymous = user.isAnonymous;
+        req.session.save((err) => {
+          res.redirect(`profile/${req.session.user._id}`)
+          //function to notify switching user that switching process is done
+        });
+      }).catch(err=>{
+        next(err)
+      });
+
+}
 module.exports.getChatPage = (req, res, next) => {
   //check user's mode then execute the necessary logic based on
   //their mode

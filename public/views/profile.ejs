@@ -200,7 +200,10 @@
 
             <div class="anonymous"><div >
               <p>Go anonymous <i class="material-icons">airplanemode_inactive</i></p></div><%-include('switch.ejs',{isAnonymous:user.isAnonymous})%></div>
-           <!-- <div class="anonymous"><button id="go">go anonymous</button></div> -->
+              <form action="/togglemode" id="modetoggler" method="POST">
+                <input type="hidden" value="<%=csrfToken%>" name="_csrf">   
+              </form>
+              <!-- <div class="anonymous"><button id="go">go anonymous</button></div> -->
 
             <div class="password open"><button>change password</button></div>
             <div class="change password form" id="cpf">

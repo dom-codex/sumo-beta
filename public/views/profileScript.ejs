@@ -149,10 +149,12 @@ switcher.on('click',()=>{
 if(!switcher.attr('checked')){
   return instances.open()
 }
-socket.emit('goAnonymous', null, () => {
+$('#modetoggler').submit()
+
+/*socket.emit('goAnonymous', null, () => {
       switcher.prop('checked',false)
       window.location.reload()
-    })
+    })*/
 })
 declineBtn.on('click',()=>{
 if(switcher.attr('checked')){
@@ -166,9 +168,10 @@ if(switcher.attr('checked')){
 })
 continueBtn.on('click',()=>{
 continueBtn.text('switching...')
-socket.emit('goAnonymous', null, () => {
+$('#modetoggler').submit()
+/*socket.emit('goAnonymous', null, () => {
       window.location.reload()
-    })
+    })*/
 })
 //script for change password
 const changePasswordRevealer = $('.password button');
