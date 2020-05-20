@@ -11,7 +11,8 @@ body{
   background-repeat: no-repeat;
   font-family: sans-serif;
   overflow-x: hidden;
-  height:auto;
+  height:100vh;
+  min-width:350px;
 }
 nav{
   background-color: transparent;
@@ -22,9 +23,10 @@ nav{
   padding-top:25px;
 }
 .background{
-  height:100vh;
-  overflow-y:scroll;
+  height:100%;
+  overflow:scroll;
   background-color:rgba(0,0,0,.8);
+  min-width: 100%;
 }
 
 @media all and (min-height: 436px){
