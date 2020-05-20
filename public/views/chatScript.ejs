@@ -5,8 +5,8 @@
       //refresh browser if server socket disconnects
      if(reason === 'transport close'){
       timer = setTimeout(()=>{
-      //  window.location.reload()
-      },1000)
+      alert('underlying connection lost please reload')
+      },4000)
      } 
     });
 socket.on('connect', (error) => {

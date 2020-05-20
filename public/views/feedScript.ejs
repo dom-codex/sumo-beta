@@ -16,7 +16,7 @@
     //refresh browser if server socket disconnects
    if(reason === 'transport close'){
     timer = setTimeout(()=>{
-      alert(reason)
+      alert('underlying coonection lost please reload')
     },4000)
    } 
   });
