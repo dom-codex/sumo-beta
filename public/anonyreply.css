@@ -6,6 +6,7 @@
 body{
   height:100vh; 
   background-color: rebeccapurple;
+  min-width:320px
 }
 nav{
   background-color: indigo;

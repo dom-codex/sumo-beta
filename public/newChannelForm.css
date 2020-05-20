@@ -71,6 +71,7 @@ nav div{
   margin-top:35px;
   padding-bottom:30px;
   margin-bottom:20px;
+  min-width:350px
 }
 #login{
   margin-top:5px;

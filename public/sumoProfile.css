@@ -330,3 +330,14 @@ label{
   }
  
 }
+@media all and (max-width:500px){
+  #test1,#test2,#test3,#test4{
+    width:95%;
+  }
+}
+
+.copy-btn, .copy, .input-field{
+  width:95%;
+  padding-right: 0;
+  margin-right:0
+}

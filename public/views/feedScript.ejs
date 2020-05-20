@@ -17,7 +17,7 @@
    if(reason === 'transport close'){
     timer = setTimeout(()=>{
       alert(reason)
-    },2000)
+    },4000)
    } 
   });
 socket.on('connect', (error) => {
@@ -105,6 +105,7 @@ setTimeout(()=>{
   $('#largeErr').css('display','none');
 },2600)
 })
+//listener for added chat
 socket.on("online", (data) => {   
 //to notify other connected sockets
 const uid = document.querySelector('#uid').value;
@@ -205,7 +206,6 @@ socket.on('disconnect',()=>{
    small.textContent = data.time;
 //move the notification to the top
 const parent = $('#userChatsSmall');
-const parent2 = $('#userChatsLarge')
 //add to the top  of the list
 cid.parentNode.parentNode.style.backgroundColor = '#fff'
 const content = cid.parentNode.parentNode;

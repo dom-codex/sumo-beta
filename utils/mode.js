@@ -447,7 +447,16 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                     //query db for user returning only the chats field
                                     //we iterate through the ids and emit the online event
                                     //to the rooms of our individual users
-                                    chatids.forEach((element) => {
+                                     const stillInChat=[...onlineUser,...anonyusers].map(active=>{
+                                        const inOpenChat =  active.chats.some(id=>id.chatId === req.session.user._id)
+                                        const inClosedChat =  active.anonyChats.some(id=>id.chatId === req.session.user._id)
+                                     if(inOpenChat){
+                                         return active._id
+                                     }else if(inClosedChat){
+                                         return active.anonyString
+                                     }
+                                    })                                                   
+                                    /*chatids*/stillInChat.forEach((element) => {
                                         socket.broadcast
                                             .to(element)
                                             .emit("online", { name: me.name, fid: id });
