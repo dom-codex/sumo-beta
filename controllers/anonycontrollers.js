@@ -135,7 +135,7 @@ module.exports.userChannel = (req, res, next) => {
       } else {
         //else execute the anonymous mode controller
         modes.anonymousUserMode(req, res, next, io);
-      }
+      } 
     }).catch(err => {
       //take user to the get started page if not found error occurs
      if(err.message === 'not found'){
@@ -400,7 +400,11 @@ module.exports.getProfilePage = (req, res, next) => {
                 user.anonymousStatus = 'offline'
                 //clear the anonymous chats
                 user.anonyChats = []
-                return user.save();
+                req.session.user = user
+                req.session.save(()=>{
+                  res.redirect(`profile/${req.session.user._id}`)
+                  return user.save();
+                })
               } else {
                 //if useris not anonymous we switch them
                 //to anonymous mode
@@ -594,14 +598,19 @@ module.exports.removeAChat = (req, res, next) => {
     })
 };
 module.exports.removeAChat = (req, res, next) => {
+  let me;
   User.findById(req.session.user._id)
     .then(user => {
       const filteredList = user.chats.filter(chat => chat.chatId.toString() !== req.body.uid.toString())
       user.chats = filteredList
+      me = user
       return user.save()
     })
     .then(user => {
-      res.redirect(`profile/${req.session.user._id}`)
+      req.session.user = me
+      req.session.save(()=>{
+        res.redirect(`profile/${req.session.user._id}`)
+      })
     })
 };
 module.exports.changePassword = (req, res, next) => {
