@@ -72,7 +72,7 @@ module.exports.createUserChannel = (req, res, next) => {
             //create new user
             const user = new User({
               name: name,
-              anonymousName: `X-${token.substring(4,8)}`,
+              anonymousName: `anonymous${token.substring(4,8)}`,
               email: email,
               password: hash,
               phone: phone,
