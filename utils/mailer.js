@@ -1,10 +1,11 @@
 const nodemailer = require('nodemailer');
 module.exports.mailer = (req,res,email,name,link)=>{
+  const headUrl = process.env.urlHead || `http://localhost:3000`
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
           user: "sumomessenger.beta@gmail.com",
-          pass: ''
+          pass: process.env.mailer_pass
         }
       
     });
@@ -55,7 +56,7 @@ module.exports.mailer = (req,res,email,name,link)=>{
       <h2 class="appname">SUMO messenger</h2>
       <p class="name">HI ${name},</p>
       <p>Forgot your password ? no probs!!! just click the link below to reset your password</p>
-      <a class="link" href="http://localhost:3000/setnewpassword/${link}">Reset password</a>
+      <a class="link" href="${headUrl}/setnewpassword/${link}">Reset password</a>
       <div class="note">
       <i>
       *If you didn’t make this request, or made it by mistake, please ignore this email. Your password will remain as it was.

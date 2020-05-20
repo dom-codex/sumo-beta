@@ -1,5 +1,6 @@
 const path = require("path");
 const http = require('http');
+const fs = require('fs');
 //third party package imports
 const express = require("express");
 const app = express();
@@ -10,14 +11,16 @@ const moongoose = require("mongoose");
 const MongoStore = require('connect-mongo')(session);
 const flash = require('connect-flash');
 const csrf = require('csurf');
-const csrfProtection = csrf()
+const csrfProtection = csrf();
+const morgan = require('morgan');
+const helmet = require('helmet')
 //controller imports
 const anonyrouter = require("./routes/anonyroutes");
 const adminrouter = require("./routes/adminRoutes");
 const errorController = require('./controllers/erros')
 //models
 const User = require("./models/user");
-const uri = `mongodb+srv://dominic:compressor@sumo-nd9pi.gcp.mongodb.net/test?retryWrites=true&w=majority`;
+const uri = process.env.db;
 
 //template engine configuration
 app.set("view engine", "ejs");
@@ -35,41 +38,46 @@ next()
 //session store initialization
 app.use(
   session({
-    secret: "domisosososososososcool",
+    secret: process.env.session_signing,
     resave: false,
     saveUninitialized: false,
     store:new MongoStore({ 
-      url: 'mongodb+srv://dominic:compressor@sumo-nd9pi.gcp.mongodb.net/test?retryWrites=true&w=majority' }) , 
+      url: process.env.session_store }) , 
       cookie:{
         maxAge:60*60*1000*24*7 //session will last for a week
       }, 
     })
 );
-
+//create write file stream
+const logStream = fs.createWriteStream(path.join(__dirname,'access.log'),{
+  flags:'a'
+}) 
 app.use(flash());
 app.use(csrfProtection) 
+app.use(helmet())
+app.use(morgan('combined',{stream:logStream}))
 
 //middleare for serving static files
 app.use(express.static(path.join(__dirname, "/", "public")));
 app.use(express.static(path.join(__dirname, "/", "assets")));
 //routers for user and admin
 app.use("/admin", adminrouter);
-app.use('/500',(req,res,next)=>{
+app.use("/", anonyrouter);
+app.get('/500',(req,res,next)=>{
   res.render('techError')
 })
-app.use("/", anonyrouter);
-
 //express error middleware
 app.use((err,req,res,next)=>{
-  res.redirect('/500')
-})
+ console.log(err)
+  // res.redirect('/500')
+}) 
 //404 page not found middleware
 app.use(errorController.get404)
 
 moongoose
   .connect(uri,{useNewUrlParser:true,useUnifiedTopology:true})
   .then((_) => {
-    server.listen(3000);
+    server.listen(process.env.PORT3000||3000);
     require("./socket").init(server); //socket server initialization
    console.log('connect') 
   }) 
