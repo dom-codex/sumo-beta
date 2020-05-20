@@ -193,8 +193,7 @@ socket.on('disconnect',()=>{
   //data should contain the last message in the list
   //data should also contain the no of new messages
 
-  const cids = $('body').find('.chatids');
-
+  const cids = $('#userChatsSmall').find('.chatids');
   for(let i = 0; i<cids.length;i++){
   let cid = cids[i];
   if(cid.value.toString() === data.id.toString()){
@@ -205,12 +204,34 @@ socket.on('disconnect',()=>{
    small.textContent = ' '
    small.textContent = data.time;
 //move the notification to the top
-const notificationTile = cid.parentNode;
-const parent = document.querySelector('.userChats');
-parent.removeChild(cid.parentNode);
+const parent = $('#userChatsSmall');
+const parent2 = $('#userChatsLarge')
 //add to the top  of the list
-cid.parentNode.style.backgroundColor = '#fff'
-const content = cid.parentNode;
+cid.parentNode.parentNode.style.backgroundColor = '#fff'
+const content = cid.parentNode.parentNode;
+cid.parentNode.parentNode.remove();
+parent.prepend(content);
+}else{
+  continue;
+} 
+  } 
+  //for large chat window 
+  const ids = $('#userChatsLarge').find('.chatids');
+  for(let i = 0; i<ids.length;i++){
+  let cid = ids[i];
+  if(cid.value.toString() === data.id.toString()){
+   const small = cid.parentNode.childNodes[5];
+   const messageIdicator = cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+   messageIdicator.textContent = ''
+   messageIdicator.textContent = data.msg
+   small.textContent = ' '
+   small.textContent = data.time;
+//move the notification to the top
+const parent = $('#userChatsLarge');
+//add to the top  of the list
+cid.parentNode.parentNode.style.backgroundColor = '#fff'
+const content = cid.parentNode.parentNode;
+cid.parentNode.parentNode.remove();
 parent.prepend(content);
 }else{
   continue;
