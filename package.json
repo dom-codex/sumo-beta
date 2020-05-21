@@ -9,7 +9,6 @@
     "compression": "^1.7.4",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^3.2.0",
-    "connect-mongodb-session": "^2.3.1",
     "csurf": "^1.11.0",
     "ejs": "^3.1.2",
     "express": "^4.17.1",
@@ -25,8 +24,12 @@
   "devDependencies": {
     "nodemon": "^2.0.3"
   },
+  "engines": {
+    "node": "10.16.3"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
   "author": "dominic",
   "license": "ISC"
