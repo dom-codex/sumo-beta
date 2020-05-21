@@ -590,11 +590,16 @@ module.exports.sendChat = (req,res,next)=>{
   const receiver = req.body.receiver;
   const message = req.body.message;
   const time = req.body.time;
-  console.log(receiver)
+  let userId
     User.findById(req.session.user._id)
         .then((user) => {
           //check if user is valid
-          
+          if(user.isAnonymous){
+            userId = user.anonyString
+          }else{
+          userId = user._id
+        }
+          console.log(userId)
             //retrive the chats array from senders details
             let friends = user.chats;
             friends = friends.map((chats) => {
@@ -602,7 +607,7 @@ module.exports.sendChat = (req,res,next)=>{
                     //add message to chat messages array in user chats
                     let msgs = chats.messages;
                     msgs.push({
-                        sender: req.session.user._id,
+                        sender: userId,
                         receiver: receiver,
                         body: message,
                         isMsgNew: false,
@@ -634,12 +639,12 @@ module.exports.sendChat = (req,res,next)=>{
                 let friends = sendee.anonyChats;
                 friends = friends.map((chats) => {
                     if (
-                        chats.chatId.toString() === req.session.user._id.toString()
+                        chats.chatId.toString() === userId.toString()
                     ) {
                         
                         let msgs = chats.messages;
                         msgs.push({
-                            sender: req.session.user_id,
+                            sender: userId,
                             receiver: receiver,
                             body: message,
                             isMsgNew: true,
@@ -659,13 +664,13 @@ module.exports.sendChat = (req,res,next)=>{
                 let friends = sendee.chats;
                 friends = friends.map((chats) => {
                     if (
-                        chats.chatId.toString() === req.session.user._id.toString()
+                        chats.chatId.toString() === userId.toString()
                     ) {
                         //add message to messages array
                         
                         let msgs = chats.messages;
                         msgs.push({
-                            sender: req.session.user_id,
+                            sender: userId,
                             receiver: receiver,
                             body: message,
                             isMsgNew: true,
@@ -689,12 +694,12 @@ module.exports.sendChat = (req,res,next)=>{
             //inform user of new message if not in chat window
             io()
                 .to(receiver)
-                .emit("notify", { id: req.session.user._id, msg: message, time: time });
+                .emit("notify", { id: userId, msg: message, time: time });
             //in the notify emitter return the friend id
 
             //update ui of receipient if in chat room
         
-            io().to(`${receiver}${req.session.user._id}`).emit("chatMsg", {
+            io().to(`${receiver}${userId}`).emit("chatMsg", {
                 message: message,
                 time: time
             });

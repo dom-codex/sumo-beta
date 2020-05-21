@@ -74,7 +74,6 @@
         <button class="openEmoji" type="button"><i class="material-icons">insert_emoticon</i></button>
         <input type="hidden" value="<%=csrfToken%>" name="_csrf">
         <input name="receiver" type="hidden" value="<%= fid %>">
-        <input name="sender" type="hidden" value="<%= uid %>">
         <textarea  id="msg" class="materialize-textarea" name="message" placeholder="Enter message"></textarea>
         <!-- replace with a vector icon later -->
         <button type="submit"><i class="material-icons">send</i></button>
