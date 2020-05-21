@@ -586,6 +586,128 @@ module.exports.getChatPage = (req, res, next) => {
     modes.anonymousChatMode(req, res, next, io)
   }
 };
+module.exports.sendChat = (req,res,next)=>{
+  const receiver = req.body.receiver;
+  const message = req.body.message;
+  const time = req.body.time;
+  console.log(receiver)
+    User.findById(req.session.user._id)
+        .then((user) => {
+          //check if user is valid
+          
+            //retrive the chats array from senders details
+            let friends = user.chats;
+            friends = friends.map((chats) => {
+                if (chats.chatId.toString() === receiver.toString()) {
+                    //add message to chat messages array in user chats
+                    let msgs = chats.messages;
+                    msgs.push({
+                        sender: req.session.user._id,
+                        receiver: receiver,
+                        body: message,
+                        isMsgNew: false,
+                        time: time
+                    });
+                    chats.messages = msgs;
+                    return chats;
+                } else {
+                    return chats; //to keep all other chats
+                }
+            });
+            user.chats = friends;
+            return user.save();
+        })
+        .catch((err) => {
+            throw new Error('no user found');
+        })
+        .then((_) => {
+            //get chat depending if they are in normal mode or anonymous mode
+            return User.findOne({ $or: [{ _id: receiver.toString() }, { anonyString: receiver.toString() }] });
+        })
+        .then((sendee) => {
+          // check if sendee was foubd
+          if(!sendee){
+            throw new Error('no user found')
+          }
+        //check if user is anonymous and execute appropriate code
+            if (sendee.anonyString.toString() === receiver.toString()) {
+                let friends = sendee.anonyChats;
+                friends = friends.map((chats) => {
+                    if (
+                        chats.chatId.toString() === req.session.user._id.toString()
+                    ) {
+                        
+                        let msgs = chats.messages;
+                        msgs.push({
+                            sender: req.session.user_id,
+                            receiver: receiver,
+                            body: message,
+                            isMsgNew: true,
+                            time: time
+                        });
+                        chats.messages = msgs;
+                        return chats;
+                    }
+                    else {
+                        return chats; //to keep all other chats
+                    }
+                });
+                return sendee.save();
+
+            } else {
+                //to be execute if user in normal mode
+                let friends = sendee.chats;
+                friends = friends.map((chats) => {
+                    if (
+                        chats.chatId.toString() === req.session.user._id.toString()
+                    ) {
+                        //add message to messages array
+                        
+                        let msgs = chats.messages;
+                        msgs.push({
+                            sender: req.session.user_id,
+                            receiver: receiver,
+                            body: message,
+                            isMsgNew: true,
+                            time: time
+                        });
+                        chats.messages = msgs;
+                        return chats;
+                    }
+                    else {
+                        return chats; //to keep all other chats
+                    }
+                });
+
+                return sendee.save()
+            }
+        })
+        .catch((err) => {
+            throw err;
+        })
+        .then((result) => {
+            //inform user of new message if not in chat window
+            io()
+                .to(receiver)
+                .emit("notify", { id: req.session.user._id, msg: message, time: time });
+            //in the notify emitter return the friend id
+
+            //update ui of receipient if in chat room
+        
+            io().to(`${receiver}${req.session.user._id}`).emit("chatMsg", {
+                message: message,
+                time: time
+            });
+            res.json({
+              code:200,
+              message:'sent sucessfully'
+            })
+        })
+        .catch((err) => { 
+          console.log(err)
+        });
+
+}
 module.exports.removeAChat = (req, res, next) => {
   User.findById(req.session.user._id)
     .then(user => {

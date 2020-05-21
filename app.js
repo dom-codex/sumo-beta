@@ -27,6 +27,7 @@ app.set("view engine", "ejs");
 app.set("views", "public/views");
 
 app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyparser.json());
 
 app.use((req,res,next)=>{
 //this will allow no caching of our rendered files

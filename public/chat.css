@@ -128,6 +128,7 @@ overflow: -moz-hidden-unscrollable;
   box-shadow: 1px 1px 2px rgba(0,0,0,.3);
   margin:5px;
   position: relative;
+  min-width:70px;
 }
 .chat.u1{
   float:left;
@@ -172,7 +173,11 @@ overflow: -moz-hidden-unscrollable;
 .time{
   display: flex;
   justify-content: flex-end;
+  align-items: flex-end;
   font-size:.6rem;
+}
+.time i{
+  font-size:.8rem
 }
 /* seetings for the emoji element as 
 materialize overrides some predefined styles */

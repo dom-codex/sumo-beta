@@ -31,27 +31,50 @@ socket.on('connect', (error) => {
       })
       const btn = document.querySelector('button[type="submit"]');
       btn.addEventListener('click',(e)=>{
-        e.preventDefault();
+        //get necessary data
         const message = document.querySelector('#msg').value;
         const cid = document.querySelector('#friendId').value;
+        const token = document.querySelector('input[name="_csrf"]').value;
         const msgWindow = $('.chats');
         msgWindow.scrollTop = msgWindow.scrollHeight
         const input = document.querySelector('textarea')
         if(!input.value || input.value == " ") {
           return }
+          //add time stamp
         const time = moment().format('LT');
+        //append message to sender window
         msgWindow.append(`
-        <span class="u2 chat">
-          ${message}
-          <div class="time">${time}</div>
-          </span>
+        <span class="u2 chat">${message}
+                <div class="time">
+                  ${time} &nbsp; 
+                  <div class="time"><i class="material-icons">done</i></div> 
+                </div>
+              </span>
       `);
       input.value =''
-        socket.emit('chat',{message:message,fid:cid,time:time},()=>{
-        // const  smalls = document.querySelectorAll('small');
-         //const lastSmall = smalls[smalls.length - 1];
-         //lastSmall.textContent  = Date.now() +' delivered'
-        });
+        /*socket.emit('chat',{message:message,fid:cid,time:time},()=>{
+        });*/
+        //use fetch api to send message
+        fetch('/chatme',{
+          method:'POST',
+          headers:{
+            "csrf-token":token,
+            "Content-Type":'application/json'
+          },
+          body:JSON.stringify({
+            receiver: cid,
+            message:message,
+            time: time,
+          })
+        })
+        .then(res=>res.json())
+        .then(res=>{
+          if(res.code!==200){
+            return
+          }
+          const spans = $('.u2.chat');
+        spans[spans.length - 1].childNodes[1].childNodes[1].childNodes[0].textContent = 'done_all'
+        })
         chatWindow.scrollTop = chatWindow.scrollHeight
       })
      const emojiBtn = $('.openEmoji');

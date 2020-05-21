@@ -73,6 +73,7 @@ controller.userChannel);
 router.get('/sendmsg/:fid', controller.getPostToFeed);
 router.post('/feed/:feed', controller.postToFeed);
 router.get('/chat/:chatId',isAuth, controller.getChatPage);
+router.post('/chatme',isAuth,controller.sendChat)
 router.get(
     '/profile/:id',
     isAuth, 

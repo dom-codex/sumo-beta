@@ -55,7 +55,10 @@
           <% meChats.forEach((msg,i)=> { %>
             <% if(msg.receiver.toString() === fid.toString()) { %> 
                <span class="u2 chat"><%=msg.body%>
-                <div class="time"><%=msg.time%></div>
+                <div class="time">
+                  <%=msg.time%> &nbsp; 
+                  <div class="time"><i class="material-icons">done_all</i></div> 
+                </div>
               </span>
               <%}else{ %>
                 <span class="u1 chat"><%=msg.body%>
@@ -69,10 +72,13 @@
       <div class="input">
         <div class="ctrl">
         <button class="openEmoji" type="button"><i class="material-icons">insert_emoticon</i></button>
-        <input type="hidden" value="<%= fid %>">
+        <input type="hidden" value="<%=csrfToken%>" name="_csrf">
+        <input name="receiver" type="hidden" value="<%= fid %>">
+        <input name="sender" type="hidden" value="<%= uid %>">
         <textarea  id="msg" class="materialize-textarea" name="message" placeholder="Enter message"></textarea>
         <!-- replace with a vector icon later -->
-        <button type="submit"><i class="material-icons">send</i></button></div>
+        <button type="submit"><i class="material-icons">send</i></button>
+      </div>
         <div class="emoji-container">
           <%- include('emoji.ejs')%>
         </div>

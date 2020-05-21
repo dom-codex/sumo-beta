@@ -808,6 +808,7 @@ module.exports.normalChatMode = (req, res, next, io) => {
                 });
                 res.render("chatPage", {
                     fid: id,
+                    csrfToken:req.csrfToken(),
                     uid: req.session.user._id,
                     meChats: [...msgs],
                     friend: friend,
