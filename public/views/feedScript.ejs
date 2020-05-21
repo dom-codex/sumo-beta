@@ -184,7 +184,10 @@ fetch('/addchat',{
             $('#largeErr').text(res.message).css('display','block')
           }
          else if(res.code === 200){
-          $('.userChats').append( `            
+          $('.errdisplay').css('display','none')
+            $('#largeErr').css('display','none')
+          
+            $('.userChats').append( `            
  <div class="chat list" id="${res.newchat._id}">
   <input class="chatids" type="hidden" value="${res.newchat._id}"/>
 <a href="/chat/${res.newchat._id}" >
