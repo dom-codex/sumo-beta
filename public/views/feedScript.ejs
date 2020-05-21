@@ -159,10 +159,49 @@ data.forEach(user => {
 const joinHandler = (fieldtoselect) =>{
 //obtain the inputed chat string
 const chatString = $(fieldtoselect).val();
-//emit to server we want to add a chat, send chat string along
-//callback will receive the details of the person whose chat
-//string we inputed so that our chat ui is updated
-socket.emit('joinChat',{chatString:chatString},(chatuser)=>{
+const token = $('input[name="_csrf"]').val()
+if(!chatString || chatString === ''){
+  $('.errdisplay').text('field cannot be empty').css('display','block')
+  $('#largeErr').text('field cannot be empty').css('display','block')
+  return
+}
+$('.spinner-cont').css('display','flex');
+fetch('/addchat',{
+          method:'POST',
+          headers:{
+            "csrf-token":token,
+            "Content-Type":'application/json'
+          },
+          body:JSON.stringify({
+           chatString:chatString
+          })
+        })
+        .then(res=>res.json())
+        .then(res=>{
+          $('.spinner-cont').css('display','none');
+          if(res.code === 400){
+            $('.errdisplay').text(res.message).css('display','block')
+            $('#largeErr').text(res.message).css('display','block')
+          }
+         else if(res.code === 200){
+          $('.userChats').append( `            
+ <div class="chat list" id="${res.newchat._id}">
+  <input class="chatids" type="hidden" value="${res.newchat._id}"/>
+<a href="/chat/${res.newchat._id}" >
+<div class="segment">
+<div class="liststyle">
+  <div class="indicator" style="background-color:${ res.newchat.status === 'online' || res.newchat.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }; display:${ res.newchat.status === 'online' || res.newchat.anStatus === 'online' ? 'block' : 'none' }"></div>
+ <div class="indicator" style="background-color:${ res.newchat.anStatus === 'offline' || res.newchat.status === 'offline' ? 'grey' : 'rebeccapurple' }; display:${ res.newchat.anStatus === 'offline' || res.newchat.status === 'offline' ? 'block' : 'none' }"></div>           
+  <div class="names"><p>${res.newchat.name}</p></div></div>
+  <small class="brief">say hi to ${res.newchat.name}</small></div>
+  <div class="message"><small></small></div>
+  </a>
+</div> `)
+$(fieldtoselect).val('')
+$('.new').css('display','none')
+         }
+        })
+/*socket.emit('joinChat',{chatString:chatString},(chatuser)=>{
   //user details is appended to the ui
   $('.userChats').append( `            
  <div class="chat list" id="${chatuser._id}">
@@ -177,7 +216,7 @@ socket.emit('joinChat',{chatString:chatString},(chatuser)=>{
 </div> `)
 $(fieldtoselect).val(' ')
 $('.new').css('display','none')
-})
+})*/
 }
 const chatBtn = $('#startchat');
 const largeChatBtn = $('#largeStartChat');

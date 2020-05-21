@@ -31,6 +31,7 @@
 </head>
   <body>
     <input type="hidden" id="uid" value="<%= uid %>">
+    <input type="hidden" value="<%=csrfToken%>" name="_csrf">
 <!--side nav codes-->
 <%- include('sideNav.ejs',{
   onlineUsers:onlineUsers,
@@ -39,6 +40,20 @@
   uid:uid
 }) %>
 <!--end of side nav import-->
+<!--loader-->
+<div class="spinner-cont">
+<div class="preloader-wrapper small active">
+  <div class="spinner-layer spinner-green-only">
+    <div class="circle-clipper left">
+      <div class="circle"></div>
+    </div><div class="gap-patch">
+      <div class="circle"></div>
+    </div><div class="circle-clipper right">
+      <div class="circle"></div>
+    </div>
+  </div>
+</div></div>
+      
 <!--code for header-->
 <header>
   <nav>
@@ -71,7 +86,7 @@
           <div class="chats">
             <div class="input-field join">
               <input type="text" placeholder="enter chat string" id="chatStringLarge"/>
-              <div class="join-btn"><button id="largeStartChat">start chat</button><small class="errdisplay" id="largeErr">fgfg</small></div>
+              <div class="join-btn"><button id="largeStartChat">start chat</button><small class="errdisplay" id="largeErr"></small></div>
             </div>
           <div><h2>Chats</h2></div>
           <div class="userChats" id="userChatsLarge">

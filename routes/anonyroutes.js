@@ -79,6 +79,7 @@ router.get(
     isAuth, 
     controller.getProfilePage
     );
+router.post('/addchat',controller.addChat)
 router.post('/removeachat',isAuth, controller.removeAChat);
 router.post('/togglemode',isAuth, controller.goAnonymous);
 router.post('/changepassword',isAuth, controller.changePassword);
