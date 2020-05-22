@@ -26,9 +26,7 @@ module.exports.createChannel = (req, res, next) => {
   let errors;
   let loginErrors;
   let otherErrors;
-  if(other.length > 0){
-    otherErrors = other[0]
-  }
+ 
   if(error.length > 0 && error[0].mode === 'signUp'){
   const nameError =  error[0].errors.find(err=>err.param === 'name')
   const phoneError = error[0].errors.find(err=>err.param === 'phone')
@@ -88,10 +86,6 @@ if(error.length > 0 && error[0].mode === 'login'){
           isAvailable:false,
           message:'', 
         }, 
-      },
-      otherErrors:otherErrors ? otherErrors:{
-        otherMode:false,
-        message:''
       },
     success: success.length > 0 ? true :false//success //if user was created successfully
   });
@@ -173,7 +167,8 @@ module.exports.loginUser = (req, res, next) => {
   const password = req.body.pwd;
   //check their validity and notify the user of the wrong input
   const errors = validationResult(req)
-  if (errors.array().length > 0) {
+  console.log(errors)
+  if (!errors.isEmpty() ){
     //reformat the errors if any
     const error = errors.errors.map(err => {
       return {
@@ -204,13 +199,24 @@ module.exports.loginUser = (req, res, next) => {
             req.session.isauth = true;
             req.session.user = user;
             //save session to db and redirect user to main screen
-            req.session.save((err) => {
+            return req.session.save((err) => {
               res.redirect(`/userchannel/${user._id}`);
             })
           } else {
             //send flash message
-            req.flash('otherErr', {otherMode:true,message:'invalidate phone number or password'})
-            req.session.save(()=>{
+            req.flash('erros', {
+             errors:[
+               {
+               param:'phone',
+               message:'invalid phone number or password'
+             },{
+               param:'pwd',
+               message:'invalid phone number or password'
+             }
+            ],
+              mode:'login'
+            })
+            return req.session.save(()=>{
               res.redirect("/getstarted");
             })
           }

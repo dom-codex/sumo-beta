@@ -56,11 +56,9 @@ router.post('/loginuser',[
               if (result) {
                 return true  
               }else{
-                  Promise.reject('invalid email or password')
+                  return Promise.reject('invalid email or password')
               } 
             })
-            }).catch(err=>{
-                throw new Error('invalid phone number or password')
             })
     }).trim()
 ] ,controller.loginUser);
