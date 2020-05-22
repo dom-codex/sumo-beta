@@ -85,5 +85,10 @@ router.get('/logout',isAuth, controller.logout);
 router.get('/resetpassword',controller.getResetPassword)
 router.post('/resetpassword',controller.reset)
 router.get('/setnewpassword/:token',controller.getSetNewPassword)
-router.post('/setnewpassword',controller.setNewPassword)
+router.post('/setnewpassword',[
+    check('pwd').isLength({min:5})
+    .withMessage('password too short').custom((val,{req})=>{
+        return validators.comfirmNewUserPassword(val,req)
+    }),
+],controller.setNewPassword)
 module.exports = router;

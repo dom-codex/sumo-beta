@@ -1036,7 +1036,7 @@ module.exports.getSetNewPassword = (req, res, next) => {
       if (user.tokenMaxAge < Date.now()) {
         //send a message telling user the token has expired
         req.flash('noUser', { message: 'token already expired' })
-       req.session.save(()=>{
+       return req.session.save(()=>{
         return res.redirect('/resetpassword')
        })
       }
@@ -1061,6 +1061,21 @@ module.exports.setNewPassword = (req, res, next) => {
   const confirmPassword = req.body.cpwd;
   //validate the password if its empty
   //use the token to get the user
+  const errors = validationResult(req)
+  console.log(errors)
+  if (!errors.isEmpty()) {
+    //reformat the errors if any
+    req.flash('noUser', { message: errors.errors[0].msg })
+    return req.session.save(()=>{
+       res.redirect(`/setnewpassword/${token}`)
+    })
+    //store error in flash which will be retrieved
+    //in the get route
+  /*  req.flash('erros', err);
+    return req.session.save(()=>{
+     res.redirect('/getstarted')
+    })*/
+  }
   User.findOne({ resetToken: token })
     .then(user => {
       if (!user) {
