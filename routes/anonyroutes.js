@@ -66,6 +66,7 @@ router.get('/channel',channelRedirect)
 router.get('/userchannel/:id', 
 isAuth,
 controller.userChannel);
+
 router.get('/sendmsg/:fid', controller.getPostToFeed);
 router.post('/feed/:feed', controller.postToFeed);
 router.get('/chat/:chatId',isAuth, controller.getChatPage);
@@ -75,10 +76,44 @@ router.get(
     isAuth, 
     controller.getProfilePage
     );
+
+router.post('/updatephone',
+        //validate phone number
+        check('phone').isLength({min:11})
+        .withMessage('invalid phone number')
+        .custom((val,{req})=>{
+            return User.findOne({ phone: req.body.phone  })
+            .then((user) => {
+                if(user){
+                    return Promise.reject('phone number already taken')
+                }
+             })
+        }).trim(),   
+isAuth,controller.modifyPhone)
+
+router.post('/updateemail',
+       //validate email
+       check('email').isEmail()
+       .withMessage('invalid email')
+       .custom((val,{req})=>{
+           return User.findOne({ email: req.body.email  })
+           .then((user) => {
+               if(user){
+                   return Promise.reject('email already taken')
+               }
+            })
+       }).trim()
+,isAuth,
+controller.modifyEmail)
+
+router.post('/changepassword',
+check('new').isLength({min:5}).withMessage('password too short').trim(), 
+isAuth, 
+controller.changePassword);
+
 router.post('/addchat',controller.addChat)
 router.post('/removeachat',isAuth, controller.removeAChat);
 router.post('/togglemode',isAuth, controller.goAnonymous);
-router.post('/changepassword',isAuth, controller.changePassword);
 router.get('/logout',isAuth, controller.logout);
 router.get('/resetpassword',controller.getResetPassword)
 router.post('/resetpassword',controller.reset)

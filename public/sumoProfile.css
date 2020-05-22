@@ -86,8 +86,7 @@ input,textarea{
   border:none;
   border-bottom:thin solid #ccc;
   display:inline-block;
-  width:60%;
-  max-width:350px;
+  width:87%!important;
   background-color:#fff;
 }
 .input-field{
@@ -347,4 +346,38 @@ label{
   margin-top:20px;
   display:flex;
   justify-content: center;
+}
+#board{
+  display:none
+}
+.success{
+  display:flex!important;
+  justify-content: center;
+  align-items: center;
+  background-color: rebeccapurple;
+  height:45px;
+  width:250px;
+  margin:auto;
+  padding:0 8px;
+  margin-top:20px;
+  border-radius: 5px;
+  animation-name: show;
+  animation-duration: 5s;
+  animation-fill-mode: forwards;
+  transition: all 5s;
+
+}
+.success p{
+  color:#fff;
+  font-weight:bold
+}
+@keyframes show{
+  from{
+    opacity:1;
+  }
+  to{
+    opacity:0;
+    display: none;
+    height:0px;
+  }
 }

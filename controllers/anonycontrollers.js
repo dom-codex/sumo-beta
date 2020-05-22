@@ -387,36 +387,7 @@ module.exports.getProfilePage = (req, res, next) => {
         socket.on('disconnect', () => {
           detectors.goOffline(user._id, socket);
         })
-        //listener if user want to update their phone
-        //number
-        socket.on("newPhone", (data, fn) => {
-          if (!data) return; //kill execution
-          User.updateOne({ _id: req.session.user._id }, { $set: { phone: data } })
-            .then(_ => {
-              //fn() is called on success
-              req.session.user.phone = data
-              req.session.save(() => {
-                fn(); //notify user of the change
-              })
-            }).catch(err => {
-              throw err
-            })
-        });
-        //listener for email update
-        socket.on("newemail", (data, fn) => {
-          if (!data) return; //kill execution
-          User.updateOne(
-            { _id: req.session.user._id },
-            { $set: { email: data } }
-          ).then((u) => {
-            req.session.user.email = data
-            req.session.save(() => {
-              fn(); //notify user of the change
-            })
-          }).catch(err => {
-            throw err
-          });
-        });
+
         //listener to add a brief description of user
         socket.on("newdesc", (data, fn) => {
           if (!data) return; //kill execution if no data
@@ -542,6 +513,17 @@ module.exports.getProfilePage = (req, res, next) => {
                   })
                   //render profile view with data to aid the display of users
                   //and actual pagination
+                  //retrieve flash message
+                  const error = req.flash('error')
+                  const succes = req.flash('success')
+                  let errors
+                  let success;
+                  if(error.length > 0){
+                   errors = error[0] 
+                  }
+                  if(succes.length > 0){
+                    success = succes[0]
+                  }
                   res.render("profile", {
                     csrfToken: req.csrfToken(),
                     user: req.session.user,
@@ -551,6 +533,8 @@ module.exports.getProfilePage = (req, res, next) => {
                     hasPrev: page > 1,
                     next: page + 1,
                     prev: page - 1,
+                    errors:errors ? errors : {field:'',message:''},
+                    success:success ? success : { message:''},
                     total: nTotalAnonyUsers + ntotalOpenUsers,
                     last: Math.ceil((ntotalOpenUsers + nTotalAnonyUsers) / 2)
                   })
@@ -568,6 +552,133 @@ module.exports.getProfilePage = (req, res, next) => {
       next(err)
     })
 };
+module.exports.modifyPhone = (req,res,next)=>{
+  const phone = req.body.phone
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    //reformat the errors if any
+     const error = errors.errors[0].msg
+    //store error in flash which will be retrieved
+    //in the get route
+    req.flash('error',{field:'phone',message:error})
+    return req.session.save(()=>{
+     res.redirect(`profile/${req.session.user._id}`)
+    })
+  }
+  if (!phone){
+    req.flash('error',{field:'phone',message:'field cannot be empty'})
+    return req.session.save(()=>{
+      req.redirect(`/profile/${req.session.user._id}`)
+    })
+  }
+  User.updateOne(
+    { _id: req.session.user._id },
+    { $set: { phone: phone } }
+  ).then((u) => {
+    req.session.user.phone = phone
+    req.flash('success',{message:'phone changed successfully'})
+    req.session.save(() => {
+       //notify user of the change
+       res.redirect(`/profile/${req.session.user._id}`)
+    })
+  }).catch(err => {
+    throw err
+  });
+
+}
+module.exports.modifyEmail = (req,res,next)=>{
+  const email = req.body.email
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    //reformat the errors if any
+     const error = errors.errors[0].msg
+    //store error in flash which will be retrieved
+    //in the get route
+    req.flash('error',{field:'email',message:error})
+    return req.session.save(()=>{
+     res.redirect(`profile/${req.session.user._id}`)
+    })
+  }
+  if (!email){
+    req.flash('error',{field:'email',message:'field cannot be empty'})
+    return req.session.save(()=>{
+      req.redirect(`/profile/${req.session.user._id}`)
+    })
+  }
+  if(!email){
+      req.flash('error',{field:'email',message:'field cannot be empty'})
+      return req.session.save(()=>{
+        req.redirect(`/profile/${req.session.user._id}`)
+      })
+    }
+    User.updateOne(
+      { _id: req.session.user._id },
+      { $set: { email: email } }
+    ).then((u) => {
+      req.session.user.email = email
+      req.flash('success',{message:'email changed successfully'})
+      req.session.save(() => {
+         //notify user of the change
+         res.redirect(`/profile/${req.session.user._id}`)
+      })
+    }).catch(err => {
+      throw err
+    });
+}
+
+module.exports.changePassword = (req, res, next) => {
+  //retrieve user inputs
+  const oldPassword = req.body.old;
+  const newPassWord = req.body.new;
+  const uid = req.body.uid;
+  const errors = validationResult(req)
+  console.log(errors)
+  if (!errors.isEmpty()) {
+    //reformat the errors if any
+     const error = errors.errors[0].msg
+    //store error in flash which will be retrieved
+    //in the get route
+    req.flash('error',{field:'new',message:error})
+    return req.session.save(()=>{
+     res.redirect(`profile/${req.session.user._id}`)
+    })
+  }
+  User.findById(uid)
+    .then(user => {
+      //compare passwords
+      bcrypt.compare(oldPassword, user.password)
+        .then(result => {
+          console.log(result)
+          if (!result) {
+            req.flash('error',{field:'old',message:'old password is incorrect'})
+            return req.session.save(()=>{
+              res.redirect(`profile/${req.session.user._id}`)
+             })
+            //send flash message that old password is incorrect
+            //then reload page with the previously supplied data
+          }
+          //if inputs are valid
+          //create hash of new password and save to db
+          bcrypt.hash(newPassWord, 12)
+            .then(hash => {
+              user.password = hash
+              user.save().
+                then(user => {
+                  console.log('here')
+                  req.flash('success',{message:'password changed successfully'})
+                  req.session.save(()=>{
+                    res.redirect(`/profile/${user._id}`)
+                  })
+                }).catch(err => {
+                  next(err)
+                }) //catch of save()
+            }) //then block of new hash
+
+        })
+    }).catch(err => {
+      next(err)
+    })
+}
 module.exports.goAnonymous = (req, res, next) => {
   //find associated user
   User.findById(req.session.user._id)
@@ -937,40 +1048,6 @@ module.exports.removeAChat = (req, res, next) => {
       next(err)
     })
 };
-
-module.exports.changePassword = (req, res, next) => {
-  //retrieve user inputs
-  const oldPassword = req.body.old;
-  const newPassWord = req.body.new;
-  const uid = req.body.uid;
-  User.findById(uid)
-    .then(user => {
-      //compare passwords
-      bcrypt.compare(oldPassword, user.password)
-        .then(result => {
-          if (!result) {
-            req.flash('pass', 'old password incorrect')
-            //send flash message that old password is incorrect
-            //then reload page with the previously supplied data
-          }
-          //if inputs are valid
-          //create hash of new password and save to db
-          bcrypt.hash(newPassWord, 12)
-            .then(hash => {
-              user.password = hash
-              user.save().
-                then(user => {
-                  res.redirect(`/profile/${user._id}`)
-                }).catch(err => {
-                  next(err)
-                }) //catch of save()
-            }) //then block of new hash
-
-        })
-    }).catch(err => {
-      next(err)
-    })
-}
 module.exports.logout = (req, res, next) => {
   //destroy users session
   req.session.destroy((err) => {

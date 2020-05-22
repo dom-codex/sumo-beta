@@ -85,6 +85,9 @@
               </div>
           </nav>
   </heading>
+  <div class="<%=success.message.length>0?'success':''%>" id="board">
+    <p><%=success.message%></p>
+  </div>
   <section>
     <div class="window z-depth-0 col s12">
       <div class="row">
@@ -110,18 +113,26 @@
               <button class="temp" id="namedone">save</button></div>
 
             <div class="input-field">
+              <form method="POST" action="/updatephone" id="phoneForm">
             <i class="material-icons prefix">account_circle</i>
-              <input id="phone" value="<%=user.phone%>" type="tel" class="validate" disabled>
-              <label for="phone" class="active">phone</label>
+            <label for="phone" class="active">phone</label>
+            <input id="phone" name="phone" value="<%=user.phone%>" type="tel" class="validate" disabled>
+            <small style="display:<%= errors.field === 'phone'? 'block': 'none' %>;margin-left:35px;color:red"><%=errors.message%></small>
+            <input type="hidden" value="<%=csrfToken%>" name="_csrf">   
+          </form>  
             </div>
             <div class="ctrl"><button id="phoneedit" onclick="Handler(this,'phone')">edit</button><button class="temp"
                 id="phonecancel">cancel</button><button class="temp" id="phonedone">done</button></div>
 
             <div class="input-field">
-              <i class="material-icons prefix">account_circle</i>
-              <input id="email" type="email" value="<%=user.email%>" disabled>
-              <small style="display:<%= user.email.length > 0? 'none': 'block' %>;margin-left:30px">add email for password recovery purpose</small>
-              <label for="email" class="active">email</label>
+              <form action = "/updateemail" method="POST" id="emailForm">
+                <input type="hidden" value="<%=csrfToken%>" name="_csrf">   
+                <i class="material-icons prefix">account_circle</i>
+                <label for="email" class="active">email</label>
+                <input id="email" name="email" type="email" value="<%=user.email%>" disabled>
+                <small style="display:<%= errors.field === 'email'? 'block': 'none' %>;margin-left:35px;color:red"><%=errors.message%></small>
+                <small style="display:<%= user.email.length > 0? 'none': 'block' %>;margin-left:35px">add email for password recovery purpose</small>
+            </form>
             </div>
             <div class="ctrl"><button onclick="Handler(this,'email')" id="emailedit">edit</button><button class="temp"
                 id="emailcancel">cancel</button><button class="temp" id="emaildone">done</button></div>
@@ -210,10 +221,12 @@
               <form method="POST" action="/changepassword">
                 <input type="hidden" value="<%=csrfToken%>" name="_csrf">   
                 <input name="uid" type="hidden" value="<%=user._id%>"/>
-              <label>old password</label>
+                <label>old password</label>
               <input name="old" type="text"> <br />
+              <small style="display:<%= errors.field === 'old'? 'block': 'none' %>;color:red"><%=errors.message%></small>
               <label>new password</label>
               <input name="new" type="text">
+              <small style="display:<%= errors.field === 'new'? 'block': 'none' %>;color:red"><%=errors.message%></small>
               <div class="changepassbtn"><button>submit</button></div>
             </form></div>
           <div class="divider" style="margin-bottom: 40px"></div>

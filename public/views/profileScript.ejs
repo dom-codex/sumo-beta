@@ -76,13 +76,11 @@ clearTimeout(timer)
   })
 
   phoneDone.addEventListener('click', () => {
-    const newPhone = document.querySelector('#phone').value;
-    socket.emit('newPhone', newPhone, () => {
+    document.querySelector('#phoneForm').submit();
       document.querySelector('#phone').disabled = true;
       document.querySelector('#phoneedit').style.display = 'inline-block'
       phoneCancel.style.display = "none";
       phoneDone.style.display = "none";
-    });
   })
 
   descDone.addEventListener('click', () => {
@@ -95,13 +93,11 @@ clearTimeout(timer)
     });
   })
   emailDone.addEventListener('click', () => {
-    const newEmail = document.querySelector('#email').value;
-    socket.emit('newemail', newEmail, () => {
+    document.querySelector('#emailForm').submit()
       document.querySelector('#email').disabled = true;
       document.querySelector('#emailedit').style.display = 'inline-block'
       emailCancel.style.display = "none";
       emailDone.style.display = "none";
-    });
   })    
   chatDone.addEventListener('click', () => {
     const newChat = document.querySelector('#chat').value;
