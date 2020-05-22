@@ -20,7 +20,7 @@ const adminrouter = require("./routes/adminRoutes");
 const errorController = require('./controllers/erros')
 //models
 const User = require("./models/user");
-const uri = `mongodb+srv://dominic:compressor@sumo-nd9pi.gcp.mongodb.net/test?retryWrites=true&w=majority`;
+const uri = process.env.db;
 
 //template engine configuration
 app.set("view engine", "ejs");
@@ -39,11 +39,11 @@ next()
 //session store initialization
 app.use(
   session({
-    secret: "domisosososososososcool",
+    secret: session_signing,
     resave: false,
     saveUninitialized: false,
     store:new MongoStore({ 
-      url: 'mongodb+srv://dominic:compressor@sumo-nd9pi.gcp.mongodb.net/test?retryWrites=true&w=majority' }) , 
+      url: process.env.session_store }) , 
       cookie:{
         maxAge:60*60*1000*24*7 //session will last for a week
       }, 
@@ -78,7 +78,7 @@ app.use(errorController.get404)
 moongoose
   .connect(uri,{useNewUrlParser:true,useUnifiedTopology:true})
   .then((_) => {
-    server.listen(3000);
+    server.listen(3000 || process.env.PORT );
     require("./socket").init(server); //socket server initialization
    console.log('connect') 
   }) 
