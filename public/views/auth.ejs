@@ -41,64 +41,65 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
     <section>
       <div class="forgotPass"><a href="/resetpassword">Forgot password</a></div>
       
-      <div class="<%=errors.mode === 'login' && errors.errors.length > 0 ? 'display warning-board':'none'%>">
-          <p class="<%=errors.mode === 'login' && errors.errors.length > 0 ? 'display':''%>">Invalid phone number and password</p>
+      <!--error boards-->
+      <div class="<%=loginErrors.phoneError.isAvailable || loginErrors.passwordError.isAvailable  ? 'display warning-board':'none'%>">
+          <p class="<%=loginErrors.phoneError.isAvailable || loginErrors.passwordError.isAvailable  ? 'display warning-board':'none'%>">Invalid phone number or password</p>
       </div>  
-          <div class="<%=success.length > 0 ? 'warning-board success display':'none' %>">
-        <% if(success.length > 0) { %>
+          <div class="<%=success ? 'warning-board success display':'none' %>">
+        <% if(success) { %>
           <p>you can now login!!!</p>
           <%}%>
+      </div>          
+      <div class="<%=otherErrors.otherMode ? 'warning-board success display':'none' %>">
+        <% if(success) { %>
+          <p><%=otherErrors.message%></p>
+          <%}%>
       </div>
+      <!--form body-->
       <div class="form-body z-depth-2">
     <div class="row">
     <div class="col s12 m12 l12">
       <ul class="tabs">
-        <li class="tab col s3 m6 "><a href="#signup" class="active">Signup</a></li>
-        <li class="tab col s3 m6 ">
-            <a href="#login">login</a></li>
+        <li class="tab col s3 m6 "><a href="#login" class="<%= success === true || loginErrors.mode === true ? 'active': ''%>">login</a></li>
+        <li class="tab col s3 m6 "><a href="#signup" class="<%= success === true || loginErrors.mode === true ? '' : 'active'%>">Signup</a></li>
       </ul>
     </div>
     <div id="signup" class="col s12">
       <form action='/createUserChannel' method="post">
             <input type="hidden" value="<%=csrfToken%>" name="_csrf">
             <div class="input wrapper input-field">
-              <% const name = errors.errors.find(err=>err.param === 'name') || 'confirmed' %>
             <i class="material-icons prefix">account_circle</i>
               <label for="name">Name</label> 
-              <input id="name" name="name" type="text"  style="border-bottom-color:<%= name!== 'confirmed' && errors.mode === 'signUp' ? 'red' : '' %>" >
-              <% if(name.param === 'name' && errors.mode === 'signUp') { %>
-                <div class="warn" style="display:<%= name!== 'confirmed' && errors.mode === 'signUp' ? 'block' : 'none' %>"><small style="color:<%= name!== 'confirmed' && errors.mode === 'signUp' ? 'red' : '' %>"><%=name.message%></small></div>
+              <input id="name" name="name" type="text"  style="border-bottom-color:<%= errors.nameError.isAvailable ? 'red' : '' %>" >
+              <% if(errors.nameError.isAvailable) { %>
+                <div class="warn" style="display:<%= errors.nameError.isAvailable? 'block' : 'none' %>"><small style="color:<%= errors.nameError.isAvailable ? 'red' : '' %>"><%=errors.nameError.message%></small></div>
                 <%}%>
             </div> 
 
             <div class="input wrapper input-field">
-              <% const email = errors.errors.find(err=>err.param == 'email') || 'confirmed' %>
                <i class="material-icons prefix">email</i>
                <label for="email">Email</label>
-              <input id="email" name="email" type="email" style="border-bottom-color:<%= email!== 'confirmed' && errors.mode === 'signUp'  ? 'red' : '' %>"> 
-              <div class="warn" style="display:<%= email!== 'confirmed' && errors.mode === 'signUp' ? 'block' : 'none' %>"><small style="color:<%= email!== 'confirmed' && errors.mode === 'signUp' ? 'red' : '' %>"><%=email.message%></small></div>
+              <input id="email" name="email" type="email" > 
             </div>
 
               <div class="input wrapper input-field">
-                <% const phone = errors.errors.find(err=>err.param == 'phone') || 'confirmed' %>
                <i class="material-icons prefix">phone</i>
                <label for="phone">phone</label>
-              <input id="phone" name="phone" type="number" required style="border-bottom-color:<%= phone!== 'confirmed' && errors.mode === 'signUp' ? 'red' : '' %>">
-              <div class="warn" style="display:<%= phone!== 'confirmed' && errors.mode === 'signUp' ? 'block' : 'none' %>"><small style="color:<%= phone!== 'confirmed' && errors.mode === 'signUp' ? 'red' : '' %>"><%=phone.message%></small></div>
+              <input id="phone" name="phone" type="number" required style="border-bottom-color:<%= errors.phoneError.isAvailable ? 'red' : '' %>">
+              <div class="warn" style="display:<%= errors.phoneError.isAvailable ? 'block' : 'none' %>"><small style="color:<%= errors.phoneError.isAvailable ? 'red' : '' %>"><%=errors.phoneError.message%></small></div>
              </div>
-             <% const pwd = errors.errors.find(err=>err.param == 'pwd') || 'confirmed' %>
+
              <div class="input wrapper input-field">
                <i class="material-icons prefix">lock</i>
               <label for="pwd">password</label> 
-               <input id="pwd" name="pwd" type="password" required style="border-bottom-color:<%= pwd !== 'confirmed' && errors.mode === 'signUp'  ? 'red' : '' %>"> 
-               <div class="warn" style="display:<%= pwd!== 'confirmed' && errors.mode === 'signUp' ? 'block' : 'none' %>"><small style="color:<%= pwd!== 'confirmed' && errors.mode === 'signUp' ? 'red' : '' %>"><%=pwd.message%></small></div>
+               <input id="pwd" name="pwd" type="password" required style="border-bottom-color:<%= errors.passwordError.isAvailable  ? 'red' : '' %>"> 
+               <div class="warn" style="display:<%= errors.passwordError.isAvailable ? 'block' : 'none' %>"><small style="color:<%= errors.passwordError.isAvailable ? 'red' : '' %>"><%=errors.passwordError.message%></small></div>
               </div>
 
               <div class="input wrapper input-field">
               <i class="material-icons prefix">enhanced_encryption</i>
                <label for="cpwd">comfirm password</label> 
-                <input id="cpwd" name="cpwd" type="password" required style="border-bottom-color:<%= pwd!== 'confirmed' && errors.mode === 'signUp' ? 'red' : '' %>">
-                <div class="warn" style="display:<%= pwd!== 'confirmed' && errors.mode === 'signUp' ? 'block' : 'none' %>"><small style="color:<%= pwd!== 'confirmed' && errors.mode === 'signUp' ? 'red' : '' %>"><%=pwd.message%></small></div>
+                <input id="cpwd" name="cpwd" type="password" required>
               </div>
 
               <div class="button wrap"><button type="submit" class="z-depth-2">Submit</button></div>

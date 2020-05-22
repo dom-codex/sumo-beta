@@ -15,13 +15,13 @@ router.get('/getstarted',controller.createChannel)
 //validate new user input
 router.post('/createUserChannel', [
 //input validators for the various input fields
-check('name').custom((value,{req})=>{
+check('name').isLength({min:3}).withMessage('name too short').custom((value,{req})=>{
     return validators.comfirmNewUserName(value)
 }).trim(),
 check('email').custom((val,{req})=>{
     return validators.comfirmNewUserEmail(val);
 }).normalizeEmail(),
-check('phone').custom((val,{req})=>{
+check('phone').isLength({min:11}).withMessage('invalid phone number').custom((val,{req})=>{
     return validators.comfirmNewUserPhone(val);
 }).trim(),    
 check('phone').custom((val,{req})=>{
@@ -33,7 +33,7 @@ check('phone').custom((val,{req})=>{
         return true
     })
 }).trim(),
-check('pwd').custom((val,{req})=>{
+check('pwd').isLength({min:5}).withMessage('password too short').custom((val,{req})=>{
     return validators.comfirmNewUserPassword(val,req)
 }).trim()
 ]
@@ -41,10 +41,10 @@ check('pwd').custom((val,{req})=>{
 controller.createUserChannel);
 //validate login credentials
 router.post('/loginuser',[
-    check('phone').custom((val,{req})=>{
+    check('phone').isLength({min:11}).withMessage('invalid phone number').custom((val,{req})=>{
         return validators.comfirmNewUserPhone(val);
     }).trim(),
-    check('pwd').custom((val,{req})=>{
+    check('pwd').isLength({min:5}).withMessage('password too short').custom((val,{req})=>{
         return validators.assertLoginCredentials(val,req)
     }),
     //validate phone number
@@ -56,13 +56,11 @@ router.post('/loginuser',[
               if (result) {
                 return true  
               }else{
-                  Promise.reject('invalid phone number or password')
+                  Promise.reject('invali or password')
               } 
+            })
             }).catch(err=>{
-                Promise.reject('invalid credentials')
-            }) 
-            }).catch(err=>{
-                
+                throw new Error('invalid phone number or password')
             })
     }).trim()
 ] ,controller.loginUser);

@@ -20,21 +20,86 @@ module.exports.createChannel = (req, res, next) => {
   //check if user input does not meet requirements
   //send appropriate error messages where neccessary
   const error = req.flash('erros')
+  const other = req.flash('otherErr')
   const success = req.flash('success')
+  //reformat errors into chunks
+  let errors;
+  let loginErrors;
+  let otherErrors;
+  if(other.length > 0){
+    otherErrors = other[0]
+  }
+  if(error.length > 0 && error[0].mode === 'signUp'){
+  const nameError =  error[0].errors.find(err=>err.param === 'name')
+  const phoneError = error[0].errors.find(err=>err.param === 'phone')
+  const passwordError = error[0].errors.find(err=> err.param === 'pwd')
+   errors = {
+    nameError:{
+      isAvailable: nameError ? true :false,
+      message:nameError ? nameError.message: '', 
+    },   
+     phoneError:{
+      isAvailable: phoneError ? true : false,
+      message:phoneError ? phoneError.message : '', 
+    },   
+     passwordError:{
+      isAvailable: passwordError ? true :false,
+      message:passwordError ? passwordError.message: '', 
+    },
+  }
+}
+if(error.length > 0 && error[0].mode === 'login'){
+  const phoneError = error[0].errors.find(err=>err.param === 'phone')
+  const passwordError = error[0].errors.find(err=> err.param === 'pwd')
+  loginErrors = {
+    phoneError:{
+      isAvailable: phoneError ? true : false,
+    },   
+     passwordError:{
+      isAvailable: passwordError ? true :false, 
+    },
+    mode:true
+  }
+}
+  //const success = req.flash('success')
   res.render("auth", {
     csrfToken: req.csrfToken(),
-    errors: error.length > 0 ? error[0] :
-      {
-        mode: '',
-        errors: []
+    loginErrors: loginErrors ? loginErrors :
+    {
+      phoneError:{
+        isAvailable:false,
+      },   
+       passwordError:{
+        isAvailable:false,
       },
-    success: success //if user was created successfully
+      mode: false
+    },
+    errors: errors ? errors :
+      {
+        nameError:{
+          isAvailable:false,
+          message:'', 
+        },   
+         phoneError:{
+          isAvailable:false,
+          message:'', 
+        },   
+         passwordError:{
+          isAvailable:false,
+          message:'', 
+        }, 
+      },
+      otherErrors:otherErrors ? otherErrors:{
+        otherMode:false,
+        message:''
+      },
+    success: success.length > 0 ? true :false//success //if user was created successfully
   });
 };
 module.exports.createUserChannel = (req, res, next) => {
   //check if there's any error in the inputs supplied
   const errors = validationResult(req)
-  if (errors.array().length > 0) {
+  if (!errors.isEmpty()) {
     //reformat the errors if any
     const error = errors.errors.map(err => {
       return {
@@ -49,7 +114,9 @@ module.exports.createUserChannel = (req, res, next) => {
     //store error in flash which will be retrieved
     //in the get route
     req.flash('erros', err);
-    return res.redirect('/getstarted')
+    return req.session.save(()=>{
+     res.redirect('/getstarted')
+    })
   }
   //extract user details if no errors
   const name = req.body.name;
@@ -88,14 +155,80 @@ module.exports.createUserChannel = (req, res, next) => {
           .then((user) => {
             //create and store success message then redirect
             req.flash('success', true)
-            return res.redirect("/getstarted");
+            req.session.save(()=>{
+              return res.redirect("/getstarted");
+            })
           })
           .catch((err) => {
             next(new Error('connection lost'))
+ 
           });
       });
     });
   });// end of chat crypto
+};
+module.exports.loginUser = (req, res, next) => {
+  //extract the user details from the request body
+  const phone = req.body.phone.toString();
+  const password = req.body.pwd;
+  //check their validity and notify the user of the wrong input
+  const errors = validationResult(req)
+  if (errors.array().length > 0) {
+    //reformat the errors if any
+    const error = errors.errors.map(err => {
+      return {
+        param: err.param,
+        message: err.msg,
+      }
+    })
+    const err = {
+      errors: error,
+      mode: 'login'
+    }
+    req.flash('erros', err);
+    return req.session.save(()=>{
+      res.redirect('/getstarted')
+    })
+  }
+  //find associated user
+  User.findOne({ phone: phone })
+    .then((user) => {
+      if (!user) {
+        throw new Error('not found')
+      }
+      //validate the password
+      bcrypt.compare(password, user.password)
+        .then(result => {
+          if (result) {
+            //initialize a session for them if successful
+            req.session.isauth = true;
+            req.session.user = user;
+            //save session to db and redirect user to main screen
+            req.session.save((err) => {
+              res.redirect(`/userchannel/${user._id}`);
+            })
+          } else {
+            //send flash message
+            req.flash('otherErr', {otherMode:true,message:'invalidate phone number or password'})
+            req.session.save(()=>{
+              res.redirect("/getstarted");
+            })
+          }
+        }).catch(err=>{
+          console.log('here')
+        })
+    })
+    .catch((err) => {
+      //redirect user to getstarted page
+      //if any error occurs
+      if (err.message === 'not found') {
+        req.flash('otherErr', {otherMode:true,message:'invalid credentials'});
+        return req.session.save(()=>{
+          res.redirect('/getstarted')
+      })
+      }
+    //  next(err)
+    });
 };
 module.exports.getPostToFeed = (req, res, next) => {
   //share token from url
@@ -188,64 +321,6 @@ module.exports.postToFeed = (req, res, next) => {
         return res.redirect("/");
       }
       //redirect user to the home screen if any error occurs
-      next(err)
-    });
-};
-module.exports.loginUser = (req, res, next) => {
-  //extract the user details from the request body
-  const phone = req.body.phone.toString();
-  const password = req.body.pwd;
-  //check their validity and notify the user of the wrong input
-  const errors = validationResult(req)
-  if (errors.array().length > 0) {
-    //reformat the errors if any
-    const error = errors.errors.map(err => {
-      return {
-        param: err.param,
-        message: err.msg,
-      }
-    })
-    const err = {
-      errors: error,
-      mode: 'login'
-    }
-    req.flash('erros', err);
-    return res.redirect('/getstarted')
-  }
-  //find associated user
-  User.findOne({ phone: phone })
-    .then((user) => {
-      if (!user) {
-        throw new Error('not found!!!')
-      }
-      //validate the password
-      bcrypt.compare(password, user.password)
-        .then(result => {
-          if (result) {
-            //initialize a session for them if successful
-            req.session.isauth = true;
-            req.session.user = user;
-            //save session to db and redirect user to main screen
-            req.session.save((err) => {
-              res.redirect(`/userchannel/${user._id}`);
-            })
-          } else {
-            //send flash message
-            req.flash('erros', { mode: 'login', errors: [true] })
-            res.redirect("/getstarted");
-          }
-        }).catch(err => {
-          req.flash('erros', err);
-          return res.redirect('/getstarted')
-        })
-    })
-    .catch((err) => {
-      //redirect user to getstarted page
-      //if any error occurs
-      if (err.message === 'not found') {
-        req.flash('erros', err);
-        return res.redirect('/getstarted')
-      }
       next(err)
     });
 };

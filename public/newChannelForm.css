@@ -68,7 +68,7 @@ nav div{
   width:75%;
   max-width:550px;
   margin:auto;
-  margin-top:35px;
+  margin-top:10px;
   padding-bottom:30px;
   margin-bottom:20px;
   min-width:350px
@@ -104,11 +104,13 @@ nav div{
   }
   to{
     opacity:0;
-    display:none
+    display: none;
+    height: 0px;
   }
 }
 .display{
   animation-name: show;
   animation-duration: 10s;
-  display:flex
+  display:flex;
+  animation-fill-mode: forwards;
 }

@@ -1,5 +1,5 @@
 module.exports.comfirmNewUserName = (name)=>{
-    if(name !== undefined && name !== null && name.length>3){
+    if(name !== undefined && name !== null){
         return true
     }else{
         const err = new Error('name field cannot be empty');
@@ -9,7 +9,7 @@ module.exports.comfirmNewUserName = (name)=>{
 }
 module.exports.comfirmNewUserPhone = (phone)=>{
 
-    if(phone !== undefined && phone !== null && phone !== ' ' && phone.length >= 11){
+    if(phone !== undefined && phone !== null && phone !== ' '){
         return true
     }
     else
@@ -32,18 +32,29 @@ module.exports.comfirmNewUserPassword = (pwd,req)=>{
     const {cpwd} = req.body
     pwd.toString();
     cpwd.toString()
-    if(pwd !== undefined && pwd !==null && pwd !== '' && pwd.length >= 5 && pwd === cpwd){
-        return true
-    }else{
+    if(pwd === undefined || pwd === null){
         const error = new Error('invalid password')
         throw error;
+    }else if(pwd === ''){
+        const error = new Error('password cannot be empty')
+        throw error;
+    }else if(pwd !== cpwd){
+        const error = new Error('passwords do not match')
+        throw error;
+    }
+    else{
+        return true
     }
 }
 module.exports.assertLoginCredentials = (pwd)=>{
-    if(pwd !== undefined && pwd !==null && pwd !== '' && pwd.length >5){
-        return true
-    }else{
+    if(pwd === undefined || pwd === null){
         const error = new Error('invalid password')
         throw error;
+    }else if(pwd === ''){
+        const error = new Error('password cannot be empty')
+        throw error;
+    }
+    else{
+        return true
     }
 }
