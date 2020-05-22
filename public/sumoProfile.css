@@ -61,11 +61,11 @@ nav div{
     margin-top:20px;
     max-width:680px;
     min-width:320px;
-}.row{
+}
+.row{
   height:72vh;
 }
 #test1, #test2, #test3, #test4{
-  overflow-y: scroll;
   height:100%;
 }
 .info{
@@ -243,7 +243,9 @@ label{
   background-color:rebeccapurple;
   margin-right:5px
 }
-.names p{font-size:1.3em}
+.names p{
+  font-size:1.3em
+}
 .chatCard{
   display:flex;
   justify-content: center;
@@ -340,4 +342,9 @@ label{
   width:95%;
   padding-right: 0;
   margin-right:0
+}
+.pages{
+  margin-top:20px;
+  display:flex;
+  justify-content: center;
 }

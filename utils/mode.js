@@ -22,7 +22,7 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
             nAnonyChats = n
             //get actual details of users we are chatting with anonymously but limiting
             //the result by a chosen preference
-            return User.find({ _id: { $in: chatids } }).skip((page - 1) * 2)
+            return User.find({ _id: { $in: chatids } }).sort('-1').skip((page - 1) * 2)
                 .limit(2)
         }).then((onlineUser) => {
             //online user will be docs of the with the specified ids
@@ -47,90 +47,6 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
                     //socket.broadcast.emit("online", { name: '6anonymous', fid: id, })
                     //  socket.emit("activeUsers", onlineUser);
                 });
-                //join  chat listener
-                socket.on("joinChat", (data, fn) => {
-                    let uid;
-                    let newChat; //variable to hold the user details
-                    //who we want to chat
-                    const chatString = data.chatString; //retrieve the chat string of user who we want to chat with
-                    //query DB to see if the chatstring exists
-                    User.findOne({ chatShare: chatString })
-                        .then((user) => {
-                            const isUser = req.session.user.anonyChats.some(chat=>chat.chatId.toString() === user._id.toString())
-                               if(isUser){
-                               throw new Error('already added chat')
-                              }
-                            //check if we are trying to add ourselves
-                            else if (user._id.toString() === req.session.user._id.toString() || user.anonyString === req.session.user.anonyString.toString()) {
-                                //tell user they cant add themselves
-                                throw new Error('you cannot add yourself')
-                            } else {
-                                newChat = user; //intialize variable with owner of chat string
-                                //i.e user we want to chat with
-                                const chats = user.chats; //initialize variable with the chats array of user we want to chat with
-                                //we push in the anonymous token of the user requesting to chat array of the open user
-                                chats.push({
-                                    chatId: req.session.user.anonyString,
-                                    messages: [],
-                                });
-                                uid = user._id;
-                                user.chats = chats; // set the chats array of the user we want
-                                //to chat with to the updated chats array of the user we want to chat with
-                                return user.save();
-                            }
-                        })
-                        .catch((err) => {
-                            throw err;
-                        })
-                        .then((_) => {
-                            //retrieve anonymous user details from the db
-                            return User.findById(req.session.user._id);
-                        })
-                        .catch((err) => {
-                            socket.emit('denied', { message: err.message })
-                            throw new Error()
-                        
-                        })
-                        .then((user) => {
-                            //update anonychat array of requesting user  with the id of
-                            // chat chatid
-                            me = user;
-                            const chats = user.anonyChats;
-                            chats.push({
-                                chatId: uid,
-                                messages: [],
-                            });
-                            me = user
-                            return user.save(); //save the updates to the db
-                        })
-                        .catch((err) => {
-                            throw err;
-                        })
-                        .then((_) => {
-                            //call the callback function passed when requestee
-                            //trys to join a chat with the details of the
-                            //requested chat
-                            //fn(newChat);
-                            //inform the user who we want to chat with
-                            //that we have joined their chat thus
-                            //their ui can be updated accordingly
-                            req.session.user = me;
-                            req.session.save(()=>{
-                                socket.broadcast.to(newChat._id).emit("online", {
-                                    name: req.session.user.anonymousName || 'X',
-                                    fid: req.session.user.anonyString,
-                                    anStatus: 'online'
-                                
-                                });
-                                
-                            fn(newChat); //this is the callback and will update the ui of requesting user
-                            }) //function to update the user ui requestion to join a chat
-                        })
-                        .catch((err) => {
-                           // next(err);
-                        });
-                });
-                //end of join chat
                 socket.on("disconnect", () => {
                     socket.broadcast.emit("left", me._id);
                     //trigger an offline timer as soon as the user disconnects from socket layer
@@ -327,11 +243,11 @@ module.exports.normalUserMode = (req, res, next, io) => {
         })
         .then(_ => {
             //query db for the chats but limiting the results based on the page user is in
-            User.find({ _id: { $in: chatids } }).skip((page - 1) * 2)
+            User.find({ _id: { $in: chatids } }).sort('-1').skip((page - 1) * 2)
                 .limit(2)
                 .then((onlineUser) => {
                 //query db for anonymous chat but limiting the result based on the page user is in
-                    User.find({ anonyString: { $in: chatids } }).skip((page - 1) * 2).limit(2)
+                    User.find({ anonyString: { $in: chatids } }).sort('-1').skip((page - 1) * 2).limit(2)
                         .then(anonyusers => {
                             //reform the anonymous user docs
                             if (anonyusers.length > 0) {
@@ -386,88 +302,6 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                     });
 
                                 });
-                                //join  chat listener
-                                socket.on("joinChat", (data, fn) => {
-                                    let uid;
-                                    let newChat;
-                                    //variable to hold the user details
-                                    //who we want to chat
-                                    const chatString = data.chatString; //retrieve the chat string
-                                    //query DB to see if the chatstring exists
-                                    User.findOne({ chatShare: chatString })
-                                        .then((user) => {
-                                    //check if user already exists in our list
-                                            const isUser = req.session.user.chats.find(chat=>chat.chatId.toString() === user._id)
-                                            if(isUser){
-                                            throw new Error('already added chat')
-                                            }
-                                            else if (user._id.toString() === req.session.user._id.toString() || user.anonyString === req.session.user.anonyString.toString()) {
-                                                //tell user they cant add themselves
-                                                throw new Error('you cannot add yourself')
-                                            } else {
-                                                newChat = user; //intialize variable with owner of chat string
-                                                const chats = user.chats; //initialize variable with the chats array of user
-                                                chats.push({
-                                                    chatId: req.session.user._id, //add the id of the user requesting to join a chat to the requested chat array
-                                                    messages: [],
-                                                });
-                                                uid = user._id; //store a copy of the requested  chat id
-                                                user.chats = chats; //store updated version of the requested chat array
-                                                return user.save();
-                                            }
-                                        })
-                                        .catch((err) => {
-                                            //emit a denied event this will be used to update the ui of user that they can't add their self
-                                            socket.emit('denied', { message: err.message })
-                                            throw new Error()
-                                        })
-                                        .then((_) => {
-                                            //retrieve requesting user details on the db
-                                            return User.findById(req.session.user._id);
-                                        })
-                                        .catch((err) => {
-                                            throw err;
-                                        })
-                                        .then((user) => {
-                                            //update chat array of requesting user field with the id of
-                                            // chat 
-                                            me = user;
-                                            const chats = user.chats;
-                                            chats.push({
-                                                chatId: uid,
-                                                messages: [],
-                                            });
-                                            me = user
-                                            return user.save();
-                                        })
-                                        .catch((err) => {
-                                            throw err;
-                                        })
-                                        .then((_) => {
-                                            //call the callback function passed when requesting user
-                                            //trys to add a chat with the details of the
-                                            //chat
-                                            //inform the chat
-                                            //that user have joined their chat thus
-                                            //their ui can be updated accordingly
-                                            req.session.user = me;
-                                            req.session.save(()=>{
-                                                socket.broadcast.to(newChat._id).emit("online", {
-                                                    name: req.session.user.name,
-                                                    fid: req.session.user._id,
-                                                    status: 'online'
-                                                
-                                                });
-                                                
-                                            fn(newChat); //this is the callback and will update the ui of requesting user
-                                            })
-                                        })
-
-                                        .catch((err) => {
-                                        //do nothing for now
-                                        });
-                                });
-                                //end of join chat
                                 socket.on("disconnect", () => {
                                   //  socket.broadcast.emit("left", me._id);
                                     detectors.goOffline(me._id, socket)
@@ -514,7 +348,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                 chat: me.chatShare,
                                 csrfToken:req.csrfToken(),
                                 current: page,
-                                hasNext: 2 * page < nTotalAnonyChats + nTotalOpenChats,
+                                hasNext: 4 * page < nTotalAnonyChats + nTotalOpenChats,
                                 hasPrev: page > 1,
                                 next: page + 1,
                                 prev: page - 1,
@@ -524,8 +358,6 @@ module.exports.normalUserMode = (req, res, next, io) => {
                             });
                         })
                 }) //end of anonyusers then
-
-
         })//end of overall then
 };
 

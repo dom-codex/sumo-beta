@@ -513,12 +513,12 @@ module.exports.getProfilePage = (req, res, next) => {
           the no of records returned based on a chosen
           filtering condition i.e max of 2 users per page
            */
-          User.find({ _id: { $in: chatids } }).skip((page - 1) * 2)
+          User.find({ _id: { $in: chatids } }).sort('-1').skip((page - 1) * 2)
             .limit(2)
             .then(openchats => {
               /*retrive users that chatted with user anonymously
               limiting the records returned by a chosen preference */
-              User.find({ anonyString: { $in: chatids } }).skip((page - 1) * 5)
+              User.find({ anonyString: { $in: chatids } }).sort('-1').skip((page - 1) * 5)
                 .limit(2)
                 .then(anonychats => {
                   //reformating the users returned so that their 
@@ -547,7 +547,7 @@ module.exports.getProfilePage = (req, res, next) => {
                     user: req.session.user,
                     chats: [...filteredUsersList],
                     current: page,
-                    hasNext: 2 * page < nTotalAnonyUsers + ntotalOpenUsers,
+                    hasNext: 4 * page < nTotalAnonyUsers + ntotalOpenUsers,
                     hasPrev: page > 1,
                     next: page + 1,
                     prev: page - 1,

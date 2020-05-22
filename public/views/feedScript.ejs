@@ -125,7 +125,7 @@ $('.userChats').append( `
 <div class="indicator" style="background-color:${ data.status === 'online' || data.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }; display:${ data.status === 'online' || data.anStatus === 'online' ? 'block' : 'none' }"></div>
  <div class="indicator" style="background-color:${ data.anStatus === 'offline' || data.status === 'offline' ? 'grey' : 'rebeccapurple' }; display:${ data.anStatus === 'offline' || data.status === 'offline' ? 'block' : 'none' }"></div>          
   <div class="names"><p>${data.name}</p></div></div>
-  <div class="message"><small></small></div></a>
+  <div class="message"><small>say hi to ${data.name}</small></div></a>
   <small class="brief"></small>
 
   </div> `);
@@ -148,7 +148,7 @@ data.forEach(user => {
 <div class="indicator" style="background-color:${user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }; display:${ user.status === 'online' || user.anStatus === 'online' ? 'block' : 'none' }"></div>
 <div class="indicator" style="background-color:${user.anStatus === 'offline' || user.status === 'offline' ? 'grey' : 'rebeccapurple' }; display:${ user.anStatus === 'offline' || user.status === 'offline' ? 'block' : 'none' }"></div>          
   <div class="names"><p>${user.name}</p></div></div>
-  <div class="message"><small></small></div></a>
+  <div class="message"><small>say hi to ${name}</small></div></a>
   <small class="brief"></small>
 
   </div> `);
