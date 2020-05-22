@@ -39,7 +39,7 @@ next()
 //session store initialization
 app.use(
   session({
-    secret: session_signing,
+    secret: process.env.session_signing,
     resave: false,
     saveUninitialized: false,
     store:new MongoStore({ 
