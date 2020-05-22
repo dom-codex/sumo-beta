@@ -78,7 +78,7 @@ app.use(errorController.get404)
 moongoose
   .connect(uri,{useNewUrlParser:true,useUnifiedTopology:true})
   .then((_) => {
-    server.listen(3000 || process.env.PORT );
+    server.listen(process.env.PORT || 3000 );
     require("./socket").init(server); //socket server initialization
    console.log('connect') 
   }) 
