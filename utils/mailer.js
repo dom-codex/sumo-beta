@@ -2,11 +2,17 @@ const nodemailer = require('nodemailer');
 module.exports.mailer = (req,res,email,name,link)=>{
   const headUrl = process.env.urlHead || `http://localhost:3000`
     const transporter = nodemailer.createTransport({
-        service: "gmail",
+      host: "smtp.mailtrap.io",
+      port: 2525,
+      auth: {
+        user: "746d242333b2a4",
+        pass: "93663e3aafe21d"
+      }  
+      /*service: "gmail",
         auth: {
           user: "sumomessenger.beta@gmail.com",
           pass: process.env.mailer_pass
-        }
+        } */
       
     });
   const mailOptions = {

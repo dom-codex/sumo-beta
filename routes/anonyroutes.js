@@ -56,7 +56,7 @@ router.post('/loginuser',[
               if (result) {
                 return true  
               }else{
-                  Promise.reject('invali or password')
+                  Promise.reject('invalid email or password')
               } 
             })
             }).catch(err=>{

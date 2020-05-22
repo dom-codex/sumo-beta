@@ -644,7 +644,7 @@ module.exports.goAnonymous = (req, res, next) => {
       }
       //update anonymous mode property in  session
       req.session.user.isAnonymous = user.isAnonymous;
-      req.session.save((err) => {
+      return req.session.save((err) => {
         res.redirect(`profile/${req.session.user._id}`)
         //function to notify switching user that switching process is done
       });
@@ -797,7 +797,6 @@ module.exports.sendChat = (req, res, next) => {
       } else {
         userId = user._id
       }
-      console.log(userId)
       //retrive the chats array from senders details
       let friends = user.chats;
       friends = friends.map((chats) => {
@@ -924,7 +923,7 @@ module.exports.removeAChat = (req, res, next) => {
     .then(user => {
       //take user to profile page after execution
       req.session.user = user
-      req.session.save(()=>{
+      return req.session.save(()=>{
         res.redirect(`/profile/${user._id}`)
 
       })
@@ -990,13 +989,17 @@ module.exports.reset = (req, res, next) => {
       if (!user) {
         // tell user details is incorrect
         req.flash('noUser', { message: 'invalid credentials' })
-        return res.redirect('/resetpassword')
+        return req.session.save(()=>{
+         res.redirect('/resetpassword')
+        })
       }
       //verify user phone
       if (user.email !== email) {
         //tell user email is invalid
         req.flash('noUser', { message: 'invalid email' })
-        return res.redirect('/resetpassword')
+        return req.session.save(()=>{
+          return res.redirect('/resetpassword')
+        })
       }
       //generate reset token if all goes well
       crypto.randomBytes(24, (err, buffer) => {
@@ -1025,13 +1028,17 @@ module.exports.getSetNewPassword = (req, res, next) => {
         // send an invalid token message
         //to the password reset home
         req.flash('noUser', { message: 'invalid token' })
-        return res.redirect('/resetpassword')
+        return req.session.save(()=>{
+           res.redirect('/resetpassword')
+        })
       }
       //check if the token has expired
       if (user.tokenMaxAge < Date.now()) {
         //send a message telling user the token has expired
         req.flash('noUser', { message: 'token already expired' })
+       req.session.save(()=>{
         return res.redirect('/resetpassword')
+       })
       }
       //if all goes well render the set new page
       const noUserFound = req.flash('noUser')
@@ -1059,18 +1066,24 @@ module.exports.setNewPassword = (req, res, next) => {
       if (!user) {
         // tell user token is invalid
         req.flash('noUser', { message: 'invalid token' })
-        return res.redirect('/resetpassword')
+        return req.session.save(()=>{
+           res.redirect('/resetpassword')
+        })
       }
       //check if token is expired
       if (user.tokenTime < Date.now()) {
         //tell user token has expired    
         req.flash('noUser', { message: 'token already expired' })
-        return res.redirect('/resetpassword')
+        return req.session.save(()=>{
+          return res.redirect('/resetpassword')
+        })
       }
       if (password !== confirmPassword) {
         //tell user the password does not match
         req.flash('noUser', { message: 'passwords do not match' })
-        return res.redirect(`/setnewpassword/${token}`)
+        return req.session.save(()=>{
+          return res.redirect(`/setnewpassword/${token}`)
+        })
       }
       //hash the new pass word
       bcrypt.hash(password, 12)
@@ -1083,7 +1096,9 @@ module.exports.setNewPassword = (req, res, next) => {
         .then(user => {
           //tell user they can now login
           req.flash('success', true)
-          res.redirect('/getstarted')
+          return req.session.save(()=>{
+            res.redirect('/getstarted')
+          })
         })
     }).catch(err => {
       next(err)

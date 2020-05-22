@@ -47,7 +47,6 @@ nav div{
   margin-top:10px;
   display: none;
   opacity:0;
-  transition:opacity 10s
 }
 .warning-board p {
   background-color: rgba(214, 87, 87,.3);
@@ -105,12 +104,12 @@ nav div{
   to{
     opacity:0;
     display: none;
-    height: 0px;
+    height:0px;
   }
 }
 .display{
   animation-name: show;
-  animation-duration: 10s;
+  animation-duration: 8s;
   display:flex;
   animation-fill-mode: forwards;
 }
