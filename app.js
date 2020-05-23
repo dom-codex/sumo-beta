@@ -20,7 +20,7 @@ const adminrouter = require("./routes/adminRoutes");
 const errorController = require('./controllers/erros')
 //models
 const User = require("./models/user");
-const uri = process.env.db ||`mongodb+srv://dominic:compressor@sumo-nd9pi.gcp.mongodb.net/test?retryWrites=true&w=majority` ;
+const uri = process.env.db  ;
 
 //template engine configuration
 app.set("view engine", "ejs");
@@ -39,7 +39,7 @@ next()
 //session store initialization
 app.use(
   session({
-    secret: process.env.session_signing || 'chemicalengineering',
+    secret: process.env.session_signing,
     resave: false,
     saveUninitialized: false,
     store:new MongoStore({ 
