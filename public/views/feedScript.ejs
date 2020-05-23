@@ -5,6 +5,9 @@
  const sidenav = M.Sidenav.init(ele);
  const elems = document.querySelectorAll('.dropdown-trigger');
   const dropdown = M.Dropdown.init(elems);
+ const instance = M.Sidenav.getInstance($('.sidenav'));
+ instance.open()
+
 });
 
   const feedList = document.querySelector('.feeds')
@@ -83,7 +86,7 @@ indicator2.style.backgroundColor = 'rebeccapurple'
 
     socket.on("notification", (data)=>{
     $('.feeds').append(` 
-     <div class="feedcard">
+     <div class="feedcard" class="Cards">
         <div><p>Message:</p></div>
         <div class="cardb">
         <p>${data.message}</p>
@@ -118,7 +121,7 @@ for(let i=0;i<inputs.length;i++){
 const isRendered = chatsids.some(id=>id === data.fid)
 if(!isRendered || uid == data.fid ){
 $('.userChats').append( `            
- <div class="chat list" id="${data.fid}">
+ <div class="chat list Cards" id="${data.fid}">
   <input class="chatids" type="hidden" value="${data.fid}"/>
 <a href="/chat/${data.fid}" >
 <div class="liststyle">
@@ -141,7 +144,7 @@ data.forEach(user => {
     return
   }
   $('.userChats').append( `            
- <div class="chat list" id="${user._id}">
+ <div class="chat list Cards" id="${user._id}">
   <input class="chatids" type="hidden" value="${user._id}"/>
 <a href="/chat/${user._id}" >
 <div class="liststyle"> 
@@ -188,7 +191,7 @@ fetch('/addchat',{
             $('#largeErr').css('display','none')
           
             $('.userChats').append( `            
- <div class="chat list" id="${res.newchat._id}">
+ <div class="chat list Cards" id="${res.newchat._id}">
   <input class="chatids" type="hidden" value="${res.newchat._id}"/>
 <a href="/chat/${res.newchat._id}" >
 <div class="segment">

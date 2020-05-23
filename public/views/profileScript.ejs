@@ -6,9 +6,9 @@
   const instances = M.Dropdown.init(elems);
   });
   document.addEventListener('DOMContentLoaded', function() {
-  var elems = document.querySelectorAll('.modal');
-  var instances = M.Modal.init(elems);
-});
+  const elems = document.querySelectorAll('.modal');
+  const instances = M.Modal.init(elems);
+  })
 
   const Handler = (e, inputedit) => {
     if (inputedit === "name") {
@@ -186,6 +186,9 @@ const feedLink = `${window.location.origin}/sendmsg/${feedString.val()}`;
 const feedShareInput = $('#feeds');
 const chatLink = $('#chatlink');
 feedShareInput.val(feedLink);
+const waShare = encodeURIComponent(`Hi, i will like to know what you think about me, don't worry i won't know its you!!!  ${feedLink}`)
+document.getElementById('wa-share').href = `https://api.whatsapp.com/send?text=${waShare}`;
+
 //function will dismiss copy notifier
 const dismissCopy = ()=>{
 $('.notifier').css('visibility','hidden')
@@ -213,5 +216,13 @@ document.execCommand("copy");
 $('.notifier').css('visibility','visible')
 setTimeout(dismissCopy,2000)
 }) 
-
+//account deleting script
+$('.logout.delete button').on('click',()=>{
+  const modal = document.querySelector('#modal1');
+  const yesBtn = $('#yes')
+  yesBtn.css('display','none')
+  $('#modal1 p').text('Are you sure you want to delete your account?')
+  const modal1 = M.Modal.getInstance(modal);
+  modal1.open()
+})
 </script>
