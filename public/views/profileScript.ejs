@@ -213,5 +213,13 @@ document.execCommand("copy");
 $('.notifier').css('visibility','visible')
 setTimeout(dismissCopy,2000)
 }) 
-
+//account deleting script
+$('.logout.delete button').on('click',()=>{
+  const modal = document.querySelector('#modal1');
+  const yesBtn = $('#yes')
+  yesBtn.css('display','none')
+  $('#modal1 p').text('Are you sure you want to delete your account?')
+  const modal1 = M.Modal.getInstance(modal);
+  modal1.open()
+})
 </script>

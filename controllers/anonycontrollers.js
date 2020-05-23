@@ -1061,6 +1061,24 @@ module.exports.removeAChat = (req, res, next) => {
       next(err)
     })
 };
+module.exports.deleteAccount = (req,res,next)=>{
+  const id = req.params.id;
+  User.findById(id)
+  .then(user=>{
+    if(!user){
+      throw new Error('invalid id')
+    }
+    return User.findByIdAndDelete(id)
+  }).catch(err=>{
+    if(err.message === 'invalid id'){
+      return
+    }
+  }).then(_=>{
+    res.redirect('/getstarted')
+  }).catch(err=>{
+
+  })
+}
 module.exports.logout = (req, res, next) => {
   //destroy users session
   req.session.destroy((err) => {
