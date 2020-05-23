@@ -82,7 +82,13 @@ nav div{
 .warn small{
   margin-left:39px;
 }
-
+label[for="name"]::after,label[for="phone"]::after,label[for="pwd"]::after,label[for="cpwd"]::after{
+content: '*'
+}
+label[for="pwd"]::after{
+  content: ' :min 5 characters *';
+  font-size:.8em;
+}
 .button{
   display: flex;
   justify-content: flex-end;
