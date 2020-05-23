@@ -20,7 +20,7 @@ const adminrouter = require("./routes/adminRoutes");
 const errorController = require('./controllers/erros')
 //models
 const User = require("./models/user");
-const uri = process.env.db;
+const uri = process.env.db  ;
 
 //template engine configuration
 app.set("view engine", "ejs");
@@ -43,7 +43,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store:new MongoStore({ 
-      url: process.env.session_store }) , 
+      url: process.env.session_store}) , 
       cookie:{
         maxAge:60*60*1000*24*7 //session will last for a week
       }, 
