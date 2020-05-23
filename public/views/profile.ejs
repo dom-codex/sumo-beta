@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:description"   content="<%=user._id%>" />
+    <meta name="robots" content="noindex">
+
     <title>profile</title>
     <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
@@ -29,6 +32,16 @@
     <link href="/sumoProfile.css" type="text/css" rel="stylesheet"/>
   </head>
   <body>
+    <!--
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script> -->
+  
     <input type="hidden" id="uid" value="<%=user._id%>">
   <!--modal with footer-->
   <div id="modal2" class="modal modal-fixed-footer">
@@ -203,6 +216,18 @@
               <label for="phone" class="active">Chat Link</label>
               <div class="copy-btn"><button id="copy2">Copy</button></div>
             </div>
+            <div class="whatsapp-cont">
+              <div class="whatsapp">
+                <div class="icons-whatsapp"><img src="/whatsapp.png"/></div>
+                <a id="wa-share" href=""> Share on whatsapp</a></div>
+              </div>
+              <div>
+                <!--
+                <a href="https://www.facebook.com/sharer/?u=https://sumo-beta.herokuapp.com/sendmsg/3" target="_blank" class="">
+                  <i class="fa fa-facebook-official"></i>
+                  Share on Facebook
+                </a> -->
+              </div>
             <div class="notifier"><p>copied!</p></div>
         </div>
       </div>

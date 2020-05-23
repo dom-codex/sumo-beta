@@ -377,6 +377,18 @@ label{
   color:#fff;
   font-weight:bold
 }
+.icons-whatsapp{
+  width:35px;
+  height:35px;
+  display:inline-block
+}
+.icons-whatsapp img{
+  height:100%
+}
+.whatsapp{
+  display:flex;
+  align-items: center;
+}
 @keyframes show{
   from{
     opacity:1;

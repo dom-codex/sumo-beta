@@ -6,9 +6,9 @@
   const instances = M.Dropdown.init(elems);
   });
   document.addEventListener('DOMContentLoaded', function() {
-  var elems = document.querySelectorAll('.modal');
-  var instances = M.Modal.init(elems);
-});
+  const elems = document.querySelectorAll('.modal');
+  const instances = M.Modal.init(elems);
+  })
 
   const Handler = (e, inputedit) => {
     if (inputedit === "name") {
@@ -186,6 +186,9 @@ const feedLink = `${window.location.origin}/sendmsg/${feedString.val()}`;
 const feedShareInput = $('#feeds');
 const chatLink = $('#chatlink');
 feedShareInput.val(feedLink);
+const waShare = encodeURIComponent(`Hi, i will like to know what you think about me, don't worry i won't know its you!!!  ${feedLink}`)
+document.getElementById('wa-share').href = `https://api.whatsapp.com/send?text=${waShare}`;
+
 //function will dismiss copy notifier
 const dismissCopy = ()=>{
 $('.notifier').css('visibility','hidden')
