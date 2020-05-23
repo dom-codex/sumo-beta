@@ -43,7 +43,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store:new MongoStore({ 
-      url: process.env.session_store || `mongodb+srv://dominic:compressor@sumo-nd9pi.gcp.mongodb.net/test?retryWrites=true&w=majority`}) , 
+      url: process.env.session_store}) , 
       cookie:{
         maxAge:60*60*1000*24*7 //session will last for a week
       }, 
