@@ -915,7 +915,13 @@ module.exports.sendChat = (req, res, next) => {
         userId = user._id
       }
       //retrive the chats array from senders details
-      let friends = user.chats;
+      let friends; 
+      if(user.isAnonymous){
+       friends = user.anonyChats
+      }else{
+        friends = user.chats
+      }
+      //user.chats;
       friends = friends.map((chats) => {
         if (chats.chatId.toString() === receiver.toString()) {
           //add message to chat messages array in user chats
@@ -933,7 +939,11 @@ module.exports.sendChat = (req, res, next) => {
           return chats; //to keep all other chats
         }
       });
-      user.chats = friends;
+      if(user.isAnonymous){
+        user.anonyChats = friends
+      }else{
+        user.chats = friends;
+      }
       return user.save();
     })
     .catch((err) => {

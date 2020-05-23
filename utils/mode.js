@@ -260,7 +260,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                             message:'user removed you'
     
                                         }
-                                    }
+                                    }else{
                                     const myChatsWithUser = me.chats.find(chat => chat.chatId.toString() === a.anonyString.toString())
                                     return {
                                         name: a.anonymousName,
@@ -271,6 +271,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                         time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].time : ''
 
                                     }
+                                }
                                 })
                             }
                             const feedRoom = io();
@@ -319,7 +320,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                         message:'user removed you'
 
                                     }
-                                }
+                                }else{
                                 const myChatsWithUser = me.chats.find(chat => chat.chatId.toString() === aUser._id.toString())
                                 return {
                                     name: aUser.name,
@@ -329,6 +330,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                     message:myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].body : 'say hi',
                                     time:myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].time : ''
                                 }
+                            }
                             })
                             //filter array so that new messages are displayed first
                             let filteredUsersList = [];
