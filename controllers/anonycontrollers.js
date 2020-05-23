@@ -17,6 +17,8 @@ module.exports.gethome = (req, res, next) => {
   res.render("home", { save: didSave });
 };
 module.exports.createChannel = (req, res, next) => {
+  //retrieve query parameter
+  const toLogin = req.query.login || false
   //check if user input does not meet requirements
   //send appropriate error messages where neccessary
   const error = req.flash('erros')
@@ -87,6 +89,7 @@ if(error.length > 0 && error[0].mode === 'login'){
           message:'', 
         }, 
       },
+    toLogin:toLogin,
     success: success.length > 0 ? true :false//success //if user was created successfully
   });
 };
