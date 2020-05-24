@@ -1,91 +1,106 @@
 <script>
-    //script for side nav
-   document.addEventListener('DOMContentLoaded', function() {
- const ele = document.querySelectorAll('.sidenav');
- const sidenav = M.Sidenav.init(ele);
- const elems = document.querySelectorAll('.dropdown-trigger');
-  const dropdown = M.Dropdown.init(elems);
- const instance = M.Sidenav.getInstance($('.sidenav'));
- instance.open()
+  //script for side nav
+  document.addEventListener("DOMContentLoaded", function () {
+    const ele = document.querySelectorAll(".sidenav");
+    const sidenav = M.Sidenav.init(ele);
+    const elems = document.querySelectorAll(".dropdown-trigger");
+    const dropdown = M.Dropdown.init(elems);
+    const instance = M.Sidenav.getInstance($(".sidenav"));
+    instance.open();
+  });
 
-});
-
-  const feedList = document.querySelector('.feeds')
+  const feedList = document.querySelector(".feeds");
   feedList.scrollTop = feedList.scrollHeight;
 
-    const socket = io();
-    let timer;
-  socket.on('disconnect', (reason) => {
+  const socket = io();
+  let timer;
+  socket.on("disconnect", (reason) => {
     //refresh browser if server socket disconnects
-   if(reason === 'transport close'){
-    timer = setTimeout(()=>{
-      alert('underlying coonection lost please reload')
-    },4000)
-   } 
+    if (reason === "transport close") {
+      timer = setTimeout(() => {
+        alert("underlying coonection lost please reload");
+      }, 4000);
+    }
   });
-socket.on('connect', (error) => {
-clearTimeout(timer)
-});
-//event for status
-socket.on('offline',(data)=>{
-  const cids = $('body .sidenav').find('.chatids');
-for(let i = 0; i<cids.length;i++){
-let cid = cids[i];
-if(cid.value.toString() === data.chat.toString()){
-  const indicator = cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1].childNodes[1];
-  const indicator2 = cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1].childNodes[3];
-  indicator.style.backgroundColor = 'grey'
-  indicator2.style.backgroundColor = 'grey'
-}
-}
-   })
+  socket.on("connect", (error) => {
+    clearTimeout(timer);
+  });
+  //event for status
+  socket.on("offline", (data) => {
+    const cids = $("body .sidenav").find(".chatids");
+    for (let i = 0; i < cids.length; i++) {
+      let cid = cids[i];
+      if (cid.value.toString() === data.chat.toString()) {
+        const indicator =
+          cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
+            .childNodes[1];
+        const indicator2 =
+          cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
+            .childNodes[3];
+        indicator.style.backgroundColor = "grey";
+        indicator2.style.backgroundColor = "grey";
+      }
+    }
+  });
 
-socket.on('active',data=>{
-const cids = $('body .sidenav').find('.chatids');
-for(let i = 0; i<cids.length;i++){
-let cid = cids[i];
-if(cid.value.toString() === data.chat.toString()){
-const indicator = cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1].childNodes[1];
-const indicator2 = cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1].childNodes[3];
-indicator.style.backgroundColor = 'rebeccapurple'
-indicator2.style.backgroundColor = 'rebeccapurple'
-}
-}
-   }) 
-   //detector for  large screen
-   socket.on('offline',(data)=>{
-  const cids = $('.window').find('.chatids');
-for(let i = 0; i<cids.length;i++){
-let cid = cids[i];
-if(cid.value.toString() === data.chat.toString()){
-  const indicator = cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1].childNodes[1];
-  const indicator2 = cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1].childNodes[3];
-  indicator.style.backgroundColor = 'grey'
-  indicator2.style.backgroundColor = 'grey'
-}
-}
-   })
+  socket.on("active", (data) => {
+    const cids = $("body .sidenav").find(".chatids");
+    for (let i = 0; i < cids.length; i++) {
+      let cid = cids[i];
+      if (cid.value.toString() === data.chat.toString()) {
+        const indicator =
+          cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
+            .childNodes[1];
+        const indicator2 =
+          cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
+            .childNodes[3];
+        indicator.style.backgroundColor = "rebeccapurple";
+        indicator2.style.backgroundColor = "rebeccapurple";
+      }
+    }
+  });
+  //detector for  large screen
+  socket.on("offline", (data) => {
+    const cids = $(".window").find(".chatids");
+    for (let i = 0; i < cids.length; i++) {
+      let cid = cids[i];
+      if (cid.value.toString() === data.chat.toString()) {
+        const indicator =
+          cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
+            .childNodes[1];
+        const indicator2 =
+          cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
+            .childNodes[3];
+        indicator.style.backgroundColor = "grey";
+        indicator2.style.backgroundColor = "grey";
+      }
+    }
+  });
 
-socket.on('active',data=>{
-const cids = $('.window').find('.chatids');
-for(let i = 0; i<cids.length;i++){
-let cid = cids[i];
-if(cid.value.toString() === data.chat.toString()){
-const indicator = cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1].childNodes[1];
-const indicator2 = cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1].childNodes[3];
-indicator.style.backgroundColor = 'rebeccapurple'
-indicator2.style.backgroundColor = 'rebeccapurple'
-}
-}
-   })
-//end of event for status
-    socket.on("connect",(socketio)=>{
-      const uid = document.querySelector('#uid');
-      socket.emit("identify",uid.value);
-    })
+  socket.on("active", (data) => {
+    const cids = $(".window").find(".chatids");
+    for (let i = 0; i < cids.length; i++) {
+      let cid = cids[i];
+      if (cid.value.toString() === data.chat.toString()) {
+        const indicator =
+          cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
+            .childNodes[1];
+        const indicator2 =
+          cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
+            .childNodes[3];
+        indicator.style.backgroundColor = "rebeccapurple";
+        indicator2.style.backgroundColor = "rebeccapurple";
+      }
+    }
+  });
+  //end of event for status
+  socket.on("connect", (socketio) => {
+    const uid = document.querySelector("#uid");
+    socket.emit("identify", uid.value);
+  });
 
-    socket.on("notification", (data)=>{
-    $('.feeds').append(` 
+  socket.on("notification", (data) => {
+    $(".feeds").append(` 
      <div class="feedcard" class="Cards">
         <div><p>Message:</p></div>
         <div class="cardb">
@@ -93,194 +108,231 @@ indicator2.style.backgroundColor = 'rebeccapurple'
         </div>
         <div class="cardf"><small>#${data.length}</small> <i>sent: ${data.time}</i></div>
       </div> `);
-      feedWindow.scrollTop = feedWindow.scrollHeight
-      $('.newfeedwindow').css('display','none')
-});
-// tell others you are online
-//const id = document.querySelector('#uid').value;
-socket.on('denied',(data)=>{
-$('.errdisplay').text(data.message);
-$('.errdisplay').css('display','inline'); 
- $('#largeErr').text(data.message);
-$('#largeErr').css('display','inline');
-setTimeout(()=>{
-  $('.errdisplay').css('display','none'); 
-  $('#largeErr').css('display','none');
-},2600)
-})
-//listener for added chat
-socket.on("online", (data) => {   
-//to notify other connected sockets
-const uid = document.querySelector('#uid').value;
-
-const chatsids = [];
-const inputs = $('.chatids');
-for(let i=0;i<inputs.length;i++){
- chatsids.push(inputs[i].value);
-}
-const isRendered = chatsids.some(id=>id === data.fid)
-if(!isRendered || uid == data.fid ){
-$('.userChats').append( `            
- <div class="chat list Cards" id="${data.fid}">
-  <input class="chatids" type="hidden" value="${data.fid}"/>
-<a href="/chat/${data.fid}" >
-<div class="liststyle">
-<div class="indicator" style="background-color:${ data.status === 'online' || data.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }; display:${ data.status === 'online' || data.anStatus === 'online' ? 'block' : 'none' }"></div>
- <div class="indicator" style="background-color:${ data.anStatus === 'offline' || data.status === 'offline' ? 'grey' : 'rebeccapurple' }; display:${ data.anStatus === 'offline' || data.status === 'offline' ? 'block' : 'none' }"></div>          
-  <div class="names"><p>${data.name}</p></div></div>
-  <div class="message"><small>say hi to ${data.name}</small></div></a>
-  <small class="brief"></small>
+    feedWindow.scrollTop = feedWindow.scrollHeight;
+    $(".newfeedwindow").css("display", "none");
+  });
+  // tell others you are online
+  //const id = document.querySelector('#uid').value;
+  socket.on("denied", (data) => {
+    $(".errdisplay").text(data.message);
+    $(".errdisplay").css("display", "inline");
+    $("#largeErr").text(data.message);
+    $("#largeErr").css("display", "inline");
+    setTimeout(() => {
+      $(".errdisplay").css("display", "none");
+      $("#largeErr").css("display", "none");
+    }, 2600);
+  });
+  //listener for added chat
+  socket.on("online", (data) => {
+    const chatTiles= document.querySelector('.userChats').children
+    if (chatTiles.length >= 3) {
+      document.querySelector('.userChats').removeChild(chatTiles[chatTiles.length - 1])
+    }
+    //to notify other connected sockets
+    const uid = document.querySelector("#uid").value;
+    const inputs = $(".chatids");
+    const chatsids = [];
+    for (let i = 0; i < inputs.length; i++) {
+      chatsids.push(inputs[i].value);
+    }
+    const isRendered = chatsids.some((id) => id === data.fid);
+    if (!isRendered || uid == data.fid) {
+      $(".userChats").prepend(`            
+<div class="chat list Cards" id="${data.fid}" style="background-color:true ? 'white' : '' ">
+  <a href="${data.fid}">
+     <input class="chatids" type="hidden" value="${data.fid}"/>
+      <div class="segment">
+       <div class="liststyle">
+        <div class="indicator" style="background-color:${ data.status === 'online' || data.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }; display:${ data.status === 'online' || data.anStatus === 'online' ? 'block' : 'none' }"></div>
+     <div class="indicator" style="background-color:${ data.anStatus === 'offline' || data.status === 'offline' ? 'grey' : 'rebeccapurple' }; display:${ data.anStatus === 'offline' || data.status === 'offline' ? 'block' : 'none' }"></div>
+     <div class="names"><p>${data.name}</p></div></div>
+     <div class="message"><small></small></div>
+    </a>
+   <div> <small class="brief">say hi to ${data.name}</small></div>
 
   </div> `);
-  $('.newchatwindow').css('display','none')
-}
-});
+      $(".newchatwindow").css("display", "none");
+    }
+  });
 
-socket.on('activeUsers',(data)=>{
-//for emitting socket
-const uid = document.querySelector('#uid');
-data.forEach(user => {
-  if(user._id == uid.value){
-    return
-  }
-  $('.userChats').append( `            
+  socket.on("activeUsers", (data) => {
+    //for emitting socket
+    const uid = document.querySelector("#uid");
+    data.forEach((user) => {
+      if (user._id == uid.value) {
+        return;
+      }
+      $(".userChats").append(`            
  <div class="chat list Cards" id="${user._id}">
   <input class="chatids" type="hidden" value="${user._id}"/>
 <a href="/chat/${user._id}" >
 <div class="liststyle"> 
-<div class="indicator" style="background-color:${user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }; display:${ user.status === 'online' || user.anStatus === 'online' ? 'block' : 'none' }"></div>
-<div class="indicator" style="background-color:${user.anStatus === 'offline' || user.status === 'offline' ? 'grey' : 'rebeccapurple' }; display:${ user.anStatus === 'offline' || user.status === 'offline' ? 'block' : 'none' }"></div>          
+<div class="indicator" style="background-color:${
+        user.status === "online" || user.anStatus === "online"
+          ? "rebeccapurple"
+          : "grey"
+      }; display:${
+        user.status === "online" || user.anStatus === "online"
+          ? "block"
+          : "none"
+      }"></div>
+<div class="indicator" style="background-color:${
+        user.anStatus === "offline" || user.status === "offline"
+          ? "grey"
+          : "rebeccapurple"
+      }; display:${
+        user.anStatus === "offline" || user.status === "offline"
+          ? "block"
+          : "none"
+      }"></div>          
   <div class="names"><p>${user.name}</p></div></div>
-  <div class="message"><small>say hi to ${name}</small></div></a>
-  <small class="brief"></small>
-
+  <small class="brief">say hi to ${user.name}</small></div>
+  <div class="message"><small></small></div>
+  </a>
   </div> `);
-  $('.newchatwindow').css('display','none')
-});
-})
-//gets start chat button
-const joinHandler = (fieldtoselect) =>{
-//obtain the inputed chat string
-const chatString = $(fieldtoselect).val();
-const token = $('input[name="_csrf"]').val()
-if(!chatString || chatString === ''){
-  $('.errdisplay').text('field cannot be empty').css('display','block')
-  $('#largeErr').text('field cannot be empty').css('display','block')
-  return
-}
-$('.spinner-cont').css('display','flex');
-fetch('/addchat',{
-          method:'POST',
-          headers:{
-            "csrf-token":token,
-            "Content-Type":'application/json'
-          },
-          body:JSON.stringify({
-           chatString:chatString
-          })
-        })
-        .then(res=>res.json())
-        .then(res=>{
-          $('.spinner-cont').css('display','none');
-          if(res.code === 400){
-            $('.errdisplay').text(res.message).css('display','block')
-            $('#largeErr').text(res.message).css('display','block')
-          }
-         else if(res.code === 200){
-          $('.errdisplay').css('display','none')
-            $('#largeErr').css('display','none')
-          
-            $('.userChats').append( `            
+      $(".newchatwindow").css("display", "none");
+    });
+  });
+  //gets start chat button
+  const joinHandler = (fieldtoselect) => {
+    //obtain the inputed chat string
+    const chatString = $(fieldtoselect).val();
+    const token = $('input[name="_csrf"]').val();
+    if (!chatString || chatString === "") {
+      $(".errdisplay").text("field cannot be empty").css("display", "block");
+      $("#largeErr").text("field cannot be empty").css("display", "block");
+      return;
+    }
+    $(".spinner-cont").css("display", "flex");
+    fetch("/addchat", {
+      method: "POST",
+      headers: {
+        "csrf-token": token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        chatString: chatString,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        $(".spinner-cont").css("display", "none");
+        if (res.code === 400) {
+          $(".errdisplay").text(res.message).css("display", "block");
+          $("#largeErr").text(res.message).css("display", "block");
+        } else if (res.code === 200) {
+          $(".errdisplay").css("display", "none");
+          $("#largeErr").css("display", "none");
+
+          $(".userChats").append(`            
  <div class="chat list Cards" id="${res.newchat._id}">
   <input class="chatids" type="hidden" value="${res.newchat._id}"/>
 <a href="/chat/${res.newchat._id}" >
 <div class="segment">
 <div class="liststyle">
-  <div class="indicator" style="background-color:${ res.newchat.status === 'online' || res.newchat.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }; display:${ res.newchat.status === 'online' || res.newchat.anStatus === 'online' ? 'block' : 'none' }"></div>
- <div class="indicator" style="background-color:${ res.newchat.anStatus === 'offline' || res.newchat.status === 'offline' ? 'grey' : 'rebeccapurple' }; display:${ res.newchat.anStatus === 'offline' || res.newchat.status === 'offline' ? 'block' : 'none' }"></div>           
+  <div class="indicator" style="background-color:${
+    res.newchat.status === "online" || res.newchat.anStatus === "online"
+      ? "rebeccapurple"
+      : "grey"
+  }; display:${
+            res.newchat.status === "online" || res.newchat.anStatus === "online"
+              ? "block"
+              : "none"
+          }"></div>
+ <div class="indicator" style="background-color:${
+   res.newchat.anStatus === "offline" || res.newchat.status === "offline"
+     ? "grey"
+     : "rebeccapurple"
+ }; display:${
+            res.newchat.anStatus === "offline" ||
+            res.newchat.status === "offline"
+              ? "block"
+              : "none"
+          }"></div>           
   <div class="names"><p>${res.newchat.name}</p></div></div>
   <small class="brief">say hi to ${res.newchat.name}</small></div>
   <div class="message"><small></small></div>
   </a>
-</div> `)
-$(fieldtoselect).val('')
-$('.new').css('display','none')
-         }
-        })
-/*socket.emit('joinChat',{chatString:chatString},(chatuser)=>{
-  //user details is appended to the ui
-  $('.userChats').append( `            
- <div class="chat list" id="${chatuser._id}">
-  <input class="chatids" type="hidden" value="${chatuser._id}"/>
-<a href="/chat/${chatuser._id}" >
-<div class="liststyle">
-<div class="indicator" style="background-color:${ chatuser.status === 'online' || chatuser.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }; display:${ chatuser.status === 'online' || chatuser.anStatus === 'online' ? 'block' : 'none' }"></div>
- <div class="indicator" style="background-color:${ chatuser.anStatus === 'offline' || chatuser.status === 'offline' ? 'grey' : 'rebeccapurple' }; display:${ chatuser.anStatus === 'offline' || chatuser.status === 'offline' ? 'block' : 'none' }"></div>          
-  <div class="names"><p>${chatuser.name}</p></div></div>
-  <div class="message"><small></small></div></a>
-  <small class="brief"></small>
-</div> `)
-$(fieldtoselect).val(' ')
-$('.new').css('display','none')
-})*/
-}
-const chatBtn = $('#startchat');
-const largeChatBtn = $('#largeStartChat');
-chatBtn.on('click',()=>
-joinHandler('#chatString'))
-largeChatBtn.on('click',()=>
-joinHandler('#chatStringLarge'))
+</div> `);
+          $(fieldtoselect).val("");
+          $(".new").css("display", "none");
+        }
+      });
+    /*socket.emit('joinChat',{chatString:chatString},(chatuser)=>{
+      //user details is appended to the ui
+      $('.userChats').append( `            
+     <div class="chat list" id="${chatuser._id}">
+      <input class="chatids" type="hidden" value="${chatuser._id}"/>
+    <a href="/chat/${chatuser._id}" >
+    <div class="liststyle">
+    <div class="indicator" style="background-color:${ chatuser.status === 'online' || chatuser.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }; display:${ chatuser.status === 'online' || chatuser.anStatus === 'online' ? 'block' : 'none' }"></div>
+     <div class="indicator" style="background-color:${ chatuser.anStatus === 'offline' || chatuser.status === 'offline' ? 'grey' : 'rebeccapurple' }; display:${ chatuser.anStatus === 'offline' || chatuser.status === 'offline' ? 'block' : 'none' }"></div>          
+      <div class="names"><p>${chatuser.name}</p></div></div>
+      <div class="message"><small></small></div></a>
+      <small class="brief"></small>
+    </div> `)
+    $(fieldtoselect).val(' ')
+    $('.new').css('display','none')
+    })*/
+  };
+  const chatBtn = $("#startchat");
+  const largeChatBtn = $("#largeStartChat");
+  chatBtn.on("click", () => joinHandler("#chatString"));
+  largeChatBtn.on("click", () => joinHandler("#chatStringLarge"));
 
-socket.on('disconnect',()=>{
-  socket.disconnect(true);
-  socket.removeAllListeners('connect')
-})    
-  socket.on('notify',(data)=>{
-  //data should contain the last message in the list
-  //data should also contain the no of new messages
+  socket.on("disconnect", () => {
+    socket.disconnect(true);
+    socket.removeAllListeners("connect");
+  });
+  socket.on("notify", (data) => {
+    //data should contain the last message in the list
+    //data should also contain the no of new messages
 
-  const cids = $('#userChatsSmall').find('.chatids');
-  for(let i = 0; i<cids.length;i++){
-  let cid = cids[i];
-  if(cid.value.toString() === data.id.toString()){
-   const small = cid.parentNode.childNodes[5];
-   const messageIdicator = cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
-   messageIdicator.textContent = ''
-   messageIdicator.textContent = data.msg
-   small.textContent = ' '
-   small.textContent = data.time;
-//move the notification to the top
-const parent = $('#userChatsSmall');
-//add to the top  of the list
-cid.parentNode.parentNode.style.backgroundColor = '#fff'
-const content = cid.parentNode.parentNode;
-cid.parentNode.parentNode.remove();
-parent.prepend(content);
-}else{
-  continue;
-} 
-  } 
-  //for large chat window 
-  const ids = $('#userChatsLarge').find('.chatids');
-  for(let i = 0; i<ids.length;i++){
-  let cid = ids[i];
-  if(cid.value.toString() === data.id.toString()){
-   const small = cid.parentNode.childNodes[5];
-   const messageIdicator = cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
-   messageIdicator.textContent = ''
-   messageIdicator.textContent = data.msg
-   small.textContent = ' '
-   small.textContent = data.time;
-//move the notification to the top
-const parent = $('#userChatsLarge');
-//add to the top  of the list
-cid.parentNode.parentNode.style.backgroundColor = '#fff'
-const content = cid.parentNode.parentNode;
-cid.parentNode.parentNode.remove();
-parent.prepend(content);
-}else{
-  continue;
-} 
-  }
-})
+    const cids = $("#userChatsSmall").find(".chatids");
+    for (let i = 0; i < cids.length; i++) {
+      let cid = cids[i];
+      if (cid.value.toString() === data.id.toString()) {
+        const small = cid.parentNode.childNodes[5];
+        const messageIdicator =
+          cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+        messageIdicator.textContent = "";
+        messageIdicator.textContent = data.msg;
+        small.textContent = " ";
+        small.textContent = data.time;
+        //move the notification to the top
+        const parent = $("#userChatsSmall");
+        //add to the top  of the list
+        cid.parentNode.parentNode.style.backgroundColor = "#fff";
+        const content = cid.parentNode.parentNode;
+        cid.parentNode.parentNode.remove();
+        parent.prepend(content);
+      } else {
+        continue;
+      }
+    }
+    //for large chat window
+    const ids = $("#userChatsLarge").find(".chatids");
+    for (let i = 0; i < ids.length; i++) {
+      let cid = ids[i];
+      if (cid.value.toString() === data.id.toString()) {
+        const small = cid.parentNode.childNodes[5];
+        const messageIdicator =
+          cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+        messageIdicator.textContent = "";
+        messageIdicator.textContent = data.msg;
+        small.textContent = " ";
+        small.textContent = data.time;
+        //move the notification to the top
+        const parent = $("#userChatsLarge");
+        //add to the top  of the list
+        cid.parentNode.parentNode.style.backgroundColor = "#fff";
+        const content = cid.parentNode.parentNode;
+        cid.parentNode.parentNode.remove();
+        parent.prepend(content);
+      } else {
+        continue;
+      }
+    }
+  });
 </script>

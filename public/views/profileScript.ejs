@@ -126,6 +126,8 @@ clearTimeout(timer)
 
 //event listeners for the various modal buttons
 const removeHandler = (e,idToRemove)=>{
+$('#delete').css('display','none')
+$('#yes').css('display','inline-block')
 const yes = $('.modal-footer button:nth-child(2)');
 yes.on('click',()=>{
 const form = e.parentNode.parentNode.childNodes[1];
@@ -219,6 +221,7 @@ setTimeout(dismissCopy,2000)
 //account deleting script
 $('.logout.delete button').on('click',()=>{
   const modal = document.querySelector('#modal1');
+  $('#delete').css('display','inline-block')
   const yesBtn = $('#yes')
   yesBtn.css('display','none')
   $('#modal1 p').text('Are you sure you want to delete your account?')
