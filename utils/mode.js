@@ -434,7 +434,17 @@ module.exports.normalChatMode = (req, res, next, io) => {
                   //user joins room corresponding to their id and that of the chats
                   //this to maintain uniqueness
                   socket.join(`${req.session.user._id}${id}`);
-                    socket.on('receive', () => {
+                  socket.on('typing',(friendId)=>{
+                      io().
+                      to(`${friendId}${req.session.user._id}`)
+                      .emit('isTyping')
+                  })                   
+                   socket.on('stopTyping',(friendId)=>{
+                      io().
+                      to(`${friendId}${req.session.user._id}`)
+                      .emit('stoppedTyping')
+                  })  
+                  socket.on('receive', () => {
                         //set all isNew field in the mesage
                         //to false if user reads message immediately
                         User.findById(req.session.user._id)

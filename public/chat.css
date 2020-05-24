@@ -25,6 +25,7 @@ nav{
   color:#fff;
   font-weight:bold;
   margin-top:5px;
+  word-wrap: break-word;
 }
 .hbw div:nth-child(1) p::first-letter{
   text-transform: uppercase;
@@ -46,6 +47,10 @@ a{
 #status{
   color:#fff;
   margin-left:5px;
+}
+#typing{
+  display:none;
+  color:#fff
 }
 section{
   height:100vh;

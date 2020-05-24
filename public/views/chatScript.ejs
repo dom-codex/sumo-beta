@@ -13,8 +13,8 @@ socket.on('connect', (error) => {
   clearTimeout(timer)
 });
       socket.on('chatMsg',(data)=>{
-      
         const msgWindow = $('.chats');
+        $('#typingIndicator').remove()
         msgWindow.append( `
         <span class="u1 chat">${data.message}
           <div class="time">${data.time}</div>
@@ -84,5 +84,29 @@ socket.on('connect', (error) => {
      })
      $('#msg').on('focus',()=>{
        $('.emoticons').css('display','none')
+     })
+     //typing indicator
+     const fid = $('#friendId').val()
+     $('textarea').focus(()=>{
+       socket.emit('typing',fid)
+     })
+     $('textarea').blur(()=>{
+       socket.emit('stopTyping',fid)
+     })
+     socket.on('isTyping',()=>{
+       const typingIndicator = document.querySelector('#typingIndicator')
+       console.log(typingIndicator)
+       if(!typingIndicator){
+        $('.chats').append( `             
+            <span class="u1 chat" id="typingIndicator">typing..
+                </span>`)
+       }
+       $('#status').css('display','none')
+       $('#typing').css('display','block')
+     })    
+      socket.on('stoppedTyping',()=>{
+       $('#typingIndicator').remove()
+       $('#status').css('display','block')
+       $('#typing').css('display','none')
      })
     </script>

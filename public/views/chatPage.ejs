@@ -32,11 +32,12 @@
   <body>
     <section>
     <input type="hidden" value="<%= fid%>" id="friendId">
-        <heading>
+        <header>
       <div class="hbw">
-        <div>
-          <p><%=friend%></p>
+        <div id="palname">
+          <p><%=friend.split(' ')[0]%></p>
           <small id="status"><%=status%></small>
+          <small id="typing">typing...</small>
         </div>
         <div class="hnav">
           <!-- nav section use vector icons later to rep the variouslinks-->
@@ -48,7 +49,7 @@
             </nav></div>
         </div>
       </div>
-    </heading>
+    </header>
 
       <div class="chats">
         <% if(meChats.length > 0) { %>

@@ -65,7 +65,7 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
             <div class="input wrapper input-field">
             <i class="material-icons prefix">account_circle</i>
               <label for="name">Name</label> 
-              <input id="name" name="name" type="text"  style="border-bottom-color:<%= errors.nameError.isAvailable ? 'red' : '' %>" >
+              <input id="name" maxlength="30" name="name" type="text"  style="border-bottom-color:<%= errors.nameError.isAvailable ? 'red' : '' %>" >
               <% if(errors.nameError.isAvailable) { %>
                 <div class="warn" style="display:<%= errors.nameError.isAvailable? 'block' : 'none' %>"><small style="color:<%= errors.nameError.isAvailable ? 'red' : '' %>"><%=errors.nameError.message%></small></div>
                 <%}%>

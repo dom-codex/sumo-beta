@@ -71,7 +71,7 @@ clearTimeout(timer)
       document.querySelector('#nameedit').style.display = 'inline-block'
       nameCancel.style.display = "none";
       nameDone.style.display = "none";
-      document.querySelector('h2').textContent = newName;
+      document.querySelector('h2').textContent = newName.split(' ')[0];
     });
   })
 

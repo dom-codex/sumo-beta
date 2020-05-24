@@ -12,6 +12,7 @@ body{
 }
 nav{
   background-color:rebeccapurple;
+  min-height: auto;
 }
 h2{
   margin:0;

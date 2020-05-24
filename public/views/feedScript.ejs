@@ -146,10 +146,10 @@
        <div class="liststyle">
         <div class="indicator" style="background-color:${ data.status === 'online' || data.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }; display:${ data.status === 'online' || data.anStatus === 'online' ? 'block' : 'none' }"></div>
      <div class="indicator" style="background-color:${ data.anStatus === 'offline' || data.status === 'offline' ? 'grey' : 'rebeccapurple' }; display:${ data.anStatus === 'offline' || data.status === 'offline' ? 'block' : 'none' }"></div>
-     <div class="names"><p>${data.name}</p></div></div>
+     <div class="names"><p>${data.name.split(' ')[0]}</p></div></div>
      <div class="message"><small></small></div>
     </a>
-   <div> <small class="brief">say hi to ${data.name}</small></div>
+   <div> <small class="brief">say hi to ${data.name.split(' ')[0]}</small></div>
 
   </div> `);
       $(".newchatwindow").css("display", "none");
@@ -186,8 +186,8 @@
           ? "block"
           : "none"
       }"></div>          
-  <div class="names"><p>${user.name}</p></div></div>
-  <small class="brief">say hi to ${user.name}</small></div>
+  <div class="names"><p>${user.name.split(' ')[0]}</p></div></div>
+  <small class="brief">say hi to ${user.name.split(' ')[0]}</small></div>
   <div class="message"><small></small></div>
   </a>
   </div> `);
@@ -250,8 +250,8 @@
               ? "block"
               : "none"
           }"></div>           
-  <div class="names"><p>${res.newchat.name}</p></div></div>
-  <small class="brief">say hi to ${res.newchat.name}</small></div>
+  <div class="names"><p>${res.newchat.name.split(' ')[0]}</p></div></div>
+  <small class="brief">say hi to ${res.newchat.name.split(' ')[0]}</small></div>
   <div class="message"><small></small></div>
   </a>
 </div> `);
