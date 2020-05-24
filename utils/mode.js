@@ -22,7 +22,9 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
             nAnonyChats = n
             //get actual details of users we are chatting with anonymously but limiting
             //the result by a chosen preference
-            return User.find({ _id: { $in: chatids } }).sort('-1').skip((page - 1) * 2)
+            return User.find({ _id: { $in: chatids } })
+            .sort({$natural:-1})
+            .skip((page - 1) * 2)
                 .limit(2)
         }).then((onlineUser) => {
             //online user will be docs of the with the specified ids
@@ -224,10 +226,10 @@ module.exports.normalUserMode = (req, res, next, io) => {
         .then((user) => {
             me = user
             //extract all chat ids in user chats array
-            const chatid = user.chats.map((id) => {
+            let chatid = user.chats.map((id) => {
                 return id.chatId;
             });
-            chatids = chatid;
+            chatids = chatid
             //get a count of the total chats user has
             return User.find({ _id: { $in: chatids } }).countDocuments()
         })
@@ -243,11 +245,11 @@ module.exports.normalUserMode = (req, res, next, io) => {
         })
         .then(_ => {
             //query db for the chats but limiting the results based on the page user is in
-            User.find({ _id: { $in: chatids } }).sort('-1').skip((page - 1) * 2)
+            User.find({ _id: { $in: chatids } }).sort({$natural:-1}).skip((page - 1) * 2)
                 .limit(2)
                 .then((onlineUser) => {
                 //query db for anonymous chat but limiting the result based on the page user is in
-                    User.find({ anonyString: { $in: chatids } }).sort('-1').skip((page - 1) * 2).limit(2)
+                    User.find({ anonyString: { $in: chatids } }).sort({$natural:-1}).skip((page - 1) * 2).limit(2)
                         .then(anonyusers => {
                             //reform the anonymous user docs
                             if (anonyusers.length > 0) {
@@ -350,7 +352,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                 chat: me.chatShare,
                                 csrfToken:req.csrfToken(),
                                 current: page,
-                                hasNext: 4 * page < nTotalAnonyChats + nTotalOpenChats,
+                                hasNext: 2 * page < nTotalAnonyChats + nTotalOpenChats,
                                 hasPrev: page > 1,
                                 next: page + 1,
                                 prev: page - 1,
