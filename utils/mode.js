@@ -23,7 +23,7 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
             //get actual details of users we are chatting with anonymously but limiting
             //the result by a chosen preference
             return User.find({ _id: { $in: chatids } })
-            .sort({$natural:-1})
+            .sort({'chats.messages.stamp':-1})
             .skip((page - 1) * 2)
                 .limit(2)
         }).then((onlineUser) => {
@@ -245,7 +245,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
         })
         .then(_ => {
             //query db for the chats but limiting the results based on the page user is in
-            User.find({ _id: { $in: chatids } }).sort({$natural:-1}).skip((page - 1) * 2)
+            User.find({ _id: { $in: chatids } }).sort({'chats.messages.stamp':-1}).skip((page - 1) * 2)
                 .limit(2)
                 .then((onlineUser) => {
                 //query db for anonymous chat but limiting the result based on the page user is in
@@ -270,7 +270,8 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                         anStatus:a.anonymousStatus,
                                         message:myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].body : 'anonymous chat',
                                         isNew:myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].isMsgNew : false,
-                                        time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].time : ''
+                                        time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].time : '',
+                                        stamp: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].stamp : ''
 
                                     }
                                 }
@@ -330,14 +331,15 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                     status:aUser.status,
                                     isNew:myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].isMsgNew : false,
                                     message:myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].body : 'say hi',
-                                    time:myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].time : ''
+                                    time:myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].time : '',
+                                    stamp:myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].stamp : ''
                                 }
                             }
                             })
                             //filter array so that new messages are displayed first
                             let filteredUsersList = [];
                             [...reformedChatList, ...anonymous].forEach(user => {
-                                if (user.isNew || user.status === 'online' || user.anStatus === 'online') {
+                                if (user.isNew || user.status === 'online'|| user.anStatus === 'online') {
                                     filteredUsersList.unshift(user)
                                 } else {
                                     filteredUsersList.push(user)

@@ -288,7 +288,6 @@
   socket.on("notify", (data) => {
     //data should contain the last message in the list
     //data should also contain the no of new messages
-
     const cids = $("#userChatsSmall").find(".chatids");
     for (let i = 0; i < cids.length; i++) {
       let cid = cids[i];
@@ -307,6 +306,7 @@
         const content = cid.parentNode.parentNode;
         cid.parentNode.parentNode.remove();
         parent.prepend(content);
+        break
       } else {
         continue;
       }
@@ -329,10 +329,35 @@
         cid.parentNode.parentNode.style.backgroundColor = "#fff";
         const content = cid.parentNode.parentNode;
         cid.parentNode.parentNode.remove();
-        parent.prepend(content);
+       parent.prepend(content);
+       return
       } else {
         continue;
       }
     }
+    $("#userChatsSmall").prepend(`            
+    <div class="chat list Cards pseudoTile" id="${data.id}" >
+          <a href="/chat/${data.id}>" >
+            <input class="chatids" type="hidden" value="${data.id}"/>
+       <div class="segment">
+      <div class="liststyle">
+        <div class="indicator pseudoTileIndicator"></div>
+   <div class="names"><p>${data.name}</p></div></div>
+    <small class="brief">${data.msg}</small></div>
+   <div class="message"><small>${data.time}</small></div>
+     </a>
+     </div> `);  
+       $("#userChatsLarge").prepend(`            
+    <div class="chat list Cards pseudoTile" id="${data.id}" >
+          <a href="/chat/${data.id}>" >
+            <input class="chatids" type="hidden" value="${data.id}"/>
+       <div class="segment">
+      <div class="liststyle">
+        <div class="indicator pseudoTileIndicator"></div>
+   <div class="names"><p>${data.name}</p></div></div>
+    <small class="brief">${data.msg}</small></div>
+   <div class="message"><small>${data.time}</small></div>
+     </a>
+     </div> `);
   });
 </script>

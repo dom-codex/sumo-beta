@@ -95,7 +95,6 @@ socket.on('connect', (error) => {
      })
      socket.on('isTyping',()=>{
        const typingIndicator = document.querySelector('#typingIndicator')
-       console.log(typingIndicator)
        if(!typingIndicator){
         $('.chats').append( `             
             <span class="u1 chat" id="typingIndicator">typing..

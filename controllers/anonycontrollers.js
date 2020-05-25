@@ -908,14 +908,18 @@ module.exports.sendChat = (req, res, next) => {
   const receiver = req.body.receiver;
   const message = req.body.message;
   const time = req.body.time;
+  const stamp = new Date();
+  let pal;
   let userId
   User.findById(req.session.user._id)
     .then((user) => {
       //check if user is valid
       if (user.isAnonymous) {
         userId = user.anonyString
+        pal.user.anonymousName
       } else {
         userId = user._id
+        pal = user.name
       }
       //retrive the chats array from senders details
       let friends; 
@@ -934,7 +938,8 @@ module.exports.sendChat = (req, res, next) => {
             receiver: receiver,
             body: message,
             isMsgNew: false,
-            time: time
+            time: time,
+            stamp:stamp
           });
           chats.messages = msgs;
           return chats;
@@ -975,7 +980,8 @@ module.exports.sendChat = (req, res, next) => {
               receiver: receiver,
               body: message,
               isMsgNew: true,
-              time: time
+              time: time,
+              stamp:stamp
             });
             chats.messages = msgs;
             return chats;
@@ -1001,7 +1007,8 @@ module.exports.sendChat = (req, res, next) => {
               receiver: receiver,
               body: message,
               isMsgNew: true,
-              time: time
+              time: time,
+              stamp:stamp
             });
             chats.messages = msgs;
             return chats;
@@ -1021,7 +1028,7 @@ module.exports.sendChat = (req, res, next) => {
       //inform user of new message if not in chat window
       io()
         .to(receiver)
-        .emit("notify", { id: userId, msg: message, time: time });
+        .emit("notify", { id: userId,name:pal.split(' ')[0] ,msg: message, time: time });
       //in the notify emitter return the friend id
 
       //update ui of receipient if in chat room

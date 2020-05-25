@@ -47,7 +47,8 @@ const UserSchema = new schema ({
               },
               body: String,
               isMsgNew: Boolean,
-              time: String
+              time: String,
+              stamp: Number
 
           }
           ],
@@ -70,11 +71,12 @@ const UserSchema = new schema ({
                   refs:'User'
               },
               body: String,
-              isMsgNew: Boolean
+              isMsgNew: Boolean,
+              stamp:Number
           }
           ],
         }
       ]
 
-})
+},{timestamps:true})
 module.exports = mongoose.model('User', UserSchema);

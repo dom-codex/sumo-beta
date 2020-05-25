@@ -270,3 +270,10 @@ small {
     transform: rotateX(0deg);
   }
 }
+.pseudoTile{
+  background-color: #fff!important;
+}
+.pseudoTileIndicator{
+  background-color: rebeccapurple!important;
+  display:block!important
+}
