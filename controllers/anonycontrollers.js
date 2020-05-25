@@ -916,7 +916,7 @@ module.exports.sendChat = (req, res, next) => {
       //check if user is valid
       if (user.isAnonymous) {
         userId = user.anonyString
-        pal.user.anonymousName
+        pal = user.anonymousName
       } else {
         userId = user._id
         pal = user.name
@@ -955,6 +955,7 @@ module.exports.sendChat = (req, res, next) => {
       return user.save();
     })
     .catch((err) => {
+      console.log(err)
       throw new Error('no user found');
     })
     .then((_) => {
@@ -1075,13 +1076,25 @@ module.exports.deleteAccount = (req,res,next)=>{
     if(!user){
       throw new Error('invalid id')
     }
-    return User.findByIdAndDelete(id)
+    const ids = user.chats.map(users=>{
+      return users.chatId
+    })
+    return User.find({_id:{$in:ids}})
   }).catch(err=>{
     if(err.message === 'invalid id'){
       return
     }
-  }).then(_=>{
-    res.redirect('/getstarted')
+  }).then(chat=>{
+    chat.forEach(chats=>{
+      chats.chats.filter(id=> id.toString() !== req.session.user._id.toString())
+      chats.save()
+    })
+      return User.findByIdAndDelete(id)
+  })
+  .then(_=>{
+    req.session.destroy(()=>{
+      res.redirect('/getstarted')
+    })
   }).catch(err=>{
 
   })
