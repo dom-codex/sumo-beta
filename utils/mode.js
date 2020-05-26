@@ -345,6 +345,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                     filteredUsersList.push(user)
                                 }
                             })
+                            const inform = req.flash('inform')
                             return res.render("feed", {
                                 name: me.name,
                                 phone: me.phone,
@@ -352,6 +353,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                 sharelink: me.share,
                                 uid: me._id,
                                 chat: me.chatShare,
+                                inform: inform.length > 0 ? inform[0] : {status:false,msg:''},
                                 csrfToken:req.csrfToken(),
                                 current: page,
                                 hasNext: 2 * page < nTotalAnonyChats + nTotalOpenChats,
@@ -419,6 +421,7 @@ module.exports.normalChatMode = (req, res, next, io) => {
                     return User.findOne({ anonyString: id })
                 }
             }).then(myf => {
+
                 if (myf) {
                     //get anonymous name and online status 
                     const onList = myf.anonyChats.some(chat=>chat.chatId.toString() === req.session.user._id.toString())

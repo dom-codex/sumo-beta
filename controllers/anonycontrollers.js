@@ -776,11 +776,23 @@ module.exports.goAnonymous = (req, res, next) => {
 module.exports.getChatPage = (req, res, next) => {
   //check user's mode then execute the necessary logic based on
   //their mode
+  const id = req.params.chatId
+User.findOne({$or:[{_id:id},{anonyString:id}]})
+.then(user=>{
+  if(!user){
+      req.flash('inform',{
+          status:true,
+          msg:'user does not exist'})
+      return req.session.save(()=>{
+       res.redirect(`/userchannel/${req.session.user._id}`)
+      })
+  }
   if (!req.session.user.isAnonymous) {
     return modes.normalChatMode(req, res, next, io);
   } else {
     modes.anonymousChatMode(req, res, next, io)
   }
+})
 };
 module.exports.addChat = (req, res, next) => {
   let uid;

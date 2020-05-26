@@ -277,3 +277,22 @@ small {
   background-color: rebeccapurple!important;
   display:block!important
 }
+.inform{
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(212, 101, 101, 0.657);
+  animation-name: hide;
+  animation-duration: 8s;
+  animation-fill-mode: forwards;
+}
+.inform p{
+  color:rgb(226, 37, 37);
+  padding:5px 0;
+}
+.inform span{
+  margin-left:20px;
+  color:rgba(0, 0, 0, 0.65);
+  text-decoration: underline;
+  font-family: Rubik;
+  cursor: pointer;
+}
