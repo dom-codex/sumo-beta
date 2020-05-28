@@ -35,6 +35,7 @@ const UserSchema = new schema ({
             type: schema.Types.ObjectId,
             refs: 'User'
           },
+          lastUpdate:Number,
           messages:[
             {
               sender:{
@@ -48,8 +49,6 @@ const UserSchema = new schema ({
               body: String,
               isMsgNew: Boolean,
               time: String,
-              stamp: Number
-
           }
           ],
         }
@@ -60,6 +59,7 @@ const UserSchema = new schema ({
             type: schema.Types.ObjectId,
             refs: 'User'
           },
+          lastUpdate:Number,
           messages:[
             {
               sender:{

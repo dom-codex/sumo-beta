@@ -126,7 +126,7 @@
   //listener for added chat
   socket.on("online", (data) => {
     const chatTiles= document.querySelector('.userChats').children
-    if (chatTiles.length >= 3) {
+    if (chatTiles.length >= 5) {
       document.querySelector('.userChats').removeChild(chatTiles[chatTiles.length - 1])
     }
     //to notify other connected sockets

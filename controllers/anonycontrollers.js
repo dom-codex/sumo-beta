@@ -145,7 +145,7 @@ module.exports.createUserChannel = (req, res, next) => {
               anonyString: mongoose.Types.ObjectId(anonyString),
               isAnonymous: false,
               status: "online",
-              anonymousStatus: 'offline'
+              anonymousStatus: 'offline',
             });
             return user.save()
           })
@@ -843,6 +843,7 @@ module.exports.addChat = (req, res, next) => {
         newChat = user; //intialize variable with owner of chat string
         const chats = user.chats; //initialize variable with the chats array of user
         chats.push({
+          lastUpdate: new Date(),
           chatId: userId, //add the id of the user requesting to join a chat to the requested chat array
           messages: [],
         });
@@ -867,6 +868,7 @@ module.exports.addChat = (req, res, next) => {
       me = user;
       const chats = myChats;
       chats.push({
+        lastUpdate: new Date(),
         chatId: uid,
         messages: [],
       });
@@ -947,6 +949,7 @@ module.exports.sendChat = (req, res, next) => {
       friends = friends.map((chats) => {
         if (chats.chatId.toString() === receiver.toString()) {
           //add message to chat messages array in user chats
+          chats.lastUpdate = new Date()
           let msgs = chats.messages;
           msgs.push({
             sender: userId,
@@ -954,7 +957,6 @@ module.exports.sendChat = (req, res, next) => {
             body: message,
             isMsgNew: false,
             time: time,
-            stamp:stamp
           });
           chats.messages = msgs;
           return chats;
@@ -989,7 +991,7 @@ module.exports.sendChat = (req, res, next) => {
           if (
             chats.chatId.toString() === userId.toString()
           ) {
-
+            chats.lastUpdate = new Date()
             let msgs = chats.messages;
             msgs.push({
               sender: userId,
@@ -997,7 +999,6 @@ module.exports.sendChat = (req, res, next) => {
               body: message,
               isMsgNew: true,
               time: time,
-              stamp:stamp
             });
             chats.messages = msgs;
             return chats;
@@ -1016,7 +1017,7 @@ module.exports.sendChat = (req, res, next) => {
             chats.chatId.toString() === userId.toString()
           ) {
             //add message to messages array
-
+            chats.lastUpdate = new Date()
             let msgs = chats.messages;
             msgs.push({
               sender: userId,
@@ -1024,7 +1025,6 @@ module.exports.sendChat = (req, res, next) => {
               body: message,
               isMsgNew: true,
               time: time,
-              stamp:stamp
             });
             chats.messages = msgs;
             return chats;

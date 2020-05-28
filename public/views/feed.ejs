@@ -123,7 +123,7 @@
                         <p><%=user.name.split(' ')[0] %></p>
                       </div>
                     </div>
-                    <small class="brief truncate"><%=user.message.substring(0,25)+' ...'%></small>
+                    <small class="brief"><%=user.message.length > 24?user.message.substring(0,25)+' ...':user.message%></small>
                   </div>
                   <div class="message"><small><%=user.time%></small></div>
                 </a>
@@ -146,7 +146,6 @@
 </div>
         <div class="feeds">
          <h2>Anonymous Feeds</h2>
-
           <% if(feed.length > 0) { %>
                 <% feed.forEach((p,i)=>{ %>
                 <% if(!p) { %> <div></div> <%}else{ %>
@@ -157,7 +156,8 @@
                   <div class="cardb">
                     <p><%= p.message %></p>
                   </div>
-                  <div class="cardf"><small><%= i+1%></small> <i>sent: <%=p.time%></i></div>
+                  <div class="cardf"><small><%= i+1%></small>
+                     <i>sent: <%=p.time%></i></div>
                 </div> <%}%> 
             <% })%>
                 <% }else{ %>
