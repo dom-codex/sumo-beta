@@ -285,6 +285,9 @@ module.exports.userChannel = (req, res, next) => {
       if (err.message === 'not found') {
         return res.redirect('/getstarted')
       }
+      if(err.name == 'CastError'){
+       return res.redirect('/getstarted')
+      }
       next(err)
     })
 };
