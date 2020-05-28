@@ -126,7 +126,7 @@
   //listener for added chat
   socket.on("online", (data) => {
     const chatTiles= document.querySelector('.userChats').children
-    if (chatTiles.length >= 5) {
+    if (chatTiles.length >= 10) {
       document.querySelector('.userChats').removeChild(chatTiles[chatTiles.length - 1])
     }
     //to notify other connected sockets
@@ -169,7 +169,17 @@
            </a>
                </div> `);
       $(".newchatwindow").css("display", "none");
+    }else if(isRendered){
+      const cids = $(".userChats").find(".chatids");
+    for (let i = 0; i < cids.length; i++) {
+      if (cids[i].value.toString() === data.fid.toString()) {
+        const small = cids[i].parentNode.childNodes[5];
+        const messageIdicator = cids[i].parentNode.children[1].children[1]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+        cids[i].parentNode.children[1].children[0].children[0].style.backgroundColor='rebeccapurple'//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+        cids[i].parentNode.children[1].children[0].children[0].style.display='block'//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
     }
+  }
+}
   });
 
   socket.on("activeUsers", (data) => {
@@ -293,7 +303,6 @@
     for (let i = 0; i < cids.length; i++) {
       let cid = cids[i];
       if (cid.value.toString() === data.id.toString()) {
-        console.log(cid.parentNode.children)
         const small = cid.parentNode.childNodes[5];
         const messageIdicator = cid.parentNode.children[1].children[1]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
         messageIdicator.textContent = "";

@@ -925,7 +925,6 @@ module.exports.sendChat = (req, res, next) => {
   const receiver = req.body.receiver;
   const message = req.body.message;
   const time = req.body.time;
-  const stamp = new Date();
   let pal;
   let userId
   User.findById(req.session.user._id)

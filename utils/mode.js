@@ -90,6 +90,7 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
                 }
             })
             //render view with necesary data
+            const inform = req.flash('inform')
             res.render("feed", {
                 name: me.name,
                 phone: me.phone,
@@ -97,6 +98,7 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
                 sharelink: me.share,
                 uid: me.anonyString,
                 chat: me.chatShare,
+                inform: inform.length > 0 ? inform[0] : {status:false,msg:''},
                 csrfToken:req.csrfToken(),
                 hasNext: 5 * page < nAnonyChats,
                 hasPrev: page > 1,
@@ -179,16 +181,26 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
               //this is meant to ensure uniqueness when broadcasting
               socket.join(`${req.session.user.anonyString}${id}`); //add anonychatstring
               //listener for marking all new messages as old  
+              socket.on('typing',(friendId)=>{
+                io().
+                to(`${friendId}${req.session.user.anonyString}`)
+                .emit('isTyping')
+            })                   
+             socket.on('stopTyping',(friendId)=>{
+                io().
+                to(`${friendId}${req.session.user.anonyString}`)
+                .emit('stoppedTyping')
+            }) 
               socket.on('receive', () => {
                     //set all isNew field in the mesage
                     //to false
                     User.findById(req.session.user._id)
                         .then(user => {
-                            let messagesWithUser = user.anonyChats.find(chat => chat.chatId === id).messages
+                            let messagesWithUser = user.anonyChats.find(chat => chat.chatId.toString() === id.toString()).messages
 
                             messagesWithUser = messagesWithUser.map(msg => {
-                                if (msg.isNew === true) {
-                                    msg.isNew = false
+                                if (msg.isMsgNew === true) {
+                                    msg.isMsgNew = false
                                     return msg
                                 } else return msg // retain old messages
                             })
@@ -199,6 +211,7 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
                 })
                 //chat listener
             });
+            console.log(msgs)
             res.render("chatPage", { 
                 fid: id, 
                 csrfToken:req.csrfToken(),

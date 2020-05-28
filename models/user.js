@@ -72,8 +72,7 @@ const UserSchema = new schema ({
               },
               body: String,
               isMsgNew: Boolean,
-              stamp:Number
-          }
+              time:String          }
           ],
         }
       ]

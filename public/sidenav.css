@@ -4,7 +4,8 @@
   box-sizing: border-box;
 }
 .sidenav{
-  background-color:rgba(255,255,255,.94)
+  background-color:rgba(255,255,255,.94);
+  height:calc(100vh - 5px)
 }
 .user-view{
   background:indigo;

@@ -20,7 +20,7 @@ socket.on('connect', (error) => {
           <div class="time">${data.time}</div>
           </span>`)
           chatWindow.scrollTop = chatWindow.scrollHeight
-        socket.emit('received',null);
+        socket.emit('receive',null);
       
       })
       socket.on('offline',(data)=>{
