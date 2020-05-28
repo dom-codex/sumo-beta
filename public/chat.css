@@ -208,3 +208,38 @@ align-items: center;
 .cancel, #btn-search{
   color:yellow !important
 }
+/*dropdown */
+
+.dropdown-trigger{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent!important;
+  box-shadow: none!important
+}
+button.dropdown-trigger{
+  box-shadow: none;
+}
+.dropdown-content{
+  min-width: 150px;
+  overflow: hidden
+}
+ #dropdown1 a{
+  width:100%;
+  height:100%;
+  display:flex;
+  color:indigo;
+}
+ #dropdown1 i{
+  height:100%;
+  color:indigo
+}
+ button.dropdown-trigger:hover{
+  color:orange
+}
+.loader{
+  display:none;
+  justify-content: center;
+  padding:7px 0;
+  background-color:rgba(0,0,0,.02);
+}

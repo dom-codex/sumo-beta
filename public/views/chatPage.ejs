@@ -45,16 +45,18 @@
           <!-- nav section use vector icons later to rep the variouslinks-->
           <div>
             <nav>
-              <ul>
-                <li><a href="/"><i class="material-icons">home</i></a></li>
-                <li><a href="/userchannel/<%=uid%>"><i class="material-icons">rss_feed</i></a></li>
+              <button class='dropdown-trigger btn'  data-target='dropdown1'><i class="material-icons">more_vert</i></button>
+              <ul id='dropdown1' class='dropdown-content'>
+                <li><a href="/"><i class="material-icons">home</i>home</a></li>
+                <li class="divider" tabindex="-1"></li>
+                <li><a href="/userchannel/<%=uid%>"><i class="material-icons">rss_feed</i>feed</a></li>
               </ul>
             </nav>
           </div>
         </div>
       </div>
     </header>
-
+<div class="loader">Loading...</div>
     <div class="chats">
       <% if(meChats.length > 0) { %>
       <% meChats.forEach((msg,i)=> { %>
@@ -96,6 +98,63 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
+  <script>
+      const menu = document.querySelectorAll('.dropdown-trigger');
+    const drop = M.Dropdown.init(menu);
+  </script>
+  <script>
+    const section = document.querySelector('section')
+      let page = 2
+    const Scroll = () => {
+      if (chatWindow.scrollTop === 0 && page > 1) {
+        $('.loader').css('display','flex')
+        fetch(`/retrievechat?page=${page}`, {
+          method: 'POST',
+          headers: {
+            "csrf-token": document.querySelector('input[name="_csrf"]').value,
+            "Content-Type": 'application/json'
+          },
+          body: JSON.stringify({
+            fid: document.querySelector('#friendId').value,
+          })
+        })
+          .then(res => res.json())
+          .then(res => {
+            $('.loader').css('display','none')
+            page = res.next
+            if(res.code === 301){
+              section.scrollTop = 0
+              page = 0
+              return
+            }
+            else if (res.messages.length > 0) {
+              res.messages.forEach((msg, i) => {
+                if (msg.receiver.toString() === $('#friendId').val().toString()) {
+                  $('.chats').prepend(`
+              <span class="u2 chat">${msg.body}
+                <div class="time">
+                  ${msg.time} &nbsp; 
+                  <div class="time"><i class="material-icons">done_all</i></div> 
+                </div>
+              </span>
+              `)
+                } else {
+                  $('.chats').prepend(`               
+                <span class="u1 chat">${msg.body}
+                  <div class="time">${msg.time}</div>
+                </span>`)
+
+                }
+              })
+            }
+            section.scrollTop = 250
+          }).catch(err=>{
+            $('.loader').css('display','none')
+          })
+
+      }
+    }
+  </script>
   <%- include('chatScript.ejs') %>
 </body>
 

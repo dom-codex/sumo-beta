@@ -13,18 +13,31 @@ module.exports.chatPaginator = (req, res, next) => {
                     return res.json(
                         {
                             messages: messages.slice(start, end),
-                            next: page + 1
+                            next: page + 1,
+                            code:200
                         }
                     )
-
-                }else if(end !== 0 && end > 0 &&page > 1){
+                }else if(end !== 0 && end > 0 && page > 1){
                     return res.json(
                         {
                             messages: messages.slice(0, end),
-                            next: page + 1
+                            next: page + 1,
+                            code:200
                         }
                     )
+                }else{
+                    return res.json({
+                        code:301,
+                        messages:[],
+                        next: 0
+                    })
                 }
+        }else{
+            return res.json({
+                code:301,
+                messages:[],
+                next:0
+            })
         }
     }
 

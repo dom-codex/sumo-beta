@@ -108,48 +108,4 @@ socket.on('connect', (error) => {
        $('#status').css('display','block')
        $('#typing').css('display','none')
      })
-     //scroll pagination
-     let page = 2
-    const Scroll = () => {
-      if (chatWindow.scrollTop === 0) {
-        fetch(`/retrievechat?page=${page}`, {
-          method: 'POST',
-          headers: {
-            "csrf-token": document.querySelector('input[name="_csrf"]').value,
-            "Content-Type": 'application/json'
-          },
-          body: JSON.stringify({
-            fid: document.querySelector('#friendId').value,
-          })
-        })
-          .then(res => res.json())
-          .then(res => {
-            page = res.next
-            console.log(res);
-            if (res.messages.length > 0) {
-              res.messages.forEach((msg, i) => {
-                if (msg.receiver.toString() === $('#friendId').val().toString()) {
-                  $('.chats').prepend(`
-              <span class="u2 chat">${msg.body}
-                <div class="time">
-                  ${msg.time} &nbsp; 
-                  <div class="time"><i class="material-icons">done_all</i></div> 
-                </div>
-              </span>
-              `)
-                } else {
-                  $('.chats').prepend(`               
-                <span class="u1 chat">${msg.body}
-                  <div class="time">${msg.time}</div>
-                </span>`)
-
-                }
-              })
-            }
-            const section = document.querySelector('section')
-            section.scrollTop = 250
-          })
-
-      }
-    }
     </script>
