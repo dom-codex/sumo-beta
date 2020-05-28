@@ -23,7 +23,7 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
             //get actual details of users we are chatting with anonymously but limiting
             //the result by a chosen preference
             return User.find({ _id: { $in: chatids } })
-            .sort({'chats.messages.stamp':'desc',$natural:'desc'})
+            .sort({createdAt:-1,'chats.messages.stamp':-1})
             .skip((page - 1) * 2)
                 .limit(2)
         }).then((onlineUser) => {
@@ -245,11 +245,11 @@ module.exports.normalUserMode = (req, res, next, io) => {
         })
         .then(_ => {
             //query db for the chats but limiting the results based on the page user is in
-            User.find({ _id: { $in: chatids } }).sort({'chats.messages.stamp':'desc',$natural:'desc'}).skip((page - 1) * 2)
+            User.find({ _id: { $in: chatids } }).sort({createdAt:-1,'chats.messages.stamp':-1}).skip((page - 1) * 2)
                 .limit(2)
                 .then((onlineUser) => {
                 //query db for anonymous chat but limiting the result based on the page user is in
-                    User.find({ anonyString: { $in: chatids } }).sort({$natural:-1}).skip((page - 1) * 2).limit(2)
+                    User.find({ anonyString: { $in: chatids } }).sort({createdAt:-1,'chats.messages.stamp':-1}).skip((page - 1) * 2).limit(2)
                         .then(anonyusers => {
                             //reform the anonymous user docs
                             if (anonyusers.length > 0) {
