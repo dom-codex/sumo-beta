@@ -37,12 +37,11 @@ section {
 nav,
 header {
   background-color: rebeccapurple;
-  widows: 100vw !important;
+  width: 100vw !important;
 }
-h2 {
+ h2 {
   margin: 0;
-  font-size: 2.3rem;
-  padding-left: 15px;
+  font-size: 2rem;
 }
 nav div {
   display: -webkit-box;
@@ -68,6 +67,8 @@ nav i {
 }
 section.desktop {
   padding-top: 10px;
+  max-width: 1000px;
+  margin:auto
 }
 /* chat window css settings */
 .feeds {
@@ -94,10 +95,13 @@ section.desktop {
 }
 .mychats {
   display: none;
+  border-top-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 .feeds h2 {
   margin-bottom: 5px;
   text-align: center;
+  font-size:1.55em;
 }
 .feedcard {
   width: 95%;
@@ -107,13 +111,15 @@ section.desktop {
   border: thin solid rgba(0, 0, 0, 0.1);
   padding: 5px 8px;
   min-height: 85px;
-  -webkit-box-shadow: 2px, 2px, 9px, black;
-  box-shadow: 2px, 2px, 9px, black;
+  background-image: linear-gradient(90deg,rebeccapurple,indigo);
+  background-color:indigo;
+  border-radius: 5px;
 }
 
 .feedcard div:nth-child(1) p {
   font-size: 1.5em;
-  color: rgba(0, 0, 0, 0.85);
+  /*color: rgba(0, 0, 0, 0.85);*/
+  color:#fff;
 }
 .cardb {
   margin-bottom: 6px;
@@ -121,6 +127,7 @@ section.desktop {
 .cardb p {
   word-wrap: break-word;
   word-break: break-all;
+  color:#fff;
 }
 .cardf {
   display: -webkit-box;
@@ -129,13 +136,31 @@ section.desktop {
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
   justify-content: space-between;
+  align-items: center;
 }
 .cardf i,
 .cardf small {
   color: royalblue;
 }
-small {
-  font-size: 0.89rem;
+.cardf small{
+  min-width:30px;
+  min-height:30px;
+  padding:5px;
+  border-radius:100%;
+  border:3px solid royalblue;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  font-size:9px;
+  color:#fff;
+  font-weight: bold;
+}
+.cardf i{
+  background-color:royalblue;
+  padding:5px;
+  border-radius:5px;
+  color:#fff;
+  font-size:.83em;
 }
 @media all and (min-width: 781px) {
   #slide-out, .sidenav-overlay{

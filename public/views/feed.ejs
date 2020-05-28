@@ -1,155 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> <%= name %>'s feed </title>
-    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
-    <link href="../css/materialize.min.css" rel="stylesheet" />
-  <link href="/inputs-color.css" rel="stylesheet" type="text/css"/>
-  <link href="/c-user.css" rel="stylesheet" type="text/css"/>
-  <link href="/sidenav.css" rel="stylesheet"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> <%= name %>'s feed </title>
+  <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet" />
+  <link href="../css/materialize.min.css" rel="stylesheet" />
+  <link href="/inputs-color.css" rel="stylesheet" type="text/css" />
+  <link href="/c-user.css" rel="stylesheet" type="text/css" />
+  <link href="/sidenav.css" rel="stylesheet" />
 
 </head>
-  <body>
-    <input type="hidden" id="uid" value="<%= uid %>">
-    <input type="hidden" value="<%=csrfToken%>" name="_csrf">
-<!--side nav codes-->
-<%- include('sideNav.ejs',{
+
+<body>
+  <input type="hidden" id="uid" value="<%= uid %>">
+  <input type="hidden" value="<%=csrfToken%>" name="_csrf">
+  <!--side nav codes-->
+  <%- include('sideNav.ejs',{
   onlineUsers:onlineUsers,
   name:name,
   phone:phone,
   uid:uid
 }) %>
-<!--end of side nav import-->
-<!--loader-->
-<div class="spinner-cont">
-<div class="preloader-wrapper small active">
-  <div class="spinner-layer spinner-green-only">
-    <div class="circle-clipper left">
-      <div class="circle"></div>
-    </div><div class="gap-patch">
-      <div class="circle"></div>
-    </div><div class="circle-clipper right">
-      <div class="circle"></div>
+  <!--end of side nav import-->
+  <!--loader-->
+  <div class="spinner-cont">
+    <div class="preloader-wrapper small active">
+      <div class="spinner-layer spinner-green-only">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+          <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
     </div>
   </div>
-</div></div>
-      
-<!--code for header-->
-<header>
-  <nav>
-    <div>
-    <h2>Wall</h2>
-     <div class="nav-options">
-      <a id="showdd" class='dropdown-trigger btn' href='#' data-target='dropdown1'><i class="material-icons">dehaze</i></a>
-      <ul id='dropdown1' class='dropdown-content'>
-        <li><a href="/"><i class="material-icons">home</i>home</a></li>
-        <li class="divider" tabindex="-1"></li>
-        <li><a href="/profile/<%=uid%>"><i class="material-icons">account_circle</i>profile</a></li>
-        <li class="divider" tabindex="-1"></li>
-        <li><a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">chat</i>chats</a></li>
-        <li class="divider" tabindex="-1"></li>
-        <li><a href="/logout"><i class="material-icons">keyboard_tabs</i>logout</a></li>
-      </ul>
-     <div id="largeNav">
-       <a href="/"><i class="material-icons">home</i></a>
-       <a href="/profile/<%=uid%>"><i class="material-icons">account_circle</i></a>
-       <a href="/logout"><i class="material-icons">keyboard_tabs</i></a>
-      </div>
-      </div></div>
-  </nav>
-</header>
-<div class="inform" style="display:<%=inform.status?'flex':'none'%>">
-  <p><%=inform.msg%></p>
-  <span>hide</span>
-</div>
-    <section class="desktop">
 
-      <div class="window">
-  <div class="mychats">      
-  <ul>
+  <!--code for header-->
+  <header>
+    <nav>
+      <div>
+        <h2>Channel</h2>
+        <div class="nav-options">
+          <a id="showdd" class='dropdown-trigger btn' href='#' data-target='dropdown1'><i
+              class="material-icons">dehaze</i></a>
+          <ul id='dropdown1' class='dropdown-content'>
+            <li><a href="/"><i class="material-icons">home</i>home</a></li>
+            <li class="divider" tabindex="-1"></li>
+            <li><a href="/profile/<%=uid%>"><i class="material-icons">account_circle</i>profile</a></li>
+            <li class="divider" tabindex="-1"></li>
+            <li><a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">chat</i>chats</a>
+            </li>
+            <li class="divider" tabindex="-1"></li>
+            <li><a href="/logout"><i class="material-icons">keyboard_tabs</i>logout</a></li>
+          </ul>
+          <div id="largeNav">
+            <a href="/"><i class="material-icons">home</i></a>
+            <a href="/profile/<%=uid%>"><i class="material-icons">account_circle</i></a>
+            <a href="/logout"><i class="material-icons">keyboard_tabs</i></a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <div class="inform" style="display:<%=inform.status?'flex':'none'%>">
+    <p><%=inform.msg%></p>
+    <span>hide</span>
+  </div>
+  <section class="desktop">
+
+    <div class="window">
+      <div class="mychats">
+        <ul>
           <div class="chats">
             <div class="input-field join">
-              <input type="text" placeholder="enter chat string" id="chatStringLarge"/>
-              <div class="join-btn"><button id="largeStartChat">start chat</button><small class="errdisplay" id="largeErr"></small></div>
+              <input type="text" placeholder="enter chat string" id="chatStringLarge" />
+              <div class="join-btn"><button id="largeStartChat">start chat</button><small class="errdisplay"
+                  id="largeErr"></small></div>
             </div>
-          <div><h2>Chats</h2></div>
-          <div class="userChats" id="userChatsLarge">
-            <!-- chat list code -->
-            <% if(onlineUsers.length>0) { %>
-                <% onlineUsers.forEach((user,i)=>{ %>
-                    <div class="chat list Cards" id="<%=user._id%>" style="background-color:<%= user.isNew ? 'white' : '' %>">
-                        <a href="/chat/<%=user._id%>" >
-                            <input class="chatids" type="hidden" value="<%=user._id%>"/>
+            <div>
+              <h2>Chats</h2>
+            </div>
+            <div class="userChats" id="userChatsLarge">
+              <!-- chat list code -->
+              <% if(onlineUsers.length>0) { %>
+              <% onlineUsers.forEach((user,i)=>{ %>
+              <div class="chat list Cards" id="<%=user._id%>" style="background-color:<%= user.isNew ? 'white' : '' %>">
+                <a href="/chat/<%=user._id%>">
+                  <input class="chatids" type="hidden" value="<%=user._id%>" />
                   <div class="segment">
-                  <div class="liststyle">
-                   <div class="indicator" style="background-color:<%= user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' %>; display:<%= user.status === 'online' || user.anStatus === 'online' ? 'block' : 'none' %>"></div>
-                    <div class="indicator" style="background-color:<%= user.anStatus === 'offline' || user.status === 'offline' ? 'grey' : 'rebeccapurple' %>; display:<%= user.anStatus === 'offline' || user.status === 'offline' ? 'block' : 'none' %>"></div>                
-                      <div class="names"><p><%=user.name.split(' ')[0] %></p></div></div>
-                  <small class="brief"><%=user.message%></small></div>
+                    <div class="liststyle">
+                      <div class="indicator"
+                        style="background-color:<%= user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' %>; display:<%= user.status === 'online' || user.anStatus === 'online' ? 'block' : 'none' %>">
+                      </div>
+                      <div class="indicator"
+                        style="background-color:<%= user.anStatus === 'offline' || user.status === 'offline' ? 'grey' : 'rebeccapurple' %>; display:<%= user.anStatus === 'offline' || user.status === 'offline' ? 'block' : 'none' %>">
+                      </div>
+                      <div class="names">
+                        <p><%=user.name.split(' ')[0] %></p>
+                      </div>
+                    </div>
+                    <small class="brief truncate"><%=user.message.substring(0,25)+' ...'%></small>
+                  </div>
                   <div class="message"><small><%=user.time%></small></div>
                 </a>
-                </div>
-                <% })%>
-                <% } else { %>
-                  <div class="new newchatwindow" ><h3>No chats!!!</h3></div>
-                  <% } %> </div>
-          <div class="pages"><ul>
-              <% if(hasPrev) {%>
-            <li><a href="/userchannel/<%=uid%>?page=<%=prev%>">Prev</a></li> <%}%>
+              </div>
+              <% })%>
+              <% } else { %>
+              <div class="new newchatwindow">
+                <h3>No chats!!!</h3>
+              </div>
+              <% } %> </div>
+            <div class="pages">
+              <ul>
+                <% if(hasPrev) {%>
+                <li><a href="/userchannel/<%=uid%>?page=<%=prev%>">Prev</a></li> <%}%>
             <% if(hasNext) { %>
-            <li><a href="/userchannel/<%=uid%>?page=<%=next%>">Next</a></li> <%}%>
+                <li><a href="/userchannel/<%=uid%>?page=<%=next%>">Next</a></li> <%}%>
             </ul></div>
     </div>
   </ul>
 </div>
         <div class="feeds">
-         <h2>Feeds</h2>
+         <h2>Anonymous Feeds</h2>
 
           <% if(feed.length > 0) { %>
-            <% feed.forEach((p,i)=>{ %>
-              <% if(!p) { %> <div></div> <%}else{ %>
-               <div class="feedcard Cards">
-                <div><p>Message:</p></div>
-                <div class="cardb">
-                  <p><%= p.message %></p>
-                </div>
-                <div class="cardf"><small>#<%= i+1 %></small> <i>sent: <%=p.time%></i></div>
-              </div> <%}%> 
+                <% feed.forEach((p,i)=>{ %>
+                <% if(!p) { %> <div></div> <%}else{ %>
+                <div class="feedcard Cards">
+                  <div>
+                    <p>Message:</p>
+                  </div>
+                  <div class="cardb">
+                    <p><%= p.message %></p>
+                  </div>
+                  <div class="cardf"><small><%= i+1%></small> <i>sent: <%=p.time%></i></div>
+                </div> <%}%> 
             <% })%>
-            <% }else{ %>
-              <div class="new newfeedwindow"><h3>No feeds yet, New headover to your
-                profile grab your link and start sharing
-              </h3></div>
-               <% } %>
-        </div>
-      </div>
-    </section>
-    <script>  
-      const feedWindow = document.querySelector('.feeds')
-        feedWindow.scrollTop = feedWindow.scrollHeight</script>
-    <script src="/js/materialize.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <%- include('feedScript.ejs') %>
-  </body>
-</html> 
+                <% }else{ %>
+                <div class="new newfeedwindow">
+                  <h3>No feeds yet, New headover to your
+                    profile grab your link and start sharing
+                  </h3>
+                </div>
+                <% } %>
+            </div>
+          </div>
+  </section>
+  <script>
+    const feedWindow = document.querySelector('.feeds')
+    feedWindow.scrollTop = feedWindow.scrollHeight</script>
+  <script src="/js/materialize.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <%- include('feedScript.ejs') %>
+</body>
+
+</html>

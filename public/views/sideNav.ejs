@@ -25,7 +25,7 @@
                   <div class="indicator" style="background-color:<%= user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' %>; display:<%= user.status === 'online' || user.anStatus === 'online' ? 'block' : 'none' %>"></div>
                   <div class="indicator" style="background-color:<%= user.anStatus === 'offline' || user.status === 'offline' ? 'grey' : 'rebeccapurple' %>; display:<%= user.anStatus === 'offline' || user.status === 'offline' ? 'block' : 'none' %>"></div>
                   <div class="names"><p><%=user.name.split(' ')[0]%></p></div></div>
-                  <small class="brief"><%=user.message%></small></div>
+                  <small class="brief"><%=user.message.substring(0,25)+' ...'%></small></div>
                   <div class="message"><small><%=user.time%></small></div>
                 </a>
                 </div>
