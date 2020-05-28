@@ -211,12 +211,11 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
                 })
                 //chat listener
             });
-            console.log(msgs)
             res.render("chatPage", { 
                 fid: id, 
                 csrfToken:req.csrfToken(),
                 uid:req.session.user._id,
-                meChats: msgs,
+                meChats: [...msgs].slice(msgs.length - 10,msgs.length),
                 friend:friend,
                 status:status,
              });
@@ -488,7 +487,7 @@ module.exports.normalChatMode = (req, res, next, io) => {
                     fid: id,
                     csrfToken:req.csrfToken(),
                     uid: req.session.user._id,
-                    meChats: [...msgs],
+                    meChats:[...msgs].slice(msgs.length - 10,msgs.length), // [...msgs],
                     friend: friend,
                     status:status,
                     anStatus:anStatus

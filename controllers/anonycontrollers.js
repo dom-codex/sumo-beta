@@ -965,8 +965,12 @@ module.exports.sendChat = (req, res, next) => {
       });
       if(user.isAnonymous){
         user.anonyChats = friends
+        req.session.user.anonyChats = friends
+        req.session.save()
       }else{
         user.chats = friends;
+        req.session.user.chats = friends
+        req.session.save()
       }
       return user.save();
     })
@@ -1267,4 +1271,8 @@ module.exports.setNewPassword = (req, res, next) => {
       next(err)
     })
 
+}
+module.exports.retrieveMoreChats = (req,res,next)=>{
+  const chatPaginator = require('../helpers/paginators').chatPaginator
+  chatPaginator(req,res,next)
 }

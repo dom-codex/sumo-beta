@@ -112,6 +112,9 @@ isAuth,
 controller.changePassword);
 
 router.post('/addchat',controller.addChat)
+
+router.post('/retrievechat',controller.retrieveMoreChats)
+
 router.post('/removeachat',isAuth, controller.removeAChat);
 router.post('/togglemode',isAuth, controller.goAnonymous);
 router.get('/deleteuseraccount/:id',isAuth,controller.deleteAccount)
