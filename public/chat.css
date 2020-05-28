@@ -54,14 +54,13 @@ a{
 }
 section{
   height:100vh;
-  overflow-y: scroll;
-
+  overflow-y:scroll
 }
 .input{
   padding:15px;
   background-color: rgb(170, 111, 230);
   width:100%;
-  height:auto;
+  min-height:15%;
 }
 .ctrl{
   display: flex;
@@ -118,7 +117,7 @@ overflow: -moz-hidden-unscrollable;
  /*background-color: violet;*/
  background-color:rgba(0,0,0,.02);
  height:auto;
- min-height:380px;
+ min-height:75%;
  overflow-y: scroll;
 }
 .chat{
@@ -134,6 +133,7 @@ overflow: -moz-hidden-unscrollable;
   margin:5px;
   position: relative;
   min-width:70px;
+  max-width:85%;
 }
 .chat.u1{
   float:left;
