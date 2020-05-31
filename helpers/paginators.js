@@ -5,7 +5,7 @@ module.exports.chatPaginator = (req, res, next) => {
     const userChats = chats.find(chat => chat.chatId.toString() === fid.toString())
     if (userChats) {
         const messages = userChats.messages;
-        if ((messages.length) > 10) {
+        if ((Math.ceil((messages.length) / 10) >= page)) {
             let start = messages.length - (10 * page)
             start = start < 0 ? 0 : start
             const end = messages.length - (10 * (page - 1))
@@ -17,7 +17,7 @@ module.exports.chatPaginator = (req, res, next) => {
                             code:200
                         }
                     )
-                }else if(end !== 0 && end > 0 && page > 1){
+                }else{
                     return res.json(
                         {
                             messages: messages.slice(0, end),
@@ -25,18 +25,10 @@ module.exports.chatPaginator = (req, res, next) => {
                             code:200
                         }
                     )
-                }else{
-                    return res.json({
-                        code:301,
-                        messages:[],
-                        next: 0
-                    })
                 }
         }else{
             return res.json({
-                code:301,
-                messages:[],
-                next:0
+                code:301
             })
         }
     }

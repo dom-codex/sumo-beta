@@ -34,6 +34,7 @@
 <body>
   <section onscroll="Scroll()">
     <input type="hidden" value="<%= fid%>" id="friendId">
+    <input type="hidden" value="<%= more%>" id="hasmore">
     <header>
       <div class="hbw">
         <div id="palname">
@@ -103,10 +104,14 @@
     const drop = M.Dropdown.init(menu);
   </script>
   <script>
-    const section = document.querySelector('section')
       let page = 2
+      let height = 0
     const Scroll = () => {
-      if (chatWindow.scrollTop === 0 && page > 1) {
+      if(!$('#hasmore').val()){
+        return
+      }
+      else if (chatWindow.scrollTop === 0 && page > 1) {
+        height = chatWindow.scrollHeight;
         $('.loader').css('display','flex')
         fetch(`/retrievechat?page=${page}`, {
           method: 'POST',
@@ -124,7 +129,6 @@
             page = res.next
             if(res.code === 301){
               section.scrollTop = 0
-              page = 0
               return
             }
             else if (res.messages.length > 0) {
@@ -147,7 +151,7 @@
                 }
               })
             }
-            section.scrollTop = 250
+            chatWindow.scrollTop = chatWindow.scrollHeight - height
           }).catch(err=>{
             $('.loader').css('display','none')
           })
