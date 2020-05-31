@@ -543,6 +543,7 @@ module.exports.getProfilePage = (req, res, next) => {
                     hasPrev: page > 1,
                     next: page + 1,
                     prev: page - 1,
+                    anonymous:req.session.user.isAnonymous?true:false,
                     errors: errors ? errors : { field: '', message: '' },
                     success: success ? success : { message: '' },
                     total: nTotalAnonyUsers + ntotalOpenUsers,

@@ -28,6 +28,9 @@
   <link href="/inputs-color.css" rel="stylesheet">
   <link href="/emoji.css" rel="stylesheet" type="text/css" />
   <link href="/chat.css" rel="stylesheet" type="text/css">
+  <% if(anonymous) {%>
+    <link href="/dark.css" rel="stylesheet" type="text/css" />
+     <%}%>
 
 </head>
 
@@ -36,26 +39,28 @@
     <input type="hidden" value="<%= fid%>" id="friendId">
     <input type="hidden" value="<%= more%>" id="hasmore">
     <header>
-      <div class="hbw">
-        <div id="palname">
-          <p><%=friend.split(' ')[0]%></p>
-          <small id="status"><%=status%></small>
-          <small id="typing">typing...</small>
+      <nav>
+        <div class="navs">
+        <div id="info">
+          <div id="name">
+          <p><%=friend.split(' ')[0]%>
+          </p></div>
         </div>
         <div class="hnav">
-          <!-- nav section use vector icons later to rep the variouslinks-->
-          <div>
-            <nav>
-              <button class='dropdown-trigger btn'  data-target='dropdown1'><i class="material-icons">more_vert</i></button>
-              <ul id='dropdown1' class='dropdown-content'>
-                <li><a href="/"><i class="material-icons">home</i>home</a></li>
-                <li class="divider" tabindex="-1"></li>
-                <li><a href="/userchannel/<%=uid%>"><i class="material-icons">rss_feed</i>feed</a></li>
-              </ul>
-            </nav>
-          </div>
-        </div>
+        
+          <button class='dropdown-trigger btn'  data-target='dropdown1'><i class="material-icons">more_vert</i></button>
+          <ul id='dropdown1' class='dropdown-content'>
+            <li><a href="/"><i class="material-icons">home</i>home</a></li>
+            <li class="divider" tabindex="-1"></li>
+            <li><a href="/userchannel/<%=uid%>"><i class="material-icons">rss_feed</i>feed</a></li>
+          </ul>
+    </div>
       </div>
+      <div id="details">
+        <small id="status"><%=status%></small>
+        <small id="typing">typing...</small>
+      </div>
+      </nav>
     </header>
 <div class="loader">Loading...</div>
     <div class="chats">
@@ -84,7 +89,7 @@
         <input name="receiver" type="hidden" value="<%= fid %>">
         <textarea id="msg" class="materialize-textarea" name="message" placeholder="Enter message"></textarea>
         <!-- replace with a vector icon later -->
-        <button type="submit"><i class="material-icons">send</i></button>
+        <button type="submit" class="send"><i class="material-icons">send</i></button>
       </div>
       <div class="emoji-container">
         <%- include('emoji.ejs')%>

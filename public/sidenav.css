@@ -79,3 +79,12 @@ display:none;
   display: inline-block;
   margin-left: 10px;
 }
+.join-btn button{
+  border:thin solid #000;
+  padding:3px;
+  border-radius: 5px;
+}
+.join-btn button:hover, .join-btn button:active,.join-btn button:focus{
+  background-color: rgb(101, 87, 110);
+  color:#fff
+}

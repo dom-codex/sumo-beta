@@ -306,7 +306,7 @@
         const small = cid.parentNode.childNodes[5];
         const messageIdicator = cid.parentNode.children[1].children[1]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
         messageIdicator.textContent = "";
-        messageIdicator.textContent = data.msg;
+        messageIdicator.textContent = data.msg.length > 25?data.msg.substring(0,25)+'...':data.msg;
         small.textContent = " ";
         small.textContent = data.time;
         //move the notification to the top
@@ -330,7 +330,7 @@
         const messageIdicator =
           cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
         messageIdicator.textContent = "";
-        messageIdicator.textContent = data.msg;
+        messageIdicator.textContent = data.msg.length > 25?data.msg.substring(0,25)+'...':data.msg;
         small.textContent = " ";
         small.textContent = data.time;
         //move the notification to the top
@@ -353,7 +353,7 @@
       <div class="liststyle">
         <div class="indicator pseudoTileIndicator"></div>
    <div class="names"><p>${data.name}</p></div></div>
-    <small class="brief">${data.msg}</small></div>
+    <small class="brief">${data.msg.length > 25 ? data.msg.substring(0,25):data.msg}...</small></div>
    <div class="message"><small>${data.time}</small></div>
      </a>
      </div> `);  
@@ -365,7 +365,7 @@
       <div class="liststyle">
         <div class="indicator pseudoTileIndicator"></div>
    <div class="names"><p>${data.name}</p></div></div>
-    <small class="brief">${data.msg}</small></div>
+    <small class="brief">${data.msg.length > 25 ? data.msg.substring(0,25):data.msg}...</small></div>
    <div class="message"><small>${data.time}</small></div>
      </a>
      </div> `);

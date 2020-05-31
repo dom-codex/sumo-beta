@@ -105,6 +105,8 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
                 next: page + 1,
                 prev: page - 1,
                 onlineUsers: filteredUsersList,
+                anonymous:req.session.user.isAnonymous?true:false
+
             });
         });
 };
@@ -123,7 +125,7 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
             //retrieve the actual document
             let chatUser = me.anonyChats.find(chat => chat.chatId.toString() === id.toString())
            //retrieve the messages
-            let messagesWithUser = chatUser ? chatUser.messages: []//me.chats.find(chat => chat.chatId.toString() === id.toString()).messages
+            let messagesWithUser = chatUser ? chatUser.messages : []//me.chats.find(chat => chat.chatId.toString() === id.toString()).messages
              //check for new messages and mark them as read
             messagesWithUser = messagesWithUser.map(msg => {
                 if (msg.isMsgNew === true) {
@@ -219,6 +221,7 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
                 meChats: [...msgs].slice(msgs.length - 10,msgs.length),
                 friend:friend,
                 status:status,
+                anonymous:req.session.user.isAnonymous?true:false
              });
         })
         .catch((err) => {
@@ -379,7 +382,9 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                 next: page + 1,
                                 prev: page - 1,
                                 last: Math.ceil((nTotalOpenChats + nTotalAnonyChats) / 2),
-                                onlineUsers: filteredUsersList//onlineUser.concat(anonymous)
+                                onlineUsers: filteredUsersList,//onlineUser.concat(anonymous)
+                                anonymous:req.session.user.isAnonymous?true:false
+
 
                             });
                         })
@@ -492,7 +497,9 @@ module.exports.normalChatMode = (req, res, next, io) => {
                     meChats:[...msgs].slice(msgs.length - 10,msgs.length), // [...msgs],
                     friend: friend,
                     status:status,
-                    anStatus:anStatus
+                    anStatus:anStatus,
+                    anonymous:req.session.user.isAnonymous?true:false
+
                 })
             });
         })

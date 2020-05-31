@@ -30,8 +30,11 @@
     <link href="/tabs.css" type="text/css" rel="stylesheet"/>
     <link href="/inputs-color.css" type="text/css" rel="stylesheet"/>
     <link href="/sumoProfile.css" type="text/css" rel="stylesheet"/>
+    <% if(anonymous) {%>
+      <link href="/dark.css" rel="stylesheet" type="text/css" />
+       <%}%>
   </head>
-  <body>
+  <body class="body">
     <!--
     <div id="fb-root"></div>
     <script>(function(d, s, id) {
@@ -47,12 +50,13 @@
   <div id="modal2" class="modal modal-fixed-footer">
     <div class="modal-content">
       <h4>Note</h4>
-      <p>you are about switching to anonymous mode as such the following changes will take effect:</p>
+      <p>you are about switching to anonymous mode as such the following changes will take effect:</p><br/>
       <ul>
-        <li> - Open chats won't be accessible</li>
-        <li> - you will apppear offline to your open chats</li>
+        <li> - Open chats won't be accessible</li> <br/>
+        <li> - you will apppear offline to your open chats</li> <br/>
         <li> - you will have to re-add whoever you want to chat with</li>
       </ul>
+      <br/>
       <small>ensure you have your anonymous name set or the default will be used</small> <br/>
       <small>chat responsibly and ensure you don't reveal your identity by accident</small>
     </div>
