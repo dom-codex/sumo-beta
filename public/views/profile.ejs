@@ -52,7 +52,6 @@
         <li> - Open chats won't be accessible</li>
         <li> - you will apppear offline to your open chats</li>
         <li> - you will have to re-add whoever you want to chat with</li>
-        <li> - As soon as you switch to normal mode you won't be able to access your chat history while in anonymous mode</li>
       </ul>
       <small>ensure you have your anonymous name set or the default will be used</small> <br/>
       <small>chat responsibly and ensure you don't reveal your identity by accident</small>
@@ -85,6 +84,7 @@
             <h2><%= user.name.split(' ')[0]%></h2>
             <a id="showdd" class='dropdown-trigger btn' href='#' data-target='dropdown1'><i class="material-icons">dehaze</i></a>
             <ul id='dropdown1' class='dropdown-content'>
+          
               <li><a href="/"><i class="material-icons">home</i>home</a></li>
               <li class="divider" tabindex="-1"></li>
               <li><a href="/userchannel/<%=user._id%>"><i class="material-icons">rss_feed</i>feeds</a></li>
@@ -114,9 +114,9 @@
           </ul>
         </div>
 
-        <div id="test1" class="col s12">
+        <div id="test1" class="col s12 tchild">
+          <div class="small-title">General info</div>
           <div class="info">
-
             <div class="input-field">
                <i class="material-icons prefix">account_circle</i>
                   <label for="name" class="active">Name</label>
@@ -128,7 +128,7 @@
 
             <div class="input-field">
               <form method="POST" action="/updatephone" id="phoneForm">
-            <i class="material-icons prefix">account_circle</i>
+            <i class="material-icons prefix">phone</i>
             <label for="phone" class="active">phone</label>
             <input id="phone" name="phone" value="<%=user.phone%>" type="tel" class="validate" disabled>
             <small style="display:<%= errors.field === 'phone'? 'block': 'none' %>;margin-left:35px;color:red"><%=errors.message%></small>
@@ -141,7 +141,7 @@
             <div class="input-field">
               <form action = "/updateemail" method="POST" id="emailForm">
                 <input type="hidden" value="<%=csrfToken%>" name="_csrf">   
-                <i class="material-icons prefix">account_circle</i>
+                <i class="material-icons prefix">mail</i>
                 <label for="email" class="active">email</label>
                 <input id="email" name="email" type="email" value="<%=user.email%>" disabled>
                 <small style="display:<%= errors.field === 'email'? 'block': 'none' %>;margin-left:35px;color:red"><%=errors.message%></small>
@@ -162,7 +162,9 @@
         </div>
 
 
-        <div id="test2" class="col s12">
+        <div id="test2" class="col s12 tchild">
+          <div class="small-title">Chats <span id="badge"><%=total%></span></div>
+
           <% if(chats.length>0) { %>
           <% chats.forEach((user,i)=>{ %>
           <div class="chatCard">
@@ -184,7 +186,8 @@
 
             </div>
           <div class="btncont">
-            <button onclick="removeHandler(this,'dom')" data-target="modal1" class="btn modal-trigger">remove</button></div>
+            <a href="/chat/<%=user._id%>" class="z-depth-1"><i class="material-icons">near_me</i></a>
+            <button onclick="removeHandler(this,'dom')" data-target="modal1" class="btn modal-trigger"><i class="material-icons">delete</i></button></div>
           </div>
           <% })%>
           <% }else{ %>
@@ -201,7 +204,8 @@
           </div>
         </div>
 
-        <div id="test3" class="col s12">
+        <div id="test3" class="col s12 tchild">
+          <div class="small-title">Links</div>
           <div class="info">
             <div class="input-field copy">
                <i class="material-icons prefix">rss_feed</i>
@@ -232,7 +236,8 @@
         </div>
       </div>
 
-        <div id="test4" class="col s12">
+        <div id="test4" class="col s12 tchild">
+          <div class="small-title">settings</div>
           <div id="settingspage">
 
             <div class="anonymous"><div >
@@ -281,11 +286,26 @@
         </div>
       </div>
     </div>
+    <div class="fixed-action-btn click-to-toggle">
+      <a class="btn-floating btn-large red" style="background-color: indigo!important;">
+        <i class="large material-icons">adjust</i>
+      </a>
+      <ul>
+        <li><a class="btn-floating red acc"><i class="material-icons">account_circle</i></a></li>
+        <li><a class="btn-floating yellow darken-1  mychats"><i class="material-icons">chat</i></a></li>
+        <li><a class="btn-floating green  share"><i class="material-icons">share</i></a></li>
+        <li><a class="btn-floating blue  panel"><i class="material-icons">build</i></a></li>
+      </ul>
+    </div>
   </section>
+
   <script src="/js/materialize.min.js"></script>
   <script src="/js/jquery-3.4.1.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/profile.js"></script>
+  <script>
+   
+  </script>
   <%-include('profileScript.ejs') %>
   
 </body>

@@ -28,69 +28,69 @@ module.exports.createChannel = (req, res, next) => {
   let errors;
   let loginErrors;
   let otherErrors;
- 
-  if(error.length > 0 && error[0].mode === 'signUp'){
-  const nameError =  error[0].errors.find(err=>err.param === 'name')
-  const phoneError = error[0].errors.find(err=>err.param === 'phone')
-  const passwordError = error[0].errors.find(err=> err.param === 'pwd')
-   errors = {
-    nameError:{
-      isAvailable: nameError ? true :false,
-      message:nameError ? nameError.message: '', 
-    },   
-     phoneError:{
-      isAvailable: phoneError ? true : false,
-      message:phoneError ? phoneError.message : '', 
-    },   
-     passwordError:{
-      isAvailable: passwordError ? true :false,
-      message:passwordError ? passwordError.message: '', 
-    },
+
+  if (error.length > 0 && error[0].mode === 'signUp') {
+    const nameError = error[0].errors.find(err => err.param === 'name')
+    const phoneError = error[0].errors.find(err => err.param === 'phone')
+    const passwordError = error[0].errors.find(err => err.param === 'pwd')
+    errors = {
+      nameError: {
+        isAvailable: nameError ? true : false,
+        message: nameError ? nameError.message : '',
+      },
+      phoneError: {
+        isAvailable: phoneError ? true : false,
+        message: phoneError ? phoneError.message : '',
+      },
+      passwordError: {
+        isAvailable: passwordError ? true : false,
+        message: passwordError ? passwordError.message : '',
+      },
+    }
   }
-}
-if(error.length > 0 && error[0].mode === 'login'){
-  const phoneError = error[0].errors.find(err=>err.param === 'phone')
-  const passwordError = error[0].errors.find(err=> err.param === 'pwd')
-  loginErrors = {
-    phoneError:{
-      isAvailable: phoneError ? true : false,
-    },   
-     passwordError:{
-      isAvailable: passwordError ? true :false, 
-    },
-    mode:true
+  if (error.length > 0 && error[0].mode === 'login') {
+    const phoneError = error[0].errors.find(err => err.param === 'phone')
+    const passwordError = error[0].errors.find(err => err.param === 'pwd')
+    loginErrors = {
+      phoneError: {
+        isAvailable: phoneError ? true : false,
+      },
+      passwordError: {
+        isAvailable: passwordError ? true : false,
+      },
+      mode: true
+    }
   }
-}
   //const success = req.flash('success')
   res.render("auth", {
     csrfToken: req.csrfToken(),
     loginErrors: loginErrors ? loginErrors :
-    {
-      phoneError:{
-        isAvailable:false,
-      },   
-       passwordError:{
-        isAvailable:false,
+      {
+        phoneError: {
+          isAvailable: false,
+        },
+        passwordError: {
+          isAvailable: false,
+        },
+        mode: false
       },
-      mode: false
-    },
     errors: errors ? errors :
       {
-        nameError:{
-          isAvailable:false,
-          message:'', 
-        },   
-         phoneError:{
-          isAvailable:false,
-          message:'', 
-        },   
-         passwordError:{
-          isAvailable:false,
-          message:'', 
-        }, 
+        nameError: {
+          isAvailable: false,
+          message: '',
+        },
+        phoneError: {
+          isAvailable: false,
+          message: '',
+        },
+        passwordError: {
+          isAvailable: false,
+          message: '',
+        },
       },
-    toLogin:toLogin,
-    success: success.length > 0 ? true :false//success //if user was created successfully
+    toLogin: toLogin,
+    success: success.length > 0 ? true : false//success //if user was created successfully
   });
 };
 module.exports.createUserChannel = (req, res, next) => {
@@ -111,8 +111,8 @@ module.exports.createUserChannel = (req, res, next) => {
     //store error in flash which will be retrieved
     //in the get route
     req.flash('erros', err);
-    return req.session.save(()=>{
-     res.redirect('/getstarted')
+    return req.session.save(() => {
+      res.redirect('/getstarted')
     })
   }
   //extract user details if no errors
@@ -141,6 +141,7 @@ module.exports.createUserChannel = (req, res, next) => {
               password: hash,
               phone: phone,
               share: token,
+              desc:`# iam ${name}`,
               chatShare: chatString,
               anonyString: mongoose.Types.ObjectId(anonyString),
               isAnonymous: false,
@@ -152,13 +153,13 @@ module.exports.createUserChannel = (req, res, next) => {
           .then((user) => {
             //create and store success message then redirect
             req.flash('success', true)
-            req.session.save(()=>{
+            req.session.save(() => {
               return res.redirect("/getstarted");
             })
           })
           .catch((err) => {
             next(new Error('connection lost'))
- 
+
           });
       });
     });
@@ -171,7 +172,7 @@ module.exports.loginUser = (req, res, next) => {
   //check their validity and notify the user of the wrong input
   const errors = validationResult(req)
   console.log(errors)
-  if (!errors.isEmpty() ){
+  if (!errors.isEmpty()) {
     //reformat the errors if any
     const error = errors.errors.map(err => {
       return {
@@ -184,7 +185,7 @@ module.exports.loginUser = (req, res, next) => {
       mode: 'login'
     }
     req.flash('erros', err);
-    return req.session.save(()=>{
+    return req.session.save(() => {
       res.redirect('/getstarted')
     })
   }
@@ -208,22 +209,22 @@ module.exports.loginUser = (req, res, next) => {
           } else {
             //send flash message
             req.flash('erros', {
-             errors:[
-               {
-               param:'phone',
-               message:'invalid phone number or password'
-             },{
-               param:'pwd',
-               message:'invalid phone number or password'
-             }
-            ],
-              mode:'login'
+              errors: [
+                {
+                  param: 'phone',
+                  message: 'invalid phone number or password'
+                }, {
+                  param: 'pwd',
+                  message: 'invalid phone number or password'
+                }
+              ],
+              mode: 'login'
             })
-            return req.session.save(()=>{
+            return req.session.save(() => {
               res.redirect("/getstarted");
             })
           }
-        }).catch(err=>{
+        }).catch(err => {
           console.log('here')
         })
     })
@@ -231,12 +232,12 @@ module.exports.loginUser = (req, res, next) => {
       //redirect user to getstarted page
       //if any error occurs
       if (err.message === 'not found') {
-        req.flash('otherErr', {otherMode:true,message:'invalid credentials'});
-        return req.session.save(()=>{
+        req.flash('otherErr', { otherMode: true, message: 'invalid credentials' });
+        return req.session.save(() => {
           res.redirect('/getstarted')
-      })
+        })
       }
-    //  next(err)
+      //  next(err)
     });
 };
 module.exports.getPostToFeed = (req, res, next) => {
@@ -285,8 +286,8 @@ module.exports.userChannel = (req, res, next) => {
       if (err.message === 'not found') {
         return res.redirect('/getstarted')
       }
-      if(err.name == 'CastError'){
-       return res.redirect('/getstarted')
+      if (err.name == 'CastError') {
+        return res.redirect('/getstarted')
       }
       next(err)
     })
@@ -446,6 +447,9 @@ module.exports.getProfilePage = (req, res, next) => {
             })
         });
       });
+      if(req.session.user.isAnonymous){
+       return require('../helpers/profileAnonymous').profileAnonymous(req,res,next)
+      }
       //pagination implementation
       User.findById(req.session.user._id)
         .then((user) => {
@@ -490,7 +494,7 @@ module.exports.getProfilePage = (req, res, next) => {
           the no of records returned based on a chosen
           filtering condition i.e max of 2 users per page
            */
-          User.find({ _id: { $in: chatids } }).sort({$natural:-1}).skip((page - 1) * 2)
+          User.find({ _id: { $in: chatids } }).sort({ $natural: -1 }).skip((page - 1) * 2)
             .limit(2)
             .then(openchats => {
               /*retrive users that chatted with user anonymously
@@ -524,10 +528,10 @@ module.exports.getProfilePage = (req, res, next) => {
                   const succes = req.flash('success')
                   let errors
                   let success;
-                  if(error.length > 0){
-                   errors = error[0] 
+                  if (error.length > 0) {
+                    errors = error[0]
                   }
-                  if(succes.length > 0){
+                  if (succes.length > 0) {
                     success = succes[0]
                   }
                   res.render("profile", {
@@ -539,8 +543,8 @@ module.exports.getProfilePage = (req, res, next) => {
                     hasPrev: page > 1,
                     next: page + 1,
                     prev: page - 1,
-                    errors:errors ? errors : {field:'',message:''},
-                    success:success ? success : { message:''},
+                    errors: errors ? errors : { field: '', message: '' },
+                    success: success ? success : { message: '' },
                     total: nTotalAnonyUsers + ntotalOpenUsers,
                     last: Math.ceil((ntotalOpenUsers + nTotalAnonyUsers) / 2)
                   })
@@ -554,26 +558,27 @@ module.exports.getProfilePage = (req, res, next) => {
         .catch((err) => {
           next(err)
         });
-    }).catch(err => {
+    })
+    .catch(err => {
       next(err)
     })
 };
-module.exports.modifyPhone = (req,res,next)=>{
+module.exports.modifyPhone = (req, res, next) => {
   const phone = req.body.phone
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     //reformat the errors if any
-     const error = errors.errors[0].msg
+    const error = errors.errors[0].msg
     //store error in flash which will be retrieved
     //in the get route
-    req.flash('error',{field:'phone',message:error})
-    return req.session.save(()=>{
-     res.redirect(`profile/${req.session.user._id}`)
+    req.flash('error', { field: 'phone', message: error })
+    return req.session.save(() => {
+      res.redirect(`profile/${req.session.user._id}`)
     })
   }
-  if (!phone){
-    req.flash('error',{field:'phone',message:'field cannot be empty'})
-    return req.session.save(()=>{
+  if (!phone) {
+    req.flash('error', { field: 'phone', message: 'field cannot be empty' })
+    return req.session.save(() => {
       req.redirect(`/profile/${req.session.user._id}`)
     })
   }
@@ -582,54 +587,54 @@ module.exports.modifyPhone = (req,res,next)=>{
     { $set: { phone: phone } }
   ).then((u) => {
     req.session.user.phone = phone
-    req.flash('success',{message:'phone changed successfully'})
+    req.flash('success', { message: 'phone changed successfully' })
     req.session.save(() => {
-       //notify user of the change
-       res.redirect(`/profile/${req.session.user._id}`)
+      //notify user of the change
+      res.redirect(`/profile/${req.session.user._id}`)
     })
   }).catch(err => {
     throw err
   });
 
 }
-module.exports.modifyEmail = (req,res,next)=>{
+module.exports.modifyEmail = (req, res, next) => {
   const email = req.body.email
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     //reformat the errors if any
-     const error = errors.errors[0].msg
+    const error = errors.errors[0].msg
     //store error in flash which will be retrieved
     //in the get route
-    req.flash('error',{field:'email',message:error})
-    return req.session.save(()=>{
-     res.redirect(`profile/${req.session.user._id}`)
+    req.flash('error', { field: 'email', message: error })
+    return req.session.save(() => {
+      res.redirect(`profile/${req.session.user._id}`)
     })
   }
-  if (!email){
-    req.flash('error',{field:'email',message:'field cannot be empty'})
-    return req.session.save(()=>{
+  if (!email) {
+    req.flash('error', { field: 'email', message: 'field cannot be empty' })
+    return req.session.save(() => {
       req.redirect(`/profile/${req.session.user._id}`)
     })
   }
-  if(!email){
-      req.flash('error',{field:'email',message:'field cannot be empty'})
-      return req.session.save(()=>{
-        req.redirect(`/profile/${req.session.user._id}`)
-      })
-    }
-    User.updateOne(
-      { _id: req.session.user._id },
-      { $set: { email: email } }
-    ).then((u) => {
-      req.session.user.email = email
-      req.flash('success',{message:'email changed successfully'})
-      req.session.save(() => {
-         //notify user of the change
-         res.redirect(`/profile/${req.session.user._id}`)
-      })
-    }).catch(err => {
-      throw err
-    });
+  if (!email) {
+    req.flash('error', { field: 'email', message: 'field cannot be empty' })
+    return req.session.save(() => {
+      req.redirect(`/profile/${req.session.user._id}`)
+    })
+  }
+  User.updateOne(
+    { _id: req.session.user._id },
+    { $set: { email: email } }
+  ).then((u) => {
+    req.session.user.email = email
+    req.flash('success', { message: 'email changed successfully' })
+    req.session.save(() => {
+      //notify user of the change
+      res.redirect(`/profile/${req.session.user._id}`)
+    })
+  }).catch(err => {
+    throw err
+  });
 }
 
 module.exports.changePassword = (req, res, next) => {
@@ -638,15 +643,14 @@ module.exports.changePassword = (req, res, next) => {
   const newPassWord = req.body.new;
   const uid = req.body.uid;
   const errors = validationResult(req)
-  console.log(errors)
   if (!errors.isEmpty()) {
     //reformat the errors if any
-     const error = errors.errors[0].msg
+    const error = errors.errors[0].msg
     //store error in flash which will be retrieved
     //in the get route
-    req.flash('error',{field:'new',message:error})
-    return req.session.save(()=>{
-     res.redirect(`profile/${req.session.user._id}`)
+    req.flash('error', { field: 'new', message: error })
+    return req.session.save(() => {
+      res.redirect(`profile/${req.session.user._id}`)
     })
   }
   User.findById(uid)
@@ -656,10 +660,10 @@ module.exports.changePassword = (req, res, next) => {
         .then(result => {
           console.log(result)
           if (!result) {
-            req.flash('error',{field:'old',message:'old password is incorrect'})
-            return req.session.save(()=>{
+            req.flash('error', { field: 'old', message: 'old password is incorrect' })
+            return req.session.save(() => {
               res.redirect(`profile/${req.session.user._id}`)
-             })
+            })
             //send flash message that old password is incorrect
             //then reload page with the previously supplied data
           }
@@ -671,8 +675,8 @@ module.exports.changePassword = (req, res, next) => {
               user.save().
                 then(user => {
                   console.log('here')
-                  req.flash('success',{message:'password changed successfully'})
-                  req.session.save(()=>{
+                  req.flash('success', { message: 'password changed successfully' })
+                  req.session.save(() => {
                     res.redirect(`/profile/${user._id}`)
                   })
                 }).catch(err => {
@@ -697,8 +701,6 @@ module.exports.goAnonymous = (req, res, next) => {
         user.isAnonymous = false;
         user.status = 'online';
         user.anonymousStatus = 'offline'
-        //clear the anonymous chats
-        user.anonyChats = []
         req.session.user = user
         req.session.save(() => {
           // return user.save();
@@ -780,22 +782,23 @@ module.exports.getChatPage = (req, res, next) => {
   //check user's mode then execute the necessary logic based on
   //their mode
   const id = req.params.chatId
-User.findOne({$or:[{_id:id},{anonyString:id}]})
-.then(user=>{
-  if(!user){
-      req.flash('inform',{
-          status:true,
-          msg:'user does not exist'})
-      return req.session.save(()=>{
-       res.redirect(`/userchannel/${req.session.user._id}`)
-      })
-  }
-  if (!req.session.user.isAnonymous) {
-    return modes.normalChatMode(req, res, next, io);
-  } else {
-    modes.anonymousChatMode(req, res, next, io)
-  }
-})
+  User.findOne({ $or: [{ _id: id }, { anonyString: id }] })
+    .then(user => {
+      if (!user) {
+        req.flash('inform', {
+          status: true,
+          msg: 'user does not exist'
+        })
+        return req.session.save(() => {
+          res.redirect(`/userchannel/${req.session.user._id}`)
+        })
+      }
+      if (!req.session.user.isAnonymous) {
+        return modes.normalChatMode(req, res, next, io);
+      } else {
+        modes.anonymousChatMode(req, res, next, io)
+      }
+    })
 };
 module.exports.addChat = (req, res, next) => {
   let uid;
@@ -803,10 +806,10 @@ module.exports.addChat = (req, res, next) => {
   let me;
   let userId;
   let myChats;
-  if(req.session.user.isAnonymous){
-  userId = req.session.user.anonyString
-  myChats = req.session.user.anonyChats
-  }else{
+  if (req.session.user.isAnonymous) {
+    userId = req.session.user.anonyString
+    myChats = req.session.user.anonyChats
+  } else {
     userId = req.session.user._id
     myChats = req.session.user.chats
   }
@@ -816,27 +819,27 @@ module.exports.addChat = (req, res, next) => {
   //query DB to see if the chatstring exists
   User.findOne({ chatShare: chatString })
     .then((user) => {
-      if(!user){
+      if (!user) {
         res.json({
-          code:400,
-          message:'no user found'
+          code: 400,
+          message: 'no user found'
         })
         throw new Error(400)
       }
       //check if user already exists in our list
       const isUser = myChats.some(chat => chat.chatId.toString() === user._id.toString())
       if (isUser) {
-          res.json({
-          code:400,
-          message:'user is already in your chat list'
+        res.json({
+          code: 400,
+          message: 'user is already in your chat list'
         })
         throw new Error(400)
       }
       else if (user._id.toString() === userId.toString() || user.anonyString === userId.toString()) {
         //tell user they cant add themselves
         res.json({
-          code:400,
-          message:'you cannot add your self'
+          code: 400,
+          message: 'you cannot add your self'
         })
         throw new Error(400)
       } else {
@@ -872,9 +875,9 @@ module.exports.addChat = (req, res, next) => {
         chatId: uid,
         messages: [],
       });
-      if(req.session.user.isAnonymous){
+      if (req.session.user.isAnonymous) {
         user.anonyChats = chats
-      }else{
+      } else {
         user.chats = chats
       }
       return user.save();
@@ -891,24 +894,25 @@ module.exports.addChat = (req, res, next) => {
       //their ui can be updated accordingly
       req.session.user = me;
       req.session.save(() => {
-        if(req.session.user.isAnonymous){
-        io().to(newChat._id).emit("online", {
-          name: req.session.user.anonymousName,
-          fid: userId,
-          anStatus: 'online'
-        })}else{
+        if (req.session.user.isAnonymous) {
+          io().to(newChat._id).emit("online", {
+            name: req.session.user.anonymousName,
+            fid: userId,
+            anStatus: 'online'
+          })
+        } else {
           io().to(newChat._id).emit("online", {
             name: req.session.user.name,
-            fid:userId,
+            fid: userId,
             status: 'online'
           })
         }
         res.json({
-          code:200,
-          newchat:{
-            _id:newChat._id,
-            name:newChat.name,
-            status:newChat.status
+          code: 200,
+          newchat: {
+            _id: newChat._id,
+            name: newChat.name,
+            status: newChat.status
           }
         })
         //this is the callback and will update the ui of requesting user
@@ -938,10 +942,10 @@ module.exports.sendChat = (req, res, next) => {
         pal = user.name
       }
       //retrive the chats array from senders details
-      let friends; 
-      if(user.isAnonymous){
-       friends = user.anonyChats
-      }else{
+      let friends;
+      if (user.isAnonymous) {
+        friends = user.anonyChats
+      } else {
         friends = user.chats
       }
       //user.chats;
@@ -963,11 +967,11 @@ module.exports.sendChat = (req, res, next) => {
           return chats; //to keep all other chats
         }
       });
-      if(user.isAnonymous){
+      if (user.isAnonymous) {
         user.anonyChats = friends
         req.session.user.anonyChats = friends
         req.session.save()
-      }else{
+      } else {
         user.chats = friends;
         req.session.user.chats = friends
         req.session.save()
@@ -1047,7 +1051,7 @@ module.exports.sendChat = (req, res, next) => {
       //inform user of new message if not in chat window
       io()
         .to(receiver)
-        .emit("notify", { id: userId,name:pal.split(' ')[0] ,msg: message, time: time });
+        .emit("notify", { id: userId, name: pal.split(' ')[0], msg: message, time: time });
       //in the notify emitter return the friend id
 
       //update ui of receipient if in chat room
@@ -1067,11 +1071,22 @@ module.exports.sendChat = (req, res, next) => {
 
 }
 module.exports.removeAChat = (req, res, next) => {
+  let myChats
   User.findById(req.session.user._id)
     .then(user => {
+      if (user.isAnonymous) {
+        myChats = user.anonyChats
+      } else {
+        myChats = user.chats
+      }
       //filter out unwanted user from chat list
-      const filteredList = [...user.chats].filter(chat => chat.chatId.toString() !== req.body.uid.toString())
-      user.chats = filteredList
+      const filteredList = myChats.filter(chat => chat.chatId.toString() !== req.body.uid.toString())
+      if (user.isAnonymous) {
+        user.anonyChats = filteredList
+      } else {
+        user.chats = filteredList
+
+      }
       return user.save()
     }).catch(err => {
       throw err
@@ -1079,7 +1094,7 @@ module.exports.removeAChat = (req, res, next) => {
     .then(user => {
       //take user to profile page after execution
       req.session.user = user
-      return req.session.save(()=>{
+      return req.session.save(() => {
         res.redirect(`/profile/${user._id}`)
 
       })
@@ -1087,35 +1102,35 @@ module.exports.removeAChat = (req, res, next) => {
       next(err)
     })
 };
-module.exports.deleteAccount = (req,res,next)=>{
+module.exports.deleteAccount = (req, res, next) => {
   const id = req.params.id;
   User.findById(id)
-  .then(user=>{
-    if(!user){
-      throw new Error('invalid id')
-    }
-    const ids = user.chats.map(users=>{
-      return users.chatId
-    })
-    return User.find({_id:{$in:ids}})
-  }).catch(err=>{
-    if(err.message === 'invalid id'){
-      return
-    }
-  }).then(chat=>{
-    chat.forEach(chats=>{
-      chats.chats.filter(id=> id.toString() !== req.session.user._id.toString())
-      chats.save()
-    })
+    .then(user => {
+      if (!user) {
+        throw new Error('invalid id')
+      }
+      const ids = user.chats.map(users => {
+        return users.chatId
+      })
+      return User.find({ _id: { $in: ids } })
+    }).catch(err => {
+      if (err.message === 'invalid id') {
+        return
+      }
+    }).then(chat => {
+      chat.forEach(chats => {
+        chats.chats.filter(id => id.toString() !== req.session.user._id.toString())
+        chats.save()
+      })
       return User.findByIdAndDelete(id)
-  })
-  .then(_=>{
-    req.session.destroy(()=>{
-      res.redirect('/getstarted')
     })
-  }).catch(err=>{
+    .then(_ => {
+      req.session.destroy(() => {
+        res.redirect('/getstarted')
+      })
+    }).catch(err => {
 
-  })
+    })
 }
 module.exports.logout = (req, res, next) => {
   //destroy users session
@@ -1141,15 +1156,15 @@ module.exports.reset = (req, res, next) => {
       if (!user) {
         // tell user details is incorrect
         req.flash('noUser', { message: 'invalid credentials' })
-        return req.session.save(()=>{
-         res.redirect('/resetpassword')
+        return req.session.save(() => {
+          res.redirect('/resetpassword')
         })
       }
       //verify user phone
       if (user.email !== email) {
         //tell user email is invalid
         req.flash('noUser', { message: 'invalid email' })
-        return req.session.save(()=>{
+        return req.session.save(() => {
           return res.redirect('/resetpassword')
         })
       }
@@ -1180,17 +1195,17 @@ module.exports.getSetNewPassword = (req, res, next) => {
         // send an invalid token message
         //to the password reset home
         req.flash('noUser', { message: 'invalid token' })
-        return req.session.save(()=>{
-           res.redirect('/resetpassword')
+        return req.session.save(() => {
+          res.redirect('/resetpassword')
         })
       }
       //check if the token has expired
       if (user.tokenMaxAge < Date.now()) {
         //send a message telling user the token has expired
         req.flash('noUser', { message: 'token already expired' })
-       return req.session.save(()=>{
-        return res.redirect('/resetpassword')
-       })
+        return req.session.save(() => {
+          return res.redirect('/resetpassword')
+        })
       }
       //if all goes well render the set new page
       const noUserFound = req.flash('noUser')
@@ -1218,37 +1233,37 @@ module.exports.setNewPassword = (req, res, next) => {
   if (!errors.isEmpty()) {
     //reformat the errors if any
     req.flash('noUser', { message: errors.errors[0].msg })
-    return req.session.save(()=>{
-       res.redirect(`/setnewpassword/${token}`)
+    return req.session.save(() => {
+      res.redirect(`/setnewpassword/${token}`)
     })
     //store error in flash which will be retrieved
     //in the get route
-  /*  req.flash('erros', err);
-    return req.session.save(()=>{
-     res.redirect('/getstarted')
-    })*/
+    /*  req.flash('erros', err);
+      return req.session.save(()=>{
+       res.redirect('/getstarted')
+      })*/
   }
   User.findOne({ resetToken: token })
     .then(user => {
       if (!user) {
         // tell user token is invalid
         req.flash('noUser', { message: 'invalid token' })
-        return req.session.save(()=>{
-           res.redirect('/resetpassword')
+        return req.session.save(() => {
+          res.redirect('/resetpassword')
         })
       }
       //check if token is expired
       if (user.tokenTime < Date.now()) {
         //tell user token has expired    
         req.flash('noUser', { message: 'token already expired' })
-        return req.session.save(()=>{
+        return req.session.save(() => {
           return res.redirect('/resetpassword')
         })
       }
       if (password !== confirmPassword) {
         //tell user the password does not match
         req.flash('noUser', { message: 'passwords do not match' })
-        return req.session.save(()=>{
+        return req.session.save(() => {
           return res.redirect(`/setnewpassword/${token}`)
         })
       }
@@ -1263,7 +1278,7 @@ module.exports.setNewPassword = (req, res, next) => {
         .then(user => {
           //tell user they can now login
           req.flash('success', true)
-          return req.session.save(()=>{
+          return req.session.save(() => {
             res.redirect('/getstarted')
           })
         })
@@ -1272,7 +1287,7 @@ module.exports.setNewPassword = (req, res, next) => {
     })
 
 }
-module.exports.retrieveMoreChats = (req,res,next)=>{
+module.exports.retrieveMoreChats = (req, res, next) => {
   const chatPaginator = require('../helpers/paginators').chatPaginator
-  chatPaginator(req,res,next)
+  chatPaginator(req, res, next)
 }
