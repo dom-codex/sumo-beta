@@ -18,21 +18,27 @@ router.post('/createUserChannel', [
 check('name').isLength({min:3}).withMessage('name too short').custom((value,{req})=>{
     return validators.comfirmNewUserName(value)
 }).trim(),
-check('email').custom((val,{req})=>{
+check('email').isEmail().custom((val,{req})=>{
     return validators.comfirmNewUserEmail(val);
 }).normalizeEmail(),
-check('phone').isLength({min:11}).withMessage('invalid phone number').custom((val,{req})=>{
-    return validators.comfirmNewUserPhone(val);
-}).trim(),    
-check('phone').custom((val,{req})=>{
-    return User.findOne({ phone: req.body.phone  })
+check('email').custom((val,{req})=>{
+    return User.findOne({email:val })
     .then((user) => {
         if(user){
-           return Promise.reject('phone number already taken')
+            return Promise.reject('email already taken')
         }
-        return true
-    })
+     })
 }).trim(),
+check('phone').custom((val,{req})=>{
+    if(val != '' && val !=null && val !== undefined){
+        return User.findOne({phone:val })
+        .then((user) => {
+            if(user){
+                return Promise.reject('phone number already taken')
+            }
+         })  
+    }else return true
+}).trim(),  
 check('pwd').isLength({min:5}).withMessage('password too short').custom((val,{req})=>{
     return validators.comfirmNewUserPassword(val,req)
 }).trim()
@@ -41,27 +47,12 @@ check('pwd').isLength({min:5}).withMessage('password too short').custom((val,{re
 controller.createUserChannel);
 //validate login credentials
 router.post('/loginuser',[
-    check('phone').isLength({min:11}).withMessage('invalid phone number').custom((val,{req})=>{
-        return validators.comfirmNewUserPhone(val);
-    }).trim(),
+    check('email').isEmail().withMessage('invalid email').trim(),
     check('pwd').isLength({min:5}).withMessage('password too short').custom((val,{req})=>{
         return validators.assertLoginCredentials(val,req)
     }),
-    //validate phone number
-    check('phone').custom((val,{req})=>{
-        return User.findOne({ phone: req.body.phone  })
-        .then((user) => {
-          bcrypt.compare(req.body.pwd, user.password)
-            .then(result => {
-              if (result) {
-                return true  
-              }else{
-                  return Promise.reject('invalid email or password')
-              } 
-            })
-            })
-    }).trim()
 ] ,controller.loginUser);
+
 router.get('/channel',channelRedirect)
 router.get('/userchannel/:id', 
 isAuth,

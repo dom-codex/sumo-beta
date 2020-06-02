@@ -6,7 +6,7 @@ const moment = require('moment');
 const User = require("../models/user");
 const modes = require("../utils/mode");
 const detectors = require('../utils/detectors');
-const mailer = require('../utils/mailer').mailer;
+const mailer = require('../utils/mailer');
 
 const io = require("../socket").getIO;
 
@@ -31,6 +31,7 @@ module.exports.createChannel = (req, res, next) => {
 
   if (error.length > 0 && error[0].mode === 'signUp') {
     const nameError = error[0].errors.find(err => err.param === 'name')
+    const emailError = error[0].errors.find(err => err.param === 'email')
     const phoneError = error[0].errors.find(err => err.param === 'phone')
     const passwordError = error[0].errors.find(err => err.param === 'pwd')
     errors = {
@@ -38,7 +39,11 @@ module.exports.createChannel = (req, res, next) => {
         isAvailable: nameError ? true : false,
         message: nameError ? nameError.message : '',
       },
-      phoneError: {
+      emailError: {
+        isAvailable: emailError ? true : false,
+        message: emailError ? emailError.message : '',
+      },   
+         phoneError: {
         isAvailable: phoneError ? true : false,
         message: phoneError ? phoneError.message : '',
       },
@@ -49,10 +54,10 @@ module.exports.createChannel = (req, res, next) => {
     }
   }
   if (error.length > 0 && error[0].mode === 'login') {
-    const phoneError = error[0].errors.find(err => err.param === 'phone')
+    const emailError = error[0].errors.find(err => err.param === 'email')
     const passwordError = error[0].errors.find(err => err.param === 'pwd')
     loginErrors = {
-      phoneError: {
+      emailError: {
         isAvailable: phoneError ? true : false,
       },
       passwordError: {
@@ -66,7 +71,7 @@ module.exports.createChannel = (req, res, next) => {
     csrfToken: req.csrfToken(),
     loginErrors: loginErrors ? loginErrors :
       {
-        phoneError: {
+        emailError: {
           isAvailable: false,
         },
         passwordError: {
@@ -80,6 +85,10 @@ module.exports.createChannel = (req, res, next) => {
           isAvailable: false,
           message: '',
         },
+        emailError: {
+          isAvailable: false,
+          message: '',
+        },    
         phoneError: {
           isAvailable: false,
           message: '',
@@ -152,11 +161,9 @@ module.exports.createUserChannel = (req, res, next) => {
           })
           .then((user) => {
             //create and store success message then redirect
-            req.flash('success', true)
-            console.log(user)
-            req.session.save(() => {
-              return res.redirect("/getstarted");
-            })
+           // req.flash('success', true)
+           mailer.confirmationMailer(user.email,user.name,user._id)
+          return res.redirect("/confirmation");
           })
           .catch((err) => {
             next(new Error('connection lost'))
@@ -166,9 +173,12 @@ module.exports.createUserChannel = (req, res, next) => {
     });
   });// end of chat crypto
 };
+module.exports.confirmationPage = (req,res,next)=>{
+  res.render("confirmation")
+}
 module.exports.loginUser = (req, res, next) => {
   //extract the user details from the request body
-  const phone = req.body.phone.toString();
+  const email = req.body.email
   const password = req.body.pwd;
   //check their validity and notify the user of the wrong input
   const errors = validationResult(req)
@@ -190,8 +200,9 @@ module.exports.loginUser = (req, res, next) => {
     })
   }
   //find associated user
-  User.findOne({ phone: phone })
+  User.findOne({ email: email})
     .then((user) => {
+      console.log(user)
       if (!user) {
         throw new Error('not found')
       }
@@ -1151,9 +1162,8 @@ module.exports.getResetPassword = (req, res, next) => {
   })
 }
 module.exports.reset = (req, res, next) => {
-  const phone = req.body.phone;
   const email = req.body.email;
-  User.findOne({ phone: phone })
+  User.findOne({ email: email})
     .then(user => {
       if (!user) {
         // tell user details is incorrect
@@ -1179,7 +1189,7 @@ module.exports.reset = (req, res, next) => {
         user.tokenMaxAge = Date.now() + 1000 * 60 * 5
         user.save(_ => {
           //send the link to user's email 
-          mailer(req, res, user.email, user.name, token)
+          mailer.mailer(req, res, user.email, user.name, token)
 
         })
       })
@@ -1231,7 +1241,6 @@ module.exports.setNewPassword = (req, res, next) => {
   //validate the password if its empty
   //use the token to get the user
   const errors = validationResult(req)
-  console.log(errors)
   if (!errors.isEmpty()) {
     //reformat the errors if any
     req.flash('noUser', { message: errors.errors[0].msg })

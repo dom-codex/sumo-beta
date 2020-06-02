@@ -42,8 +42,8 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
       <div class="forgotPass"><a href="/resetpassword">Forgot password</a></div>
       
       <!--error boards-->
-      <div class="<%=loginErrors.phoneError.isAvailable || loginErrors.passwordError.isAvailable  ? 'display warning-board':'none'%>">
-          <p class="<%=loginErrors.phoneError.isAvailable || loginErrors.passwordError.isAvailable  ? 'display warning-board':'none'%>">Invalid phone number or password</p>
+      <div class="<%=loginErrors.emailError.isAvailable || loginErrors.passwordError.isAvailable  ? 'display warning-board':'none'%>">
+          <p class="<%=loginErrors.emailError.isAvailable || loginErrors.passwordError.isAvailable  ? 'display warning-board':'none'%>">Invalid phone number or password</p>
       </div>  
           <div class="<%=success ? 'warning-board success display':'none' %>">
         <% if(success) { %>
@@ -74,13 +74,14 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
             <div class="input wrapper input-field">
                <i class="material-icons prefix">email</i>
                <label for="email">Email</label>
-              <input id="email" name="email" type="email" > 
+              <input id="email" name="email" type="email" style="border-bottom-color:<%= errors.emailError.isAvailable  ? 'red' : '' %>"> 
+              <div class="warn" style="display:<%= errors.emailError.isAvailable ? 'block' : 'none' %>"><small style="color:<%= errors.emailError.isAvailable ? 'red' : '' %>"><%=errors.emailError.message%></small></div>
             </div>
 
               <div class="input wrapper input-field">
                <i class="material-icons prefix">phone</i>
                <label for="phone">phone</label>
-              <input id="phone" name="phone" type="number" required style="border-bottom-color:<%= errors.phoneError.isAvailable ? 'red' : '' %>">
+              <input id="phone" name="phone" type="number" style="border-bottom-color:<%= errors.phoneError.isAvailable  ? 'red' : '' %>">
               <div class="warn" style="display:<%= errors.phoneError.isAvailable ? 'block' : 'none' %>"><small style="color:<%= errors.phoneError.isAvailable ? 'red' : '' %>"><%=errors.phoneError.message%></small></div>
              </div>
 
@@ -104,13 +105,13 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
       <form action='/loginuser' method="post" autocomplete="off">
         <input type="hidden" value="<%=csrfToken%>" name="_csrf">
             <div class="input wrapper input-field">
-               <i class="material-icons prefix">phone</i>
-               <label for="phones">Phone</label> 
-              <input id="phones" name="phone" type="number" > </div>
+               <i class="material-icons prefix">mail</i>
+               <label for="mails">Email</label> 
+              <input id="mails" name="email" type="email" required> </div>
              <div class="input wrapper input-field">
               <i class="material-icons prefix">lock</i>
               <label for="pwds">password</label> 
-               <input id="pwds" name="pwd" type="password" > </div>
+               <input id="pwds" name="pwd" type="password" required> </div>
               <div class="button wrap"><button type="submit">Submit</button></div>
           </form>
       </div>

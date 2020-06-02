@@ -8,8 +8,10 @@ module.exports.comfirmNewUserName = (name)=>{
 
 }
 module.exports.comfirmNewUserPhone = (phone)=>{
-
-    if(phone !== undefined && phone !== null && phone !== ' '){
+    if(phone === '') return true
+    else if(phone !== undefined &&
+         phone !== null && 
+         phone !== ' '){
         return true
     }
     else
