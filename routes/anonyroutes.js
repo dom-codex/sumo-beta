@@ -110,7 +110,7 @@ router.post('/changepassword',
 check('new').isLength({min:5}).withMessage('password too short').trim(), 
 isAuth, 
 controller.changePassword);
-
+router.get('/confirmation',controller.confirmationPage)
 router.post('/addchat',controller.addChat)
 
 router.post('/retrievechat',controller.retrieveMoreChats)

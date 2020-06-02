@@ -5,37 +5,25 @@
   font-family: Rubik;
 }
 body{
-  background-image: url('amalfi1.jpg');
-  background-position:center center;
-  background-size:cover;
-  background-repeat: no-repeat;
-  font-family: sans-serif;
   overflow-x: hidden;
-  height:auto;
+  height:100%;
+  position: relative;
+  top:90px;
+  min-width:350px;
+}
+header{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  z-index: 9000000;
 }
 nav{
-  background-color: transparent;
+  background-color: #fff;
   height:inherit;
-  box-shadow: none;
   display:flex;
   justify-content: center;
   padding-top:25px;
-}
-.background{
-  height:100vh;
-  overflow-y:scroll;
-  background-color:rgba(0,0,0,.6);
-}
-
-@media all and (min-height: 436px){
-  .background{
-    position:relative
-  }
-  .sub{
-    position:absolute;
-    bottom:15px;
-    right:20px;
-  }
 }
 ul{
   list-style: none;
@@ -46,18 +34,71 @@ ul li{
 }
 li a{
   text-decoration:none;
-  color:#fff;
-  border-bottom:1px solid #fff;
-  padding:5px;
+  color:indigo!important;
   font-family: Rubik;
   font-weight: 700;
 }
-section{
-  
-  min-height:200px;
+section.theme{
+  background-image: url('theme.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height:350px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+section.about{
+  height: 200px;
+}
+section.about, section.features{
+  padding:90px 0
+}
+section.about h4, section.features h4{
+  font-size:2em;
+  margin:15px;
+  padding:0;
+  border-bottom: 2px double #000;
+  padding-bottom:7px;
+}
+section.about div:nth-child(1),.features-title{
+  display:flex;
+  justify-content: center;
+}
+.description{
+  width:75%;
+  margin:auto
+}
+.description p{
+  text-align: center;
+  color:rgb(206, 138, 138);
+  max-width:450px;
+  margin: auto;
+}
+.featuresList{
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+}
+.feature-tile{
+  width:55%;
+  margin:auto;
+  margin-top:20px
+}
+.featuresList div:nth-child(5){
+  margin-bottom:18px
+}
+.feature-circle{
+  width:65px;
+  height:65px;
+  border-radius: 50%;
+  background-color: indigo;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+.feature-circle i {
+  font-size:30px;
+  color:#fff
 }
 .showcase{
   display:flex;
@@ -197,7 +238,7 @@ section{
   margin-left:15px;
 }
 #notifier{
-  display:flex;
+  display:none;
   justify-content: center;
   margin: 40px 0 30px 0;
   opacity:0
@@ -276,4 +317,63 @@ button.btn:hover{
     box-shadow: none;
     padding:15px!important;
   }
+}
+footer{
+  background-color:rebeccapurple;
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  height:65px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+footer div:nth-child(1){
+  margin-left:30px;
+  color:#fff
+}
+footer div:nth-child(2){
+  margin-right:30px;
+  color:#fff;
+  height:40px;
+  width:40px;
+  border-radius: 50%;
+  background-color: rgb(82, 40, 112)!important;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+footer div:nth-child(2):hover,footer div:nth-child(2):active{
+  background-color: #ff3d00!important;
+}
+/*media queries */
+@media all and (min-height: 436px){
+  .background{
+    position:relative
+  }
+  .sub{
+    position:absolute;
+    bottom:55px;
+    right:20px;
+  }
+}
+@media all and (max-height:280px){
+  header{
+    position: static;
+  }
+  body{
+    top:0;
+  }
+}
+@media all and (min-width:920px){
+  .featuresList{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  #features{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
 }

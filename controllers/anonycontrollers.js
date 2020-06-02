@@ -153,6 +153,7 @@ module.exports.createUserChannel = (req, res, next) => {
           .then((user) => {
             //create and store success message then redirect
             req.flash('success', true)
+            console.log(user)
             req.session.save(() => {
               return res.redirect("/getstarted");
             })
@@ -171,7 +172,6 @@ module.exports.loginUser = (req, res, next) => {
   const password = req.body.pwd;
   //check their validity and notify the user of the wrong input
   const errors = validationResult(req)
-  console.log(errors)
   if (!errors.isEmpty()) {
     //reformat the errors if any
     const error = errors.errors.map(err => {
@@ -225,7 +225,6 @@ module.exports.loginUser = (req, res, next) => {
             })
           }
         }).catch(err => {
-          console.log('here')
         })
     })
     .catch((err) => {
@@ -1121,6 +1120,8 @@ module.exports.deleteAccount = (req, res, next) => {
     }).then(chat => {
       chat.forEach(chats => {
         chats.chats.filter(id => id.toString() !== req.session.user._id.toString())
+        chats.chats.filter(id => id.toString() !== req.session.user.anonyString.toString())
+        chats.anonyChats.filter(id => id.toString() !== req.session.user._id.toString())
         chats.save()
       })
       return User.findByIdAndDelete(id)

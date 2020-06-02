@@ -47,32 +47,23 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
           <button class="waves-effect waves-green btn-flat" id="send">Send</button>
         </div>
       </div>
-      <!--modal bottom sheet-->
-      <div id="modal3" class="modal bottom-sheet">
-        <div class="modal-content">
-          <h5>Enter link to user's feed</h5>
-          <div id="link"><input id="linktext" type="text"/></div>
-        </div>
-        <div class="modal-footer">
-          <a id="go" href="#!" class="modal-close waves-effect waves-green btn-flat">go</a>
-        </div>
-      </div>
+
       <header>
         <nav>
           <a id="showdd" class='dropdown-trigger btn' href='#' data-target='dropdown1'><i class="material-icons">dehaze</i></a>
           <ul id="firstul">
             <li><a href="/" style="color:rgb(255, 136, 0)">HOME</a></li>
-            <li><a href="#" style="color:grey">ABOUT</a></li>
-            <li> <a class="modal-trigger bottom" href="#modal3">SEND COMPLIMENT</a>
+            <li><a href="#about">ABOUT</a></li>
+            <li> <a href="#features">FEATURES</a>
               <li><a href="/getstarted?login=true">LOGIN</a></li>
             </li>
           </ul>
           <ul id='dropdown1' class='dropdown-content'>
             <li><a href="/" style="color:rgb(255, 136, 0)">HOME</a></li>
             <li class="divider" tabindex="-1"></li>
-            <li><a href="#" style="color:grey">ABOUT</a></li>
+            <li><a href="#about" style="color:grey">ABOUT</a></li>
             <li class="divider" tabindex="-1"></li>
-            <li> <a class="modal-trigger bottom" href="#modal3">SEND COMPLIMENT</a>
+            <li> <a  href="#features">FEATURES</a>
             </li>
             <li class="divider" tabindex="-1"></li>
             <li><a href="/getstarted?login=true">LOGIN</a></li>
@@ -80,7 +71,7 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
          
         </nav>
       </header>
-      <section>
+      <section class="theme">
         <div class="showcase">
           <h2>SUMO MESSENGER!</h2>
            <div class="container"> 
@@ -115,14 +106,94 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
  
 </div>
    </div>
+   <div class="join"><a href="/getstarted">JOIN NOW</a></div>
       </section>
-      <div class="join"><a href="/getstarted">JOIN NOW</a></div>
       <div id="notifier" class="<%=save.length > 0? 'save': '' %>"><p>sent successfully!!!</p></div>
-      <div id="sub-cont"><div class="sub"><button data-target="modal2" class="btn modal-trigger"><i class="material-icons">comment</i></button></div>
+     <!-- <div id="sub-cont"><div class="sub"><button data-target="modal2" class="btn modal-trigger"><i class="material-icons">comment</i></button></div>-->
   </div>
     </div>
+    <section class="about" id="about">
+      <div><h4>About</h4></div>
+      <div class="description">
+        <p>Sumo messenger is an interactive messaging application, 
+          which allows you engage in open conversations,secret conversations&
+          provides you with a medium for knowing what your peers think about you through its
+          anonymous feed implementations
 
-  </main> 
+        </p>
+      </div>
+    </section>
+    <section class="features" id="features">
+      <div class="features-title"><h4>Features</h4></div>
+      <div class="featuresList">
+        <div class="feature-tile">
+          <div class="feature-circle z-depth-1">
+            <i class="material-icons">invert_colors_off</i>
+          </div>
+          <div>
+            <h5>Anonymity</h5>
+            <p>Sumo ensures your identity is never revealed to the
+              other party whom you are complimenting
+            </p>
+          </div>
+        </div>    
+             <div class="feature-tile">
+          <div class="feature-circle z-depth-1">
+            <i class="material-icons">wifi</i>
+          </div>
+          <div>
+            <h5>Open chat</h5>
+            <p>Sumo lets you engage in live conversations with loved ones.
+              with your identity known to the other party
+            </p>
+          </div>
+        </div> 
+        <div class="feature-tile">
+          <div class="feature-circle z-depth-1">
+            <i class="material-icons">wifi_lock</i>
+          </div>
+          <div>
+          <h5>Anonymous chat</h5>
+          <p>Sumo also lets you go anonymous giving you the
+            ability to share your deepest thoughts & secrets with your
+            true identity completely hidden
+          </p>
+        </div>
+        </div>     
+           <div class="feature-tile">
+          <div class="feature-circle z-depth-1">
+            <i class="material-icons">bolt</i>
+          </div>
+          <div>
+          <h5>Real time update</h5>
+          <p>Receive instant updates as your friend and loved ones
+            flood your feeds with their thoughts about you
+          </p>
+          </div>
+        </div>      
+          <div class="feature-tile">
+          <div class="feature-circle z-depth-1">
+            <i class="material-icons">terrain</i>
+          </div>
+          <div>
+          <h5>Dark theme</h5>
+          <p>Beautiful dark UI to help distinguish 
+            when you are anonymous </p>
+        </div>
+        </div>
+
+      </div>
+    </section>
+    <div id="sub-cont"><div class="sub"><button data-target="modal2" class="btn modal-trigger"><i class="material-icons">comment</i></button></div> 
+  </main>   
+  <footer>
+    <div class="footer-copyright">
+      © 2020 Sumo messenger
+    </div>
+    <div class="z-depth-2">Top</div>
+
+  </footer>
+
   <script src="/js/materialize.min.js"></script>
   <script src="/js/jquery-3.4.1.min.js"></script>
 
@@ -185,6 +256,9 @@ goBtn.on('click',()=>{
   const link = $('#linktext').val();
   window.location.href = link
 
+})
+$('footer div:nth-child(2)').on('click',()=>{
+  window.scrollTo(0,0)
 })
   </script>
 </body>
