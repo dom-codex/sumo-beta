@@ -817,12 +817,25 @@ module.exports.addChat = (req, res, next) => {
   let me;
   let userId;
   let myChats;
-  if (req.session.user.isAnonymous) {
-    userId = req.session.user.anonyString
-    myChats = req.session.user.anonyChats
+  let Auser
+  User.findById(req.session.user._id)
+  .then(user=>{
+  if (user.isAnonymous) {
+    userId = user.anonyString
+    myChats = user.anonyChats
+    Auser = {
+      name:user.anonymousName,
+      desc:'anonymous user'
+
+    }
   } else {
-    userId = req.session.user._id
-    myChats = req.session.user.chats
+    userId = user._id
+    myChats = user.chats
+    Auser = {
+      name:user.name,
+      desc:user.desc
+
+    }
   }
   //variable to hold the user details
   //who we want to chat
@@ -839,6 +852,7 @@ module.exports.addChat = (req, res, next) => {
       }
       //check if user already exists in our list
       const isUser = myChats.some(chat => chat.chatId.toString() === user._id.toString())
+      const alreadySent = user.requests.some(request=>request.id.toString() === userId.toString())  
       if (isUser) {
         res.json({
           code: 400,
@@ -846,30 +860,46 @@ module.exports.addChat = (req, res, next) => {
         })
         throw new Error(400)
       }
-      else if (user._id.toString() === userId.toString() || user.anonyString === userId.toString()) {
+       if (user._id.toString() === userId.toString() || user.anonyString === userId.toString()) {
         //tell user they cant add themselves
         res.json({
           code: 400,
           message: 'you cannot add your self'
         })
         throw new Error(400)
+      }  
+      else if (alreadySent) {
+        //tell user they cant add themselves
+        res.json({
+          code: 400,
+          message: 'request already sent'
+        })
+        throw new Error(400)
       } else {
         newChat = user; //intialize variable with owner of chat string
-        const chats = user.chats; //initialize variable with the chats array of user
-        chats.push({
+        //const chats = user.chats; //initialize variable with the chats array of user
+        const request = user.requests
+        request.push({
+            id:userId,
+            name:Auser.name,
+            desc:Auser.desc,
+        })
+        /*chats.push({
           lastUpdate: new Date(),
           chatId: userId, //add the id of the user requesting to join a chat to the requested chat array
           messages: [],
-        });
+        });*/
         uid = user._id; //store a copy of the requested  chat id
-        user.chats = chats; //store updated version of the requested chat array
+        user.requests = request
+        //user.chats = chats; //store updated version of the requested chat array
         return user.save();
       }
     })
     .catch((err) => {
       throw err
     })
-    .then((_) => {
+    .then((newchat) => {
+      newChat = newchat
       //retrieve requesting user details on the db
       return User.findById(req.session.user._id);
     })
@@ -880,7 +910,7 @@ module.exports.addChat = (req, res, next) => {
       //update chat array of requesting user field with the id of
       // chat 
       me = user;
-      const chats = myChats;
+     /* const chats = myChats;
       chats.push({
         lastUpdate: new Date(),
         chatId: uid,
@@ -891,7 +921,8 @@ module.exports.addChat = (req, res, next) => {
       } else {
         user.chats = chats
       }
-      return user.save();
+      return user.save();*/
+      return
     })
     .catch((err) => {
       throw err;
@@ -903,38 +934,171 @@ module.exports.addChat = (req, res, next) => {
       //inform the chat
       //that user have joined their chat thus
       //their ui can be updated accordingly
-      req.session.user = me;
-      req.session.save(() => {
-        if (req.session.user.isAnonymous) {
-          io().to(newChat._id).emit("online", {
+     // req.session.user = me;
+         /* io().to(newChat._id).emit("online", {
             name: req.session.user.anonymousName,
             fid: userId,
-            anStatus: 'online'
-          })
-        } else {
-          io().to(newChat._id).emit("online", {
+            anStatus: 'online' 
+          })*/
+    
+         /* io().to(newChat._id).emit("online", {
             name: req.session.user.name,
             fid: userId,
             status: 'online'
+          }) */
+          io().to(newChat._id).emit('newRequest',{
+            name: Auser.name,
+            fid: userId,
+            status: 'online',
+            requests: newChat.requests.length
           })
-        }
+        
         res.json({
+          code:200
+        })
+        /*res.json({
           code: 200,
           newchat: {
             _id: newChat._id,
             name: newChat.name,
             status: newChat.status
           }
-        })
+        })*/
         //this is the callback and will update the ui of requesting user
-      })
+      
     })
 
     .catch((err) => {
       //do nothing for now
       console.log(err)
     });
+  })
 
+}
+module.exports.chatRequest = (req,res,next)=>{
+  const id = req.body.id
+  const state = req.body.state
+  //check if id  affiliated to user
+  console.log(id)
+  if(id.toString() === req.session.user._id.toString()){
+    return
+  }
+  else if (id.toString() === req.session.user.anonyString.toString()){
+   return 
+  }
+  else if(state === 'grant'){
+    // get user from db
+    User.findById(req.session.user._id)
+    .then(user=>{
+      if(!user) return
+      const requests = user.requests.filter(request=>request.id.toString() !== id.toString())
+      const chats = user.chats
+      chats.push({
+        lastUpdate: new Date(),
+        chatId: id,
+        messages: [],
+      });
+      user.requests = requests
+      user.chats = chats
+      return user.save()
+    })
+    .then(user=>{
+      return User.findOne({$or:[{_id:id},{anonyString:id}]})
+    })
+    .then(user=>{
+      let chats
+      if(user.isAnonymous){
+        chats = user.anonyChats
+      }else{
+        chats = user.chats
+      }
+      chats.push({
+        lastUpdate: new Date(),
+        chatId: req.session.user._id,
+        messages: [],
+      });
+      if(user.isAnonymous){
+        user.anonyChats = chats
+      }else{
+        user.chats = chats
+      }
+      return user.save()
+    })
+    .then(user=>{
+         io().to(id).emit("online", {
+           name: req.session.user.name,
+           fid: req.session.user._id,
+           status: 'online' 
+         })
+         if(user.isAnonymous){
+          res.json({
+            code: 200,
+            newchat: {
+              _id: user.anonyString,
+              name: user.anonymousName,
+              status: user.anonymousStatus
+            }
+          })
+         }else{
+          res.json({
+            code: 200,
+            newchat: {
+              _id: user._id,
+              name: user.name,
+              status:user.status
+            }
+          })
+         }
+    })
+  }else if(state === 'decline'){
+    User.findById(req.session.user._id)
+    .then(user=>{
+      let requests = user.requests
+      requests = requests.filter(request=>request.id.toString() !== id.toString())
+      user.requests = requests
+      return user.save()
+    }).then(_=>{
+      return User.findOne({$or:[{_id:id},{anonyString:id}]})
+      })
+      .then(user=>{
+        if(user.isAnonymous){
+          res.json({
+            code: 301,
+            newchat: {
+              _id: user.anonyString,
+              name: user.anonymousName,
+              status: user.anonymousStatus
+            }
+          })
+         }else{
+          res.json({
+            code: 301,
+            newchat: {
+              _id: user._id,
+              name: user.name,
+              status:user.status
+            }
+          })
+         }
+      })
+  }
+}
+module.exports.retrieveRequests = (req,res,next)=>{
+  User.findById(req.session.user._id)
+  .then(user=>{
+    if(!user)return;
+    //return user.populate('requests.chat').execPopulate()
+    return user
+  })
+  .then(user=>{
+    //retrieve the full doc
+    if(!user) return
+    res.json({
+      code:200,
+      requests:user.requests,
+      requestLength: user.requests.length
+    })
+  })
 }
 module.exports.sendChat = (req, res, next) => {
   const receiver = req.body.receiver;

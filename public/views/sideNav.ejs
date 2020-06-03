@@ -8,10 +8,41 @@
     </div>
   </li>
   <div class="input-field join">
+  <div class="controls">
+    <button>Chats</button>
+    <button>Requests <span class="circle-badge smally">0</span></button>
+    <button>Search</button></div>
+  <div class="addById current">
   <input type="text" placeholder="enter chat id" id="chatString"/>
-  <div class="join-btn"><button id="startchat">start chat</button><small class="errdisplay"></small></div>
+  <div class="join-btn"><button id="startchat">add</button><small class="errdisplay"></small></div>
 </div>
-          <div class="chats">
+
+<div class="search">
+  <input type="text" placeholder="enter name" id="searchString"/>
+  <div class="join-btn"><button id="startsearch">search</button>
+</div>
+</div>
+
+</div>
+<div class="requests">
+  <div><h2>Requests</h2></div>
+
+<div class="palsRequest">
+ <!-- <div class="request list" id="" >
+  <input class="fid" type="hidden" value=""/>
+<div class="segment">
+<div class="liststyle">
+<div class="names"><p>dominic</p></div></div>
+<small class="brief">i am dominic</small></div>
+<div>
+  <button>decline</button>
+  <button>accept</button>
+</div>
+</div> -->
+
+</div>
+</div>
+    <div class="chats current">
           <div><h2>Chats</h2></div>
           <div class="userChats" id="userChatsSmall">
             <!-- chat list code -->

@@ -97,13 +97,60 @@
 
     <div class="window">
       <div class="mychats">
+        <div class="input-field join">
+          <div class="controls">
+            <button>Chats</button>
+            <button>Requests<span class="circle-badge biggy">0</span></button>
+            <Button>Search</Button></div>
+          <div class="addById current">
+          <input type="text" placeholder="enter chat id" class="chatString"/>
+          <div class="join-btn"><button id="startchat">add</button><small class="errdisplay"></small></div>
+        </div>
+        
+        <div class="search">
+          <input type="text" placeholder="enter name" class="searchString"/>
+          <div class="join-btn"><button id="startsearch">search</button>
+        </div>
+        </div>
+        
+        </div>
         <ul>
-          <div class="chats">
-            <div class="input-field join">
-              <input type="text" placeholder="enter chat string" id="chatStringLarge" />
+          <div class="requests">
+          <div><h2>Requests</h2></div>
+        
+       <div class="palsRequest">
+        <!-- <div class="request list" id="" >
+          <input class="fid" type="hidden" value=""/>
+        <div class="segment">
+        <div class="liststyle">
+        <div class="names"><p>dominic</p></div></div>
+        <small class="brief">i am dominic</small></div>
+        <div>
+          <button>decline</button>
+          <button>accept</button>
+        </div>
+        </div> -->
+        
+        </div>
+        </div>
+          <div class="chats current">
+         <!--   <div class="input-field join">
+                <div class="controls"><button>Requests<span class="circle-badge">81</span></button><Button>Search</Button></div>
+                <div class="addById current">
+                <input type="text" placeholder="enter chat id" id="chatString"/>
+                <div class="join-btn"><button id="startchat">add</button><small class="errdisplay"></small></div>
+              </div>
+              
+              <div class="search">
+                <input type="text" placeholder="enter name" id="searchString"/>
+                <div class="join-btn"><button id="startsearch">search</button>
+              </div>
+              </div>
+              
+              </div> -->
+            <!--  <input type="text" placeholder="enter chat string" id="chatStringLarge" />
               <div class="join-btn"><button id="largeStartChat">start chat</button><small class="errdisplay"
-                  id="largeErr"></small></div>
-            </div>
+                  id="largeErr"></small></div> -->
             <div>
               <h2>Chats</h2>
             </div>
@@ -180,6 +227,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <%- include('feedScript.ejs') %>
+  <%- include('chatHandler.ejs') %>
 </body>
 
 </html>

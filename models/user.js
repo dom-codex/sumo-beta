@@ -21,6 +21,14 @@ const UserSchema = new schema ({
       isAnonymous: Boolean,
       resetToken: String,
       tokenMaxAge: Number,
+      requests:[
+        {
+          
+           name: String,
+           id: schema.Types.ObjectId,
+           desc: String
+        }
+      ],
       feeds:[
         {
         message: String,

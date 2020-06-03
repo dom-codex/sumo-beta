@@ -7,6 +7,7 @@
     const dropdown = M.Dropdown.init(elems);
     const instance = M.Sidenav.getInstance($(".sidenav"));
     instance.open();
+    LoadRequests()
   });
 
   const feedList = document.querySelector(".feeds");
@@ -125,7 +126,7 @@
   });
   //listener for added chat
   socket.on("online", (data) => {
-    const chatTiles= document.querySelector('.userChats').children
+    const chatTiles = document.querySelector('.userChats').children
     if (chatTiles.length >= 10) {
       document.querySelector('.userChats').removeChild(chatTiles[chatTiles.length - 1])
     }
@@ -145,41 +146,41 @@
                   <div class="segment">
                   <div class="liststyle">
                     <div class="indicator" style="background-color:${
-    data.status === "online" || data.anStatus === "online"
-      ? "rebeccapurple"
-      : "grey"
-  }; display:${
-            data.status === "online" || data.anStatus === "online"
-              ? "block"
-              : "none"
-          }"></div>
+        data.status === "online" || data.anStatus === "online"
+          ? "rebeccapurple"
+          : "grey"
+        }; display:${
+        data.status === "online" || data.anStatus === "online"
+          ? "block"
+          : "none"
+        }"></div>
  <div class="indicator" style="background-color:${
-   data.anStatus === "offline" || data.status === "offline"
-     ? "grey"
-     : "rebeccapurple"
- }; display:${
-            data.anStatus === "offline" ||
-            data.status === "offline"
-              ? "block"
-              : "none"
-          }"></div> 
+        data.anStatus === "offline" || data.status === "offline"
+          ? "grey"
+          : "rebeccapurple"
+        }; display:${
+        data.anStatus === "offline" ||
+          data.status === "offline"
+          ? "block"
+          : "none"
+        }"></div> 
            <div class="names"><p>${data.name.split(' ')[0]}</p></div></div>
           <small class="brief">say hi to ${data.name.split(' ')[0]}</small></div>
            <div class="message"><small></small></div>
            </a>
                </div> `);
       $(".newchatwindow").css("display", "none");
-    }else if(isRendered){
+    } else if (isRendered) {
       const cids = $(".userChats").find(".chatids");
-    for (let i = 0; i < cids.length; i++) {
-      if (cids[i].value.toString() === data.fid.toString()) {
-        const small = cids[i].parentNode.childNodes[5];
-        const messageIdicator = cids[i].parentNode.children[1].children[1]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
-        cids[i].parentNode.children[1].children[0].children[0].style.backgroundColor='rebeccapurple'//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
-        cids[i].parentNode.children[1].children[0].children[0].style.display='block'//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+      for (let i = 0; i < cids.length; i++) {
+        if (cids[i].value.toString() === data.fid.toString()) {
+          const small = cids[i].parentNode.childNodes[5];
+          const messageIdicator = cids[i].parentNode.children[1].children[1]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+          cids[i].parentNode.children[1].children[0].children[0].style.backgroundColor = 'rebeccapurple'//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+          cids[i].parentNode.children[1].children[0].children[0].style.display = 'block'//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+        }
+      }
     }
-  }
-}
   });
 
   socket.on("activeUsers", (data) => {
@@ -198,20 +199,20 @@
         user.status === "online" || user.anStatus === "online"
           ? "rebeccapurple"
           : "grey"
-      }; display:${
+        }; display:${
         user.status === "online" || user.anStatus === "online"
           ? "block"
           : "none"
-      }"></div>
+        }"></div>
 <div class="indicator" style="background-color:${
         user.anStatus === "offline" || user.status === "offline"
           ? "grey"
           : "rebeccapurple"
-      }; display:${
+        }; display:${
         user.anStatus === "offline" || user.status === "offline"
           ? "block"
           : "none"
-      }"></div>          
+        }"></div>          
   <div class="names"><p>${user.name.split(' ')[0]}</p></div></div>
   <small class="brief">say hi to ${user.name.split(' ')[0]}</small></div>
   <div class="message"><small></small></div>
@@ -251,37 +252,37 @@
           $(".errdisplay").css("display", "none");
           $("#largeErr").css("display", "none");
 
-          $(".userChats").prepend(`  
-          <div class="chat list Cards" id="${res.newchat._id}">
-               <a href="/chat/${res.newchat._id}" >
-           <input class="chatids" type="hidden" value="${res.newchat._id}"/>
-                  <div class="segment">
-                  <div class="liststyle">
-                    <div class="indicator" style="background-color:${
-    res.newchat.status === "online" || res.newchat.anStatus === "online"
-      ? "rebeccapurple"
-      : "grey"
-  }; display:${
-            res.newchat.status === "online" || res.newchat.anStatus === "online"
-              ? "block"
-              : "none"
-          }"></div>
- <div class="indicator" style="background-color:${
-   res.newchat.anStatus === "offline" || res.newchat.status === "offline"
-     ? "grey"
-     : "rebeccapurple"
- }; display:${
-            res.newchat.anStatus === "offline" ||
-            res.newchat.status === "offline"
-              ? "block"
-              : "none"
-          }"></div> 
-           <div class="names"><p>${res.newchat.name.split(' ')[0]}</p></div></div>
-          <small class="brief">say hi to ${res.newchat.name.split(' ')[0]}</small></div>
-           <div class="message"><small></small></div>
-           </a>
-               </div>         
-`);
+          /*     $(".userChats").prepend(`  
+               <div class="chat list Cards" id="${res.newchat._id}">
+                    <a href="/chat/${res.newchat._id}" >
+                <input class="chatids" type="hidden" value="${res.newchat._id}"/>
+                       <div class="segment">
+                       <div class="liststyle">
+                         <div class="indicator" style="background-color:${
+         res.newchat.status === "online" || res.newchat.anStatus === "online"
+           ? "rebeccapurple"
+           : "grey"
+       }; display:${
+                 res.newchat.status === "online" || res.newchat.anStatus === "online"
+                   ? "block"
+                   : "none"
+               }"></div>
+      <div class="indicator" style="background-color:${
+        res.newchat.anStatus === "offline" || res.newchat.status === "offline"
+          ? "grey"
+          : "rebeccapurple"
+      }; display:${
+                 res.newchat.anStatus === "offline" ||
+                 res.newchat.status === "offline"
+                   ? "block"
+                   : "none"
+               }"></div> 
+                <div class="names"><p>${res.newchat.name.split(' ')[0]}</p></div></div>
+               <small class="brief">say hi to ${res.newchat.name.split(' ')[0]}</small></div>
+                <div class="message"><small></small></div>
+                </a>
+                    </div>         
+     `);*/
           $(fieldtoselect).val("");
           $(".new").css("display", "none");
         }
@@ -306,7 +307,7 @@
         const small = cid.parentNode.childNodes[5];
         const messageIdicator = cid.parentNode.children[1].children[1]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
         messageIdicator.textContent = "";
-        messageIdicator.textContent = data.msg.length > 25?data.msg.substring(0,25)+'...':data.msg;
+        messageIdicator.textContent = data.msg.length > 25 ? data.msg.substring(0, 25) + '...' : data.msg;
         small.textContent = " ";
         small.textContent = data.time;
         //move the notification to the top
@@ -330,7 +331,7 @@
         const messageIdicator =
           cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
         messageIdicator.textContent = "";
-        messageIdicator.textContent = data.msg.length > 25?data.msg.substring(0,25)+'...':data.msg;
+        messageIdicator.textContent = data.msg.length > 25 ? data.msg.substring(0, 25) + '...' : data.msg;
         small.textContent = " ";
         small.textContent = data.time;
         //move the notification to the top
@@ -339,8 +340,8 @@
         cid.parentNode.parentNode.style.backgroundColor = "#fff";
         const content = cid.parentNode.parentNode;
         cid.parentNode.parentNode.remove();
-       parent.prepend(content);
-       return
+        parent.prepend(content);
+        return
       } else {
         continue;
       }
@@ -353,11 +354,11 @@
       <div class="liststyle">
         <div class="indicator pseudoTileIndicator"></div>
    <div class="names"><p>${data.name}</p></div></div>
-    <small class="brief">${data.msg.length > 25 ? data.msg.substring(0,25):data.msg}...</small></div>
+    <small class="brief">${data.msg.length > 25 ? data.msg.substring(0, 25) : data.msg}...</small></div>
    <div class="message"><small>${data.time}</small></div>
      </a>
-     </div> `);  
-       $("#userChatsLarge").prepend(`            
+     </div> `);
+    $("#userChatsLarge").prepend(`            
     <div class="chat list Cards pseudoTile" id="${data.id}" >
           <a href="/chat/${data.id}>" >
             <input class="chatids" type="hidden" value="${data.id}"/>
@@ -365,12 +366,56 @@
       <div class="liststyle">
         <div class="indicator pseudoTileIndicator"></div>
    <div class="names"><p>${data.name}</p></div></div>
-    <small class="brief">${data.msg.length > 25 ? data.msg.substring(0,25):data.msg}...</small></div>
+    <small class="brief">${data.msg.length > 25 ? data.msg.substring(0, 25) : data.msg}...</small></div>
    <div class="message"><small>${data.time}</small></div>
      </a>
      </div> `);
   });
-  $('.inform span').on('click',()=>{
-    $('.inform').css('display','none')
+  $('.inform span').on('click', () => {
+    $('.inform').css('display', 'none')
   })
+  //script for requests
+  const chatsBtn = $('.controls button:nth-child(1)')
+  const requestBtn = $('.controls button:nth-child(2)')
+  const searchBtn = $('.controls button:nth-child(3)')
+  requestBtn.on('click', () => {
+    $('.chats').removeClass('current')
+    $('.requests').addClass('current')
+    requestBtn.css('display', 'none')
+    chatsBtn.css('display', 'inline-block')
+  })
+  chatsBtn.on('click', () => {
+    $('.requests').removeClass('current')
+    $('.chats').addClass('current')
+    requestBtn.css('display', 'inline-block')
+    chatsBtn.css('display', 'none')
+  })
+  searchBtn.on('click', () => {
+    const currentText = searchBtn.text().substring(0, 6)
+    $('.search').toggleClass('current')
+    $('.addById').toggleClass('current')
+    searchBtn.text(`${currentText === 'Search' ? 'Add Chat' : 'Search'}`)
+  })
+  //new request event
+  socket.on("newRequest", (data) => {
+    const badge = $('.controls button:nth-child(2) span')
+    badge.text(data.requests)
+    $('.palsRequest').prepend(`
+ 
+<div class="palsRequest">
+  <input class="rid" type="hidden" value="${data.fid}"/>
+  <div class="request list" id="" >
+<div class="segment">
+<div class="liststyle">
+<div class="names"><p>${data.name}</p></div></div>
+<small class="brief">i am dominic</small></div>
+<div>
+  <button id="decline" onclick="chatRequestHandler('${data.fid}','decline')">decline</button>
+  <button id="grant" onclick="chatRequestHandler('${data.fid}','grant')">accept</button>
+</div>
+</div>
+
+</div>
+ `)
+  });
 </script>
