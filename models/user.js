@@ -41,23 +41,14 @@ const UserSchema = new schema ({
         {
           chatId:{
             type: schema.Types.ObjectId,
-            refs: 'User'
+            ref: 'User'
           },
           lastUpdate:Number,
           messages:[
             {
-              sender:{
-                  type:schema.Types.ObjectId,
-                  refs:'User'
-              },
-              receiver:{ 
-                  type:schema.Types.ObjectId,
-                  refs:'User'
-              },
-              body: String,
-              isMsgNew: Boolean,
-              time: String,
-          }
+              type:schema.Types.ObjectId,
+              ref:'Message'
+            }
           ],
         }
       ],     
@@ -70,17 +61,9 @@ const UserSchema = new schema ({
           lastUpdate:Number,
           messages:[
             {
-              sender:{
-                  type:schema.Types.ObjectId,
-                  refs:'User'
-              },
-              receiver:{ 
-                  type:schema.Types.ObjectId,
-                  refs:'User'
-              },
-              body: String,
-              isMsgNew: Boolean,
-              time:String          }
+              type:schema.Types.ObjectId,
+              ref:'Message'
+            }
           ],
         }
       ]

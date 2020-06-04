@@ -155,7 +155,7 @@
               <h2>Chats</h2>
             </div>
             <div class="userChats" id="userChatsLarge">
-              <!-- chat list code -->
+              
               <% if(onlineUsers.length>0) { %>
               <% onlineUsers.forEach((user,i)=>{ %>
               <div class="chat list Cards" id="<%=user._id%>" style="background-color:<%= user.isNew ? 'white' : '' %>">
@@ -183,7 +183,7 @@
               <div class="new newchatwindow">
                 <h3>No chats!!!</h3>
               </div>
-              <% } %> </div>
+              <% } %> </div> 
             <div class="pages">
               <ul>
                 <% if(hasPrev) {%>

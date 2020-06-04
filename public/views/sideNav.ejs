@@ -44,8 +44,8 @@
 </div>
     <div class="chats current">
           <div><h2>Chats</h2></div>
-          <div class="userChats" id="userChatsSmall">
-            <!-- chat list code -->
+         <div class="userChats" id="userChatsSmall">
+            
             <% if(onlineUsers.length>0) { %>
                 <% onlineUsers.forEach((user,i)=>{ %>
                     <div class="chat list" id="<%=user._id%>" style="background-color:<%= user.isNew ? 'white' : '' %>">
@@ -65,7 +65,7 @@
                   <div class="new newchatwindow">
                     <h3>No chats yet !!!</h3>
                   </div>
-                  <%}%></div>
+                  <%}%></div> 
           <div class="pages"><ul>
               <% if(hasPrev) {%>
             <li><a href="/userchannel/<%=uid%>?page=<%=prev%>">Prev</a></li> <%}%>

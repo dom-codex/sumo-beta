@@ -37,7 +37,7 @@
 <body>
   <section onscroll="Scroll()">
     <input type="hidden" value="<%= fid%>" id="friendId">
-    <input type="hidden" value="<%= more%>" id="hasmore">
+    <input type="hidden" value="<%= uid%>" id="uid">
     <header>
       <nav>
         <div class="navs">
@@ -64,22 +64,6 @@
     </header>
 <div class="loader">Loading...</div>
     <div class="chats">
-      <% if(meChats.length > 0) { %>
-      <% meChats.forEach((msg,i)=> { %>
-      <% if(msg.receiver.toString() === fid.toString()) { %>
-      <span class="u2 chat"><%=msg.body%>
-        <div class="time">
-          <%=msg.time%> &nbsp;
-          <div class="time"><i class="material-icons">done_all</i></div>
-        </div>
-      </span>
-      <%}else{ %>
-      <span class="u1 chat"><%=msg.body%>
-        <div class="time"><%=msg.time%></div>
-      </span>
-      <% } %>
-      <% })%>
-      <% } %>
     </div>
 
     <div class="input">
@@ -109,13 +93,11 @@
     const drop = M.Dropdown.init(menu);
   </script>
   <script>
-      let page = 2
+      let page = 1
       let height = 0
     const Scroll = () => {
-      if(!$('#hasmore').val()){
-        return
-      }
-      else if (chatWindow.scrollTop === 0 && page > 1) {
+      if(page == -1) return
+      else if ((chatWindow.scrollTop === 0 || page == 1)) {
         height = chatWindow.scrollHeight;
         $('.loader').css('display','flex')
         fetch(`/retrievechat?page=${page}`, {
@@ -126,6 +108,7 @@
           },
           body: JSON.stringify({
             fid: document.querySelector('#friendId').value,
+            uid: document.querySelector('#uid').value,
           })
         })
           .then(res => res.json())
@@ -133,6 +116,7 @@
             $('.loader').css('display','none')
             page = res.next
             if(res.code === 301){
+              page = -1
               section.scrollTop = 0
               return
             }
@@ -158,11 +142,17 @@
             }
             chatWindow.scrollTop = chatWindow.scrollHeight - height
           }).catch(err=>{
+            alert('here')
             $('.loader').css('display','none')
           })
 
       }
     }
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded",()=> {
+    Scroll()
+  });
   </script>
   <%- include('chatScript.ejs') %>
 </body>
