@@ -8,6 +8,7 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
     let chatids = []
     //reformat this line later
     User.findOne({ _id: req.session.user._id })
+    .select('name phone anonyChats anonyString ')
     .populate('anonyChats.messages')
         //find associated user with the session
         .then((user) => {
@@ -96,10 +97,7 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
             res.render("feed", {
                 name: me.name,
                 phone: me.phone,
-                feed: me.feeds,
-                sharelink: me.share,
                 uid: me.anonyString,
-                chat: me.chatShare,
                 inform: inform.length > 0 ? inform[0] : { status: false, msg: '' },
                 csrfToken: req.csrfToken(),
                 hasNext: 5 * page < nAnonyChats,
@@ -222,6 +220,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
     let nTotalAnonyChats;
     let anonyids;
     User.findOne({ _id: req.session.user._id })
+    .select('name phone chats _id ')
         .populate('chats.messages')
         .then((user) => {
             me = user
@@ -351,7 +350,6 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                     filteredUsersList.push(user)
                                 }
                             })
-                            console.log(filteredUsersList)
                             const inform = req.flash('inform')
                             return res.render("feed", {
                                 name: me.name,

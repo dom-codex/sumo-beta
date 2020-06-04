@@ -5,6 +5,7 @@ const { validationResult } = require('express-validator')
 const moment = require('moment');
 const User = require("../models/user");
 const Message = require("../models/messages");
+const Feed = require("../models/feed");
 const modes = require("../utils/mode");
 const detectors = require('../utils/detectors');
 const mailer = require('../utils/mailer');
@@ -311,6 +312,14 @@ module.exports.postToFeed = (req, res, next) => {
   //add time stamp
   const time = moment().format('LT')
   //check if hash is valid
+  const feed = new Feed({
+    user:feedString,
+    message:message,
+    time:time
+  })
+  return feed.save()
+  .then(feed=>{
+    console.log(feed)
   User.findOne({ share: feedString })
     .then((result) => {
       if (!result) {
@@ -320,10 +329,7 @@ module.exports.postToFeed = (req, res, next) => {
       //get the user feeds array
       //append the new feeds
       let feeds = result.feeds;
-      feeds.push({
-        message: message,
-        time: time
-      });
+      feeds.push(feed._id);
       result.feeds = feeds;
       //save changes
       result
@@ -333,6 +339,9 @@ module.exports.postToFeed = (req, res, next) => {
           io()
             .to(result._id)
             .emit("notification", { message: message, length: result.feeds.length, time: time });
+           io()
+            .to(result.anonyString)
+            .emit("notification", { message: message, length: result.feeds.length, time: time });
 
           res.redirect("/");
         })
@@ -340,6 +349,7 @@ module.exports.postToFeed = (req, res, next) => {
           throw e;
         });
     })
+  })
     .catch((err) => {
       if (err === 'not found') {
         return res.redirect("/");
@@ -1162,7 +1172,6 @@ module.exports.sendChat = (req, res, next) => {
           return user.save();
         })
         .catch((err) => {
-          console.log(err)
           throw new Error('no user found');
         })
         .then((_) => {
@@ -1466,4 +1475,8 @@ module.exports.setNewPassword = (req, res, next) => {
 module.exports.retrieveMoreChats = (req, res, next) => {
   const chatPaginator = require('../helpers/paginators').chatPaginator
   chatPaginator(req, res, next)
+}
+module.exports.retrieveFeed = (req, res, next) => {
+  const feedLoader = require('../helpers/paginators').loadFeeds
+  feedLoader(req, res, next)
 }

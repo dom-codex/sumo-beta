@@ -1,4 +1,6 @@
 const Message = require('../models/messages')
+const Feed = require('../models/feed')
+const User = require('../models/user')
 module.exports.chatPaginator = (req, res, next) => {
     const page = +req.query.page || 1
     let totalMessages;
@@ -26,4 +28,34 @@ module.exports.chatPaginator = (req, res, next) => {
                 )
 }
     })
+}
+module.exports.loadFeeds = (req,res,next) =>{
+    const page = +req.query.page || 1
+    let totalFeeds;
+    let last;
+    if(page <= 0) return
+    User.findById(req.session.user._id).select('feeds')
+    .then(user=>{
+
+    Feed.find({_id:{$in:user.feeds}}).countDocuments()
+    .then(nFeeds=>{
+        totalFeeds = nFeeds
+        last = (Math.ceil((totalFeeds) / 10))
+        if ((Math.ceil((totalFeeds) / 10) >= last)){
+         return Feed.find({user:req.session.user.share})
+        .sort({$natural:-1}).skip((page - 1) * 10).limit(10)
+    }
+    })
+    .then(feeds=>{
+            if (feeds) {
+                return res.json(
+                    {
+                        feeds:feeds,
+                        next: page + 1,
+                        code:200
+                    }
+                )
+}
+    })  })
+
 }

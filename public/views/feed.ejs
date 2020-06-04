@@ -196,21 +196,8 @@
 </div>
         <div class="feeds">
          <h2>Anonymous Feeds</h2>
-          <% if(feed.length > 0) { %>
-                <% feed.forEach((p,i)=>{ %>
-                <% if(!p) { %> <div></div> <%}else{ %>
-                <div class="feedcard Cards">
-                  <div>
-                    <p>Message:</p>
-                  </div>
-                  <div class="cardb">
-                    <p><%= p.message %></p>
-                  </div>
-                  <div class="cardf"><small><%= i+1%></small>
-                     <i>sent: <%=p.time%></i></div>
-                </div> <%}%> 
-            <% })%>
-                <% }else{ %>
+         <div id="feeds">
+           <% if(false) {%>
                 <div class="new newfeedwindow">
                   <h3>No feeds yet, New headover to your
                     profile grab your link and start sharing
@@ -218,7 +205,7 @@
                 </div>
                 <% } %>
             </div>
-          </div>
+          </div></div>
   </section>
   <script>
     const feedWindow = document.querySelector('.feeds')

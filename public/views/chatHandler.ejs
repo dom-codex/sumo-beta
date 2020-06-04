@@ -1,12 +1,12 @@
 <script>
-const LoadRequests = () => {
-    fetch('/retrieverequest')
-      .then(data => data.json())
-      .then(data => {
-        const badge = $('.controls button:nth-child(2) span')
-        badge.text(data.requestLength)
-        data.requests.forEach(req => {
-          $('.palsRequest').prepend(`
+  const LoadRequests = () => {
+    fetch("/retrieverequest")
+      .then((data) => data.json())
+      .then((data) => {
+        const badge = $(".controls button:nth-child(2) span");
+        badge.text(data.requestLength);
+        data.requests.forEach((req) => {
+          $(".palsRequest").prepend(`
  
 <div class="palRequest">
     <input class="rid" type="hidden" value="${req.id}"/>
@@ -21,10 +21,10 @@ const LoadRequests = () => {
 </div>
 </div>
 </div>
- `)
-        })
-      })
-  }
+ `);
+        });
+      });
+  };
   //script for accepting and decline a chat
   const chatRequestHandler = (id, state) => {
     $(".spinner-cont").css("display", "flex");
@@ -37,64 +37,122 @@ const LoadRequests = () => {
       },
       body: JSON.stringify({
         id: id,
-        state: state
-      })
+        state: state,
+      }),
     })
-      .then(res => res.json())
-      .then(res => {
+      .then((res) => res.json())
+      .then((res) => {
         $(".spinner-cont").css("display", "none");
-        const rids = $('.rid')
-        const badgea = $('.controls .smally')
-        const badgeb = $('.controls .biggy')
-        for(let i = 0; i<rids.length; i++){
-            if(rids[i].value.toString() === res.newchat._id ){
-               const parent = rids[i].parentNode.parentNode
-               parent.removeChild(rids[i].parentNode)
-               const nreq1 = badgea.text() 
-               const nreq2 = badgeb.text() 
-               const newVal1 = nreq1 != 0 ? parseInt(+nreq1) - 1: 0
-               const newVal2 = nreq2 != 0 ? parseInt(+nreq2) - 1: 0
-               badgea.text(newVal1)
-               badgeb.text(newVal2)
-            }else continue
+        const rids = $(".rid");
+        const badgea = $(".controls .smally");
+        const badgeb = $(".controls .biggy");
+        for (let i = 0; i < rids.length; i++) {
+          if (rids[i].value.toString() === res.newchat._id) {
+            const parent = rids[i].parentNode.parentNode;
+            parent.removeChild(rids[i].parentNode);
+            const nreq1 = badgea.text();
+            const nreq2 = badgeb.text();
+            const newVal1 = nreq1 != 0 ? parseInt(+nreq1) - 1 : 0;
+            const newVal2 = nreq2 != 0 ? parseInt(+nreq2) - 1 : 0;
+            badgea.text(newVal1);
+            badgeb.text(newVal2);
+          } else continue;
         }
-          if(res.code === 301){
-              return 
-          }else{
-        // remove user from requests list
-        $(".userChats").prepend(`  
+        if (res.code === 301) {
+          return;
+        } else {
+          // remove user from requests list
+          $(".userChats").prepend(`  
           <div class="chat list Cards" id="${res.newchat._id}">
                <a href="/chat/${res.newchat._id}" >
            <input class="chatids" type="hidden" value="${res.newchat._id}"/>
                   <div class="segment">
                   <div class="liststyle">
                     <div class="indicator" style="background-color:${
-          res.newchat.status === "online" || res.newchat.anStatus === "online"
-            ? "rebeccapurple"
-            : "grey"
-          }; display:${
-          res.newchat.status === "online" || res.newchat.anStatus === "online"
-            ? "block"
-            : "none"
+                      res.newchat.status === "online" ||
+                      res.newchat.anStatus === "online"
+                        ? "rebeccapurple"
+                        : "grey"
+                    }; display:${
+            res.newchat.status === "online" || res.newchat.anStatus === "online"
+              ? "block"
+              : "none"
           }"></div>
  <div class="indicator" style="background-color:${
-          res.newchat.anStatus === "offline" || res.newchat.status === "offline"
-            ? "grey"
-            : "rebeccapurple"
-          }; display:${
-          res.newchat.anStatus === "offline" ||
+   res.newchat.anStatus === "offline" || res.newchat.status === "offline"
+     ? "grey"
+     : "rebeccapurple"
+ }; display:${
+            res.newchat.anStatus === "offline" ||
             res.newchat.status === "offline"
-            ? "block"
-            : "none"
+              ? "block"
+              : "none"
           }"></div> 
-           <div class="names"><p>${res.newchat.name.split(' ')[0]}</p></div></div>
-          <small class="brief">say hi to ${res.newchat.name.split(' ')[0]}</small></div>
+           <div class="names"><p>${
+             res.newchat.name.split(" ")[0]
+           }</p></div></div>
+          <small class="brief">say hi to ${
+            res.newchat.name.split(" ")[0]
+          }</small></div>
            <div class="message"><small></small></div>
            </a>
                </div>         
 `);
-}
+        }
+      });
+  };
+</script>
+<script>
+  let page = 1
+  let height = 0
+  const feedView = $('.feeds')
+const loadFeed = () => {
+  if(page == -1) return
+  else if ((feedView.scrollTop === 0 || page == 1)) {
+    height = feedView.scrollHeight;
+    //$('.loader').css('display','flex')
+    fetch(`/retrievefeeds?page=${page}`, {
+      method: 'GET',
+      headers: {
+        "csrf-token": document.querySelector('input[name="_csrf"]').value,
+        "Content-Type": 'application/json'
+      },
+    })
+      .then(res => res.json())
+      .then(res => {
+       // $('.loader').css('display','none')
+        page = res.next
+        if(res.code === 301){
+          page = -1
+          section.scrollTop = 0
+          return
+        }
+        else if (res.feeds.length > 0) {
+          res.feeds.forEach((msg, i) => {
+            $('#feeds').append(
+            `<div class="feedcard Cards">
+                  <div>
+                    <p>Message:</p>
+                  </div>
+                  <div class="cardb">
+                    <p>${ msg.message}</p>
+                  </div>
+                  <div class="cardf"><small>${ i+1}</small>
+                     <i>sent: ${msg.time}</i></div>
+                </div> `)
+          })
+        }
+        feedView.scrollTop = feedView.scrollHeight - height
+      }).catch(err=>{
+        alert('here')
+        $('.loader').css('display','none')
       })
-    
+
   }
+}
+</script>
+<script>
+document.addEventListener("DOMContentLoaded",()=> {
+loadFeed()
+});
 </script>
