@@ -1480,3 +1480,39 @@ module.exports.retrieveFeed = (req, res, next) => {
   const feedLoader = require('../helpers/paginators').loadFeeds
   feedLoader(req, res, next)
 }
+module.exports.searchUser = (req,res,next) =>{
+  const searchName = req.body.searchKey
+  const userId = req.session.user.isAnonymous ? req.session.user.anonyString:req.session.user._id
+  const regex = new RegExp(searchName.toLowerCase().trim(), 'i')
+  User.find({"name":{$regex:regex}}).select('_id name chatShare chats desc')
+  .then(users=>{
+    if(users.length <= 0){
+      throw new Error('no user found')
+    }
+    const result = [...users].map(user=>{
+      const isFriend = user.chats.some(chat=>chat.chatId.toString() === userId.toString())
+      if(isFriend){
+        return {
+          name:user.name,
+          desc:user.desc,
+          id:user._id,
+          chatId:user.chatShare,
+          pals:true
+        }
+      }else{
+        return {
+          name:user.name,
+          desc:user.desc,
+          id:_id,
+          chatId:user.chatShare,
+          pals:false
+        }
+      }
+    })
+    res.json({
+      result:result
+    })
+  }).catch(err=>{
+
+  })
+}

@@ -156,3 +156,62 @@ document.addEventListener("DOMContentLoaded",()=> {
 loadFeed()
 });
 </script>
+<script>
+  //script for search mechanism
+  const search = (field) =>{
+    const searchKey = $(field).val()
+    fetch(`/searchuser`, {
+          method: 'POST',
+          headers: {
+            "csrf-token": document.querySelector('input[name="_csrf"]').value,
+            "Content-Type": 'application/json'
+          },
+          body: JSON.stringify({
+            searchKey:searchKey
+          })
+        })
+        .then(res=>res.json())
+        .then(res=>{
+          $('.searchResult').html('')
+          $('.searchResult.large').html('')
+          if(res.result.length > 0){
+            res.result.forEach(user=>{
+              if(true){
+                $('.searchResult').append(`
+              <div class="search list Cards" id="" >
+             <input class="${user.chatId}" type="hidden" value=""/>
+             <div class="segment">
+           <div class="liststyle">
+    <div class="names"><p>${user.name}</p></div></div>
+    <small class="brief">${user.desc}</small></div>
+    <div>
+      <button onclick="addUser('#chatString','${user.chatId}')">add</button>
+    </div>
+    </div>
+              `)
+             return 
+              }
+              $('.searchResult').append(`
+              <div class="search list Cards" id="" >
+      <input class="" type="hidden" value=""/>
+    <div class="segment">
+    <div class="liststyle">
+    <div class="names"><p>${user.name}</p></div></div>
+    <small class="brief">${user.desc}</small></div>
+    <div>
+      <a href="/chat/${user.id}">chat</a>
+    </div>
+    </div>
+              `)   
+            })
+          }
+        })
+      }
+
+  const addUser = (field,val) =>{
+    $('#chatString').val(val)
+    joinHandler(field)
+  }
+  $('#startsearch').on('click',()=>search('#searchStringLarge'))
+  $('#startsearchsmall').on('click',()=>search('#searchString'))
+</script>

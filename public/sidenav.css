@@ -63,7 +63,7 @@
 .controls button:nth-child(1){
   display:none
 }
-.search, .addById{
+.search, .addById, .searchcontrols{
   display:none!important
 }
 .current{
@@ -141,4 +141,11 @@ display:none;
 .join-btn button:hover, .join-btn button:active,.join-btn button:focus{
   background-color: rgb(101, 87, 110);
   color:#fff
+}
+.search.list{
+  display:flex!important;
+  justify-content: space-between;;
+  align-items:center;
+  padding-right:13px;
+  border-bottom:thin solid #ccc;
 }

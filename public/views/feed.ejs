@@ -100,16 +100,20 @@
         <div class="input-field join">
           <div class="controls">
             <button>Chats</button>
-            <button>Requests<span class="circle-badge biggy">0</span></button>
-            <Button>Search</Button></div>
+            <button>Requests <span class="circle-badge smally">0</span></button>
+            <button>Search</button></div>
           <div class="addById current">
           <input type="text" placeholder="enter chat id" class="chatString"/>
-          <div class="join-btn"><button id="startchat">add</button><small class="errdisplay"></small></div>
+          <div class="join-btn"><button id="startchat">add</button>
+            <small class="errdisplay"></small>
+          </div>
         </div>
         
-        <div class="search">
-          <input type="text" placeholder="enter name" class="searchString"/>
-          <div class="join-btn"><button id="startsearch">search</button>
+        <div class="searchcontrols">
+          <input type="text" placeholder="enter name" id="searchStringLarge"/>
+          <div class="join-btn">
+            <button id="startsearch">search</button>
+            <small class="errdisplay"></small>
         </div>
         </div>
         
@@ -132,6 +136,22 @@
         </div> -->
         
         </div>
+        </div>
+        <div class="search" style="display:none">
+          <div><h2>Result</h2></div> 
+          <div class="searchResult large">
+          <!-- <div class="search list" id="" >
+              <input class="fid" type="hidden" value=""/>
+            <div class="segment">
+            <div class="liststyle">
+            <div class="names"><p>dominic</p></div></div>
+            <small class="brief">i am dominic</small></div>
+            <div>
+              <button>decline</button>
+              <button>accept</button>
+            </div>
+            </div> -->
+          </div>
         </div>
           <div class="chats current">
          <!--   <div class="input-field join">
