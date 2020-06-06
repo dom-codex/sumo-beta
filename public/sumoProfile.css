@@ -49,7 +49,7 @@ nav div{
   min-width: 200px;
   overflow: hidden
 }
-.dropdown-content  li a, .dropdown-content  li a i{
+.dropdown-content  li a, .dropdown-content  li a i {
   color:rebeccapurple!important
 }
 .dropdown-content a{
@@ -71,11 +71,94 @@ section{
     min-width:320px;
 }
 .row{
-  height:72vh;
+  height:auto;
+  max-height:75vh;
   overflow-y: scroll;
 }
+/* new styles */
+.collapsible-body span{
+  display:block;
+  height:auto;
+  overflow-y:scroll;
+  padding-top:0
+}
+.user-image-cont{
+  height:220px;
+  width:100%;
+  position:relative
+}
+img{
+  height:100%;
+  width:100%
+}
+.upload{
+  position:absolute;
+  bottom:0;
+  right:5px;
+  width:200px;
+}
+span.title{
+  overflow-y: hidden!important;
+}
+.collection-item{
+  border:thin solid #ccc;
+  background-color: rebeccapurple!important;
+  color:#fff!important;
+  border-radius: 5px;
+}
+.upload-modal, .myModal{
+  position: absolute;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  background-color:rgba(0,0,0,.5);
+  width:100%;
+  height:100%;
+  z-index:560565605905940594050
+}
+.modal-upload, .modal-myModal{
+  text-align: center;
+  background-color:#fff;
+  min-height:90px;
+  min-width:100px;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius:5px;
+  position: relative;
+  height:95px
+}
+.preloader-wrapper .spinner-layer{
+  border-color: rebeccapurple!important;
+}
+.preloader-wrapper,.upload-error,.upload-modal, .myModal{
+  display:none
+}
+.myPreloader{
+  display:block
+}
+.upload-error small{
+  color:red;
+  padding:0 15px
+}
+.btn-close{
+  width:100%!important;
+  position: absolute;
+  top:0;
+  display:flex;
+  justify-content: flex-end;
+  padding:3px 0;
+  padding-right:7px;
+  margin-bottom:4px;
+}
+.upload-error{
+  margin-top:9px
+}
+/*end of new styles */
 #test1, #test2, #test3, #test4{
   height:100%;
+  padding-top:0;
 }
 .info{
   margin-top: 30px;
@@ -227,12 +310,7 @@ label{
   color:#fff;
  
 }
-.tabs{
-  display: flex;
-}
-.chat.list a{
-  display:flex;
-}
+/*
 .chat.list{
   width:85%;
   padding:10px;
@@ -248,7 +326,7 @@ label{
 .liststyle{
   display:flex;
   align-items: center;
-}
+}*/
 .indicators{
   width:10px;
   height:10px;
@@ -259,6 +337,7 @@ label{
 .names p{
   font-size:1.3em
 }
+/*
 .chatCard{
   display:flex;
   justify-content: center;
@@ -268,7 +347,7 @@ label{
   margin-top:20px;
   border:thin solid #ccc;
   border-radius:5px;
-}
+}*/
 .about{
   margin-left:25px;
 }

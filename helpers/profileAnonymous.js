@@ -3,8 +3,10 @@ module.exports.profileAnonymous = (req,res,next)=>{
 const page = +req.query.page || 1
 let ntotalOpenUsers
 let chatids
+let img
     User.findById(req.session.user._id)
         .then((user) => {
+          let img = user.images.anonymous.link
           //filter out open chats id
           const chatid = user.anonyChats.map((id) => {
             return id.chatId;
@@ -62,6 +64,7 @@ let chatids
                   res.render("profile", {
                     csrfToken: req.csrfToken(),
                     user: req.session.user,
+                    img:img,
                     chats: [...filteredUsersList],
                     current: page,
                     hasNext: 2 * page < ntotalOpenUsers,

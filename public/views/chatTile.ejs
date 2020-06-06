@@ -1,0 +1,31 @@
+<li class="collection-item avatar">
+    <img src="<%=user.img%>" alt="" class="circle">
+    <span class="title"><%=user.name%></span>
+    <p><%=user.desc%> <br>
+    </p>
+    <div class="btncont secondary-content">
+        <a href="/chat/<%=user._id%>" class="z-depth-1"><i class="material-icons">near_me</i></a>
+        <button onclick="removeHandler(this,'dom')" 
+        data-target="modal1" class="btn modal-trigger"><i class="material-icons">delete</i></button>
+      </div>
+  </li>
+
+ <!-- <div class="chat list">
+    <a href="#">
+      <div class="liststyle">
+        <div class="indicators" style="background-color:<%= user.status === 'online'  ? 'rebeccapurple' : 'grey' %>"></div>
+        <div class="names">
+          <p><%=user.name%></p>
+        </div>
+      </div>
+      <div class="message"></div>
+    </a>
+    <small class="about"><%=user.desc%></small>
+
+  </div>
+<div class="btncont">
+  <a href="/chat/<%=user._id%>" class="z-depth-1"><i class="material-icons">near_me</i></a>
+  <button onclick="removeHandler(this,'dom')" 
+  data-target="modal1" class="btn modal-trigger"><i class="material-icons">delete</i></button>
+</div>
+</div> -->

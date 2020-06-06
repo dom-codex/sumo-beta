@@ -373,6 +373,7 @@ module.exports.getProfilePage = (req, res, next) => {
       }
       //initialize necessary variables which will be 
       //used to create paginations
+      const img = user.images.open.link
       const page = +req.query.page || 1;
       let ntotalOpenUsers;
       let nTotalAnonyUsers;
@@ -515,9 +516,20 @@ module.exports.getProfilePage = (req, res, next) => {
           the no of records returned based on a chosen
           filtering condition i.e max of 2 users per page
            */
-          User.find({ _id: { $in: chatids } }).sort({ $natural: -1 }).skip((page - 1) * 2)
+          User.find({ _id: { $in: chatids } })
+          .sort({ $natural: -1 })
+          .skip((page - 1) * 2)
             .limit(2)
             .then(openchats => {
+               openchats = [...openchats].map(chats => {
+                return {
+                  name: chats.name,
+                  _id: chats._id,
+                  desc: chats.desc,
+                  img:chats.images.open.thumbnail,
+                  status: chats.status
+                }
+              })
               /*retrive users that chatted with user anonymously
               limiting the records returned by a chosen preference */
               User.find({ anonyString: { $in: chatids } }).sort('-1').skip((page - 1) * 5)
@@ -530,6 +542,7 @@ module.exports.getProfilePage = (req, res, next) => {
                       name: chats.anonymousName,
                       _id: chats.anonyString,
                       desc: 'anonymous user',
+                      img:chats.images.anonymous.thumbnail,
                       status: chats.anonymousStatus
                     }
                   })
@@ -558,6 +571,7 @@ module.exports.getProfilePage = (req, res, next) => {
                   res.render("profile", {
                     csrfToken: req.csrfToken(),
                     user: req.session.user,
+                    img:img,
                     chats: [...filteredUsersList],
                     current: page,
                     hasNext: 2 * page < nTotalAnonyUsers + ntotalOpenUsers,

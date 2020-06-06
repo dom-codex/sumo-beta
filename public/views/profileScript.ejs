@@ -7,6 +7,8 @@
   const instances = M.Dropdown.init(elems);
   });
   document.addEventListener('DOMContentLoaded', function() {
+    var collapsible= document.querySelectorAll('.collapsible');
+    var col = M.Collapsible.init(collapsible);
   const elems = document.querySelectorAll('.modal');
   const instances = M.Modal.init(elems);
   const float = document.querySelectorAll('.fixed-action-btn');
@@ -269,5 +271,62 @@ $('.logout.delete button').on('click',()=>{
   $('#modal1 p').text('Are you sure you want to delete your account?')
   const modal1 = M.Modal.getInstance(modal);
   modal1.open()
+})
+//upload
+$('.btn-close').on('click',()=>{
+  $('.upload-modal').css('display','none')
+})
+$('.okay').on('click',()=>{
+  $('.file-cont').css('display','block')
+  $('.upload-error').css('display','none')
+})
+$('.open-upload-modal').on('click',()=>{
+  $('.upload-modal').css('display','flex')
+})
+const uploadFile = (file) => {
+  $('.file-cont').css('display','none')
+  $('.file-cont input').val('')
+  $('.preloader-wrapper').css('display','block')
+console.log(file)
+if(!['image/jpeg', 'image/gif', 'image/png', 'image/svg+xml'].includes(file.type)) {
+  $('.upload-error small').text('File must be an image.')
+  $('.upload-error').css('display','block')
+   $('.preloader-wrapper').css('display','none')
+        return;
+    }
+
+    // check file size (< 2MB)
+    if(file.size > 5 * 1024 * 1024) {
+        $('.upload-error small').text('File must be less than 5MB.')
+        $('.preloader-wrapper').css('display','none')
+        $('.upload-error').css('display','block')
+
+        return;
+    }
+const token = $('input[name="_csrf"]').val()
+// add file to FormData object
+const fd = new FormData();
+fd.append('image', file);
+// send `POST` request
+fetch('/upload', {
+    method: 'POST',
+      headers: {
+        "csrf-token": token,
+      },
+    body: fd
+})
+.then(res => res.json())
+.then(data =>{ 
+  console.log(data)
+if(data.img){
+  return window.location.reload()
+}
+$('.preloader-wrapper').css('display','none')
+})
+.catch(err => console.error(err));
+}
+$('input[type="file"]').on('change',(e)=>{
+  const input = document.querySelector('input[type="file"]')
+  uploadFile(input.files[0]);
 })
 </script>

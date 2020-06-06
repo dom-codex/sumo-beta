@@ -11,6 +11,24 @@ const UserSchema = new schema ({
       password: {
         type: String,
       },
+      images:{
+        open:{
+          id:{
+            type:String,
+          },
+          link:String,
+          thumbnail:String
+        },
+        anonymous:{
+          id:{ 
+            type:String,
+            default:''
+          },
+          link: String,
+          thumbnail:String
+        },
+        defaultLink:String
+      },
       desc:String,
       gender: String,
       phone: String,
