@@ -6,7 +6,7 @@ module.exports.uploader = (req,res,storage) =>{
         storage: storage,
         fileFilter:function(req, file, cb) {
             // Accept images only
-            if (!file.originalname.match(regex)){
+            if (false/*!file.originalname.match(regex)*/){
                 return cb(new Error('Only image files are allowed!'), false);
             }
             cb(null, true);

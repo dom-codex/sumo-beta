@@ -174,7 +174,7 @@ $('#delete').css('display','none')
 $('#yes').css('display','inline-block')
 const yes = $('.modal-footer button:nth-child(2)');
 yes.on('click',()=>{
-const form = e.parentNode.parentNode.childNodes[1];
+const form = e.parentNode.parentNode.parentNode.children[0];
 form.submit()
 })
 }

@@ -1,8 +1,84 @@
-<li class="collection-item avatar">
-   <div> <img src="images/yuna.jpg" alt="" class="circle"></div>
-    <span class="title">Title</span>
-    <p>First Line <br>
-       Second Line
-    </p>
-    <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+<li class="collection-item avatar Cards">
+    <input class="chatids" type="hidden" value="<%=user._id%>"/>
+    <img src="<%=user.img%>" alt="" class="circle">
+    <div class="indicator" style="background-color:<%= user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' %>; display:<%= user.status === 'online' || user.anStatus === 'online' ? 'block' : 'none' %>"></div>
+    <div>
+    <div class="title">    <a href="/chat/<%=user._id%>" >
+        <%=user.name.split(' ')[0]%> </a>  
+    </div>
+    <p>
+    <small class="brief">
+      <%=user.message.length > 24 ? user.message.substring(0,25)+' ...': user.message%>
+    </small>
+    </p></div>
+    <div class=" secondary-content">
+        <small>
+            <%=user.time%>
+        </small>
+    </div>
   </li>
+<!--
+       <div class="chat list" id="<%=user._id%>" style="background-color:<%= user.isNew ? 'white' : '' %>">
+      <a href="/chat/<%=user._id%>" >
+           <input class="chatids" type="hidden" value="<%=user._id%>"/>
+     <div class="segment">
+ <div class="liststyle">
+<div class="indicator" style="background-color:<%= user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' %>; display:<%= user.status === 'online' || user.anStatus === 'online' ? 'block' : 'none' %>"></div>
+<div class="indicator" style="background-color:<%= user.anStatus === 'offline' || user.status === 'offline' ? 'grey' : 'rebeccapurple' %>; display:<%= user.anStatus === 'offline' || user.status === 'offline' ? 'block' : 'none' %>"></div>
+  <div class="names"><p><%=user.name.split(' ')[0]%></p></div></div>
+  <small class="brief"><%=user.message.length > 24 ? user.message.substring(0,25)+' ...': user.message%></small></div>
+      <div class="message"><small><%=user.time%></small></div>
+      </a>
+        </div>
+
+        
+<div class="palsRequest">
+  <input class="rid" type="hidden" value="${data.fid}"/>
+  <div class="request list" id="" >
+<div class="segment">
+<div class="liststyle">
+<div class="names"><p>${data.name}</p></div></div>
+<small class="brief">i am dominic</small></div>
+<div>
+  <button id="decline" onclick="chatRequestHandler('${data.fid}','decline')">decline</button>
+  <button id="grant" onclick="chatRequestHandler('${data.fid}','grant')">accept</button>
+</div>
+</div>
+
+</div>
+-->
+<!--         
+          <div class="chat list Cards" id="${res.newchat._id}">
+               <a href="/chat/${res.newchat._id}" >
+           <input class="chatids" type="hidden" value="${res.newchat._id}"/>
+                  <div class="segment">
+                  <div class="liststyle">
+                    <div class="indicator" style="background-color:${
+                      res.newchat.status === "online" ||
+                      res.newchat.anStatus === "online"
+                        ? "rebeccapurple"
+                        : "grey"
+                    }; display:${
+            res.newchat.status === "online" || res.newchat.anStatus === "online"
+              ? "block"
+              : "none"
+          }"></div>
+ <div class="indicator" style="background-color:${
+   res.newchat.anStatus === "offline" || res.newchat.status === "offline"
+     ? "grey"
+     : "rebeccapurple"
+ }; display:${
+            res.newchat.anStatus === "offline" ||
+            res.newchat.status === "offline"
+              ? "block"
+              : "none"
+          }"></div> 
+           <div class="names"><p>${
+             res.newchat.name.split(" ")[0]
+           }</p></div></div>
+          <small class="brief">say hi to ${
+            res.newchat.name.split(" ")[0]
+          }</small></div>
+           <div class="message"><small></small></div>
+           </a>
+               </div>  -->

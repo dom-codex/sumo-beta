@@ -313,43 +313,43 @@ module.exports.postToFeed = (req, res, next) => {
   const time = moment().format('LT')
   //check if hash is valid
   const feed = new Feed({
-    user:feedString,
-    message:message,
-    time:time
+    user: feedString,
+    message: message,
+    time: time
   })
   return feed.save()
-  .then(feed=>{
-    console.log(feed)
-  User.findOne({ share: feedString })
-    .then((result) => {
-      if (!result) {
-        //if invalid take them to the homescreen
-        throw new Error('not found')
-      }
-      //get the user feeds array
-      //append the new feeds
-      let feeds = result.feeds;
-      feeds.push(feed._id);
-      result.feeds = feeds;
-      //save changes
-      result
-        .save()
+    .then(feed => {
+      console.log(feed)
+      User.findOne({ share: feedString })
         .then((result) => {
-          //send a notifier to the user to update their ui instantly
-          io()
-            .to(result._id)
-            .emit("notification", { message: message, length: result.feeds.length, time: time });
-           io()
-            .to(result.anonyString)
-            .emit("notification", { message: message, length: result.feeds.length, time: time });
+          if (!result) {
+            //if invalid take them to the homescreen
+            throw new Error('not found')
+          }
+          //get the user feeds array
+          //append the new feeds
+          let feeds = result.feeds;
+          feeds.push(feed._id);
+          result.feeds = feeds;
+          //save changes
+          result
+            .save()
+            .then((result) => {
+              //send a notifier to the user to update their ui instantly
+              io()
+                .to(result._id)
+                .emit("notification", { message: message, length: result.feeds.length, time: time });
+              io()
+                .to(result.anonyString)
+                .emit("notification", { message: message, length: result.feeds.length, time: time });
 
-          res.redirect("/");
+              res.redirect("/");
+            })
+            .catch((e) => {
+              throw e;
+            });
         })
-        .catch((e) => {
-          throw e;
-        });
     })
-  })
     .catch((err) => {
       if (err === 'not found') {
         return res.redirect("/");
@@ -517,16 +517,16 @@ module.exports.getProfilePage = (req, res, next) => {
           filtering condition i.e max of 2 users per page
            */
           User.find({ _id: { $in: chatids } })
-          .sort({ $natural: -1 })
-          .skip((page - 1) * 2)
+            .sort({ $natural: -1 })
+            .skip((page - 1) * 2)
             .limit(2)
             .then(openchats => {
-               openchats = [...openchats].map(chats => {
+              openchats = [...openchats].map(chats => {
                 return {
                   name: chats.name,
                   _id: chats._id,
                   desc: chats.desc,
-                  img:chats.images.open.thumbnail,
+                  img: chats.images.open.thumbnail,
                   status: chats.status
                 }
               })
@@ -542,7 +542,7 @@ module.exports.getProfilePage = (req, res, next) => {
                       name: chats.anonymousName,
                       _id: chats.anonyString,
                       desc: 'anonymous user',
-                      img:chats.images.anonymous.thumbnail,
+                      img: chats.images.anonymous.thumbnail,
                       status: chats.anonymousStatus
                     }
                   })
@@ -571,7 +571,7 @@ module.exports.getProfilePage = (req, res, next) => {
                   res.render("profile", {
                     csrfToken: req.csrfToken(),
                     user: req.session.user,
-                    img:img,
+                    img: img,
                     chats: [...filteredUsersList],
                     current: page,
                     hasNext: 2 * page < nTotalAnonyUsers + ntotalOpenUsers,
@@ -850,7 +850,8 @@ module.exports.addChat = (req, res, next) => {
         myChats = user.anonyChats
         Auser = {
           name: user.anonymousName,
-          desc: 'anonymous user'
+          desc: 'anonymous user',
+          img: user.images.anonymous.link
 
         }
       } else {
@@ -858,7 +859,8 @@ module.exports.addChat = (req, res, next) => {
         myChats = user.chats
         Auser = {
           name: user.name,
-          desc: user.desc
+          desc: user.desc,
+          img: user.images.open.link,
 
         }
       }
@@ -908,6 +910,7 @@ module.exports.addChat = (req, res, next) => {
               id: userId,
               name: Auser.name,
               desc: Auser.desc,
+              img: Auser.img
             })
             /*chats.push({
               lastUpdate: new Date(),
@@ -975,6 +978,8 @@ module.exports.addChat = (req, res, next) => {
             name: Auser.name,
             fid: userId,
             status: 'online',
+            img: Auser.img,
+            desc: Auser.desc,
             requests: newChat.requests.length
           })
 
@@ -1003,8 +1008,8 @@ module.exports.addChat = (req, res, next) => {
 module.exports.chatRequest = (req, res, next) => {
   const id = req.body.id
   const state = req.body.state
+  let chatAccepter
   //check if id  affiliated to user
-  console.log(id)
   if (id.toString() === req.session.user._id.toString()) {
     return
   }
@@ -1016,6 +1021,7 @@ module.exports.chatRequest = (req, res, next) => {
     User.findById(req.session.user._id)
       .then(user => {
         if (!user) return
+        chatAccepter = user
         const requests = user.requests.filter(request => request.id.toString() !== id.toString())
         const chats = user.chats
         chats.push({
@@ -1053,7 +1059,8 @@ module.exports.chatRequest = (req, res, next) => {
         io().to(id).emit("online", {
           name: req.session.user.name,
           fid: req.session.user._id,
-          status: 'online'
+          status: 'online',
+          img:chatAccepter.images.open.link
         })
         if (user.isAnonymous) {
           res.json({
@@ -1061,7 +1068,8 @@ module.exports.chatRequest = (req, res, next) => {
             newchat: {
               _id: user.anonyString,
               name: user.anonymousName,
-              status: user.anonymousStatus
+              status: user.anonymousStatus,
+              img: user.images.anonymous.link
             }
           })
         } else {
@@ -1070,7 +1078,8 @@ module.exports.chatRequest = (req, res, next) => {
             newchat: {
               _id: user._id,
               name: user.name,
-              status: user.status
+              status: user.status,
+              img:user.images.open.link
             }
           })
         }
@@ -1086,7 +1095,7 @@ module.exports.chatRequest = (req, res, next) => {
         return User.findOne({ $or: [{ _id: id }, { anonyString: id }] })
       })
       .then(user => {
-        if (user.isAnonymous) {
+       /* if (user.isAnonymous) {
           res.json({
             code: 301,
             newchat: {
@@ -1102,9 +1111,9 @@ module.exports.chatRequest = (req, res, next) => {
               _id: user._id,
               name: user.name,
               status: user.status
-            }
+            } 
           })
-        }
+        }*/
       })
   }
 }
@@ -1494,39 +1503,46 @@ module.exports.retrieveFeed = (req, res, next) => {
   const feedLoader = require('../helpers/paginators').loadFeeds
   feedLoader(req, res, next)
 }
-module.exports.searchUser = (req,res,next) =>{
+module.exports.searchUser = (req, res, next) => {
   const searchName = req.body.searchKey
-  const userId = req.session.user.isAnonymous ? req.session.user.anonyString:req.session.user._id
+  const userId = req.session.user.isAnonymous ? req.session.user.anonyString : req.session.user._id
   const regex = new RegExp(searchName.toLowerCase().trim(), 'i')
-  User.find({"name":{$regex:regex}}).select('_id name chatShare chats desc')
-  .then(users=>{
-    if(users.length <= 0){
-      throw new Error('no user found')
-    }
-    const result = [...users].map(user=>{
-      const isFriend = user.chats.some(chat=>chat.chatId.toString() === userId.toString())
-      if(isFriend){
-        return {
-          name:user.name,
-          desc:user.desc,
-          id:user._id,
-          chatId:user.chatShare,
-          pals:true
-        }
-      }else{
-        return {
-          name:user.name,
-          desc:user.desc,
-          id:_id,
-          chatId:user.chatShare,
-          pals:false
-        }
+
+  User.find({ "name": { $regex: regex } })
+    .select('_id name chats chatShare desc images')
+    .then(users => {
+            if (users.length <= 0) {
+        throw new Error('no user found')
+      }
+      const Users = users
+      const result = Users.map(user => {
+        const isFriend = user.chats.some(chat => chat.chatId.toString() === userId.toString())
+        if (!isFriend) {
+          return {
+            name: user.name,
+            desc: user.desc,
+            id: user._id,
+            chatId: user.chatShare,
+            img: user.images.open.link,
+            pals: false
+          }
+        } else {
+          return {
+            name: user.name,
+            desc: user.desc,
+            id: _id,
+            img: user.images.open.link,
+            chatId: user.chatShare,
+            pals: true
+          }
       }
     })
+    console.log(result)
     res.json({
       result:result
     })
-  }).catch(err=>{
-
+  })
+  .catch(err => {
+    
   })
 }

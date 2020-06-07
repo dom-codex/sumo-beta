@@ -44,7 +44,8 @@ const UserSchema = new schema ({
           
            name: String,
            id: schema.Types.ObjectId,
-           desc: String
+           desc: String,
+           img:String
         }
       ],
       feeds:[

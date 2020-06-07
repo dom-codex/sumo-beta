@@ -3,6 +3,7 @@
       <div class="user-view">
       <div class="background">
       </div>
+      <img src="<%=img%>" class="circle">
       <a href="#name"><span class="white-text name"><%=name%></span></a>
       <a href="#email"><span class="white-text email"><%=phone%></span></a>
     </div>
@@ -28,7 +29,7 @@
 </div>
 
 </div>
-<div class="search" style="display:none">
+<ul class="search collection" style="display:none">
   <div><h2>Result</h2></div> 
   <div class="searchResult">
   <!-- <div class="search list" id="" >
@@ -43,8 +44,8 @@
     </div>
     </div> -->
   </div>
-</div>
-<div class="requests">
+</ul>
+<ul class="requests collection">
   <div><h2>Requests</h2></div>
 
 <div class="palsRequest">
@@ -61,14 +62,14 @@
 </div> -->
 
 </div>
-</div>
+</ul>
     <div class="chats current">
           <div><h2>Chats</h2></div>
-         <div class="userChats" id="userChatsSmall">
-            
+         <ul class="userChats collection" id="userChatsSmall">
             <% if(onlineUsers.length>0) { %>
                 <% onlineUsers.forEach((user,i)=>{ %>
-                    <div class="chat list" id="<%=user._id%>" style="background-color:<%= user.isNew ? 'white' : '' %>">
+                  <%- include('chatTiles.ejs',{user:user})%>
+                   <!-- <div class="chat list" id="<%=user._id%>" style="background-color:<%= user.isNew ? 'white' : '' %>">
                         <a href="/chat/<%=user._id%>" >
                             <input class="chatids" type="hidden" value="<%=user._id%>"/>
                   <div class="segment">
@@ -79,13 +80,13 @@
                   <small class="brief"><%=user.message.length > 24 ? user.message.substring(0,25)+' ...': user.message%></small></div>
                   <div class="message"><small><%=user.time%></small></div>
                 </a>
-                </div>
+                </div> -->
                 <% })%>
                 <% } else {%> 
                   <div class="new newchatwindow">
                     <h3>No chats yet !!!</h3>
                   </div>
-                  <%}%></div> 
+                  <%}%></ul> 
           <div class="pages"><ul>
               <% if(hasPrev) {%>
             <li><a href="/userchannel/<%=uid%>?page=<%=prev%>">Prev</a></li> <%}%>

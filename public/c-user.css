@@ -185,6 +185,14 @@ section.desktop {
     background-color: rgba(0, 0, 0, 0.01);
     overflow-y: scroll;
   }
+  .profile-view{
+    min-height: 150px;
+    display:flex;
+    align-items: flex-end;
+    padding-bottom:15px;
+    padding-left:15px;
+    margin-bottom: 10px;
+  }
   .feeds {
     width: 70%;
     height: calc(100vh - 100px);
@@ -295,12 +303,35 @@ section.desktop {
     transform: rotateX(0deg);
   }
 }
+/*
 .pseudoTile{
   background-color: #fff!important;
 }
 .pseudoTileIndicator{
   background-color: rebeccapurple!important;
   display:block!important
+}*/
+.collection-item p, .collection-item span{
+  height:25px
+}
+
+.indicator{
+  position: absolute;
+  top:70%;
+  left:40px;
+  border:thin solid royalblue;
+  z-index: 999999999999999999999999999999;
+}
+.images-cont img{
+  height:50px;
+  width:50px
+}
+.collection-item{
+  display:flex;
+}
+.collection-item p{
+  display:flex;
+  flex-direction: column;
 }
 .inform{
   justify-content: center;

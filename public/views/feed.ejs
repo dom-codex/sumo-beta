@@ -97,6 +97,15 @@
 
     <div class="window">
       <div class="mychats">
+        <div class="profile-view">
+          <div>
+          <img src="<%= img %>" 
+          class="circle" height="50px" width="50px">
+          <div><a href="#name"><span class="white-text name"><%=name%></span></a>
+          <a href="#email"><span class="white-text email"><%=phone%></span></a>
+        </div>
+        </div>
+      </div>
         <div class="input-field join">
           <div class="controls">
             <button>Chats</button>
@@ -122,7 +131,7 @@
           <div class="requests">
           <div><h2>Requests</h2></div>
         
-       <div class="palsRequest">
+       <ul class="palsRequest collection">
         <!-- <div class="request list" id="" >
           <input class="fid" type="hidden" value=""/>
         <div class="segment">
@@ -135,9 +144,9 @@
         </div>
         </div> -->
         
+      </ul>
         </div>
-        </div>
-        <div class="search" style="display:none">
+        <ul class="search collection" style="display:none">
           <div><h2>Result</h2></div> 
           <div class="searchResult large">
           <!-- <div class="search list" id="" >
@@ -152,7 +161,7 @@
             </div>
             </div> -->
           </div>
-        </div>
+        </ul>
           <div class="chats current">
          <!--   <div class="input-field join">
                 <div class="controls"><button>Requests<span class="circle-badge">81</span></button><Button>Search</Button></div>
@@ -174,11 +183,11 @@
             <div>
               <h2>Chats</h2>
             </div>
-            <div class="userChats" id="userChatsLarge">
-              
+            <ul class="userChats collection" id="userChatsLarge">
               <% if(onlineUsers.length>0) { %>
               <% onlineUsers.forEach((user,i)=>{ %>
-              <div class="chat list Cards" id="<%=user._id%>" style="background-color:<%= user.isNew ? 'white' : '' %>">
+                <%-include('chatTiles.ejs',{user:user})%>
+            <!--  <div class="chat list Cards" id="<%=user._id%>" style="background-color:<%= user.isNew ? 'white' : '' %>">
                 <a href="/chat/<%=user._id%>">
                   <input class="chatids" type="hidden" value="<%=user._id%>" />
                   <div class="segment">
@@ -197,13 +206,13 @@
                   </div>
                   <div class="message"><small><%=user.time%></small></div>
                 </a>
-              </div>
+              </div> -->
               <% })%>
               <% } else { %>
               <div class="new newchatwindow">
                 <h3>No chats!!!</h3>
               </div>
-              <% } %> </div> 
+              <% } %> </ul> 
             <div class="pages">
               <ul>
                 <% if(hasPrev) {%>

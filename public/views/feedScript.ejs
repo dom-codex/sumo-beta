@@ -19,7 +19,7 @@
     //refresh browser if server socket disconnects
     if (reason === "transport close") {
       timer = setTimeout(() => {
-        alert("underlying coonection lost please reload");
+        alert("underlying connection lost please reload");
       }, 4000);
     }
   });
@@ -139,36 +139,27 @@
     }
     const isRendered = chatsids.some((id) => id === data.fid);
     if (!isRendered || uid == data.fid) {
-      $(".userChats").prepend(`            
-          <div class="chat list Cards" id="${data.fid}">
-               <a href="/chat/${data.fid}" >
-           <input class="chatids" type="hidden" value="${data.fid}"/>
-                  <div class="segment">
-                  <div class="liststyle">
-                    <div class="indicator" style="background-color:${
-        data.status === "online" || data.anStatus === "online"
-          ? "rebeccapurple"
-          : "grey"
-        }; display:${
-        data.status === "online" || data.anStatus === "online"
-          ? "block"
-          : "none"
-        }"></div>
- <div class="indicator" style="background-color:${
-        data.anStatus === "offline" || data.status === "offline"
-          ? "grey"
-          : "rebeccapurple"
-        }; display:${
-        data.anStatus === "offline" ||
-          data.status === "offline"
-          ? "block"
-          : "none"
-        }"></div> 
-           <div class="names"><p>${data.name.split(' ')[0]}</p></div></div>
-          <small class="brief">say hi to ${data.name.split(' ')[0]}</small></div>
-           <div class="message"><small></small></div>
-           </a>
-               </div> `);
+      $(".userChats").prepend(` 
+      <li class="collection-item avatar Cards">
+    <input class="chatids" type="hidden" value="${data.fid}"/>
+    <img src="${data.img}" alt="" class="circle">
+    <div class="indicator" style="background-color:${ data.status === 'online' ||data.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }"></div>
+    <div>
+    <span class="title"> 
+     <a href="/chat/${data.fid}" >
+      ${data.name.split(' ')[0]}</a>
+
+    </span>
+    <p>
+    <small class="brief">
+      say hi to ${data.name.split(' ')[0]}</small>
+    </p></div>
+    <div class=" secondary-content">
+        <small>
+        </small>
+    </div>
+  </li>
+ `);
       $(".newchatwindow").css("display", "none");
     } else if (isRendered) {
       const cids = $(".userChats").find(".chatids");
@@ -190,34 +181,28 @@
       if (user._id == uid.value) {
         return;
       }
-      $(".userChats").append(`            
- <div class="chat list Cards" id="${user._id}">
-  <input class="chatids" type="hidden" value="${user._id}"/>
-<a href="/chat/${user._id}" >
-<div class="liststyle"> 
-<div class="indicator" style="background-color:${
-        user.status === "online" || user.anStatus === "online"
-          ? "rebeccapurple"
-          : "grey"
-        }; display:${
-        user.status === "online" || user.anStatus === "online"
-          ? "block"
-          : "none"
-        }"></div>
-<div class="indicator" style="background-color:${
-        user.anStatus === "offline" || user.status === "offline"
-          ? "grey"
-          : "rebeccapurple"
-        }; display:${
-        user.anStatus === "offline" || user.status === "offline"
-          ? "block"
-          : "none"
-        }"></div>          
-  <div class="names"><p>${user.name.split(' ')[0]}</p></div></div>
-  <small class="brief">say hi to ${user.name.split(' ')[0]}</small></div>
-  <div class="message"><small></small></div>
-  </a>
-  </div> `);
+      $(".userChats").append(`  
+      
+      <li class="collection-item avatar Cards">
+    <input class="chatids" type="hidden" value="${user._id}"/>
+    <img src="${user.img}" alt="" class="circle">
+    <div class="indicator" style="background-color:${ user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey'}"></div>
+    <div>
+    <span class="title">    <a href="/chat/${user._id}" >
+        ${user.name.split(' ')[0]} </a>
+
+    </span>
+    <p>
+    <small class="brief">
+      say hi to ${user.name.split(' ')[0]}
+      </small>
+    </p></div>
+    <div class=" secondary-content">
+        <small>
+        </small>
+    </div>
+  </li>
+  `);
       $(".newchatwindow").css("display", "none");
     });
   });
@@ -252,37 +237,6 @@
           $(".errdisplay").css("display", "none");
           $("#largeErr").css("display", "none");
 
-          /*     $(".userChats").prepend(`  
-               <div class="chat list Cards" id="${res.newchat._id}">
-                    <a href="/chat/${res.newchat._id}" >
-                <input class="chatids" type="hidden" value="${res.newchat._id}"/>
-                       <div class="segment">
-                       <div class="liststyle">
-                         <div class="indicator" style="background-color:${
-         res.newchat.status === "online" || res.newchat.anStatus === "online"
-           ? "rebeccapurple"
-           : "grey"
-       }; display:${
-                 res.newchat.status === "online" || res.newchat.anStatus === "online"
-                   ? "block"
-                   : "none"
-               }"></div>
-      <div class="indicator" style="background-color:${
-        res.newchat.anStatus === "offline" || res.newchat.status === "offline"
-          ? "grey"
-          : "rebeccapurple"
-      }; display:${
-                 res.newchat.anStatus === "offline" ||
-                 res.newchat.status === "offline"
-                   ? "block"
-                   : "none"
-               }"></div> 
-                <div class="names"><p>${res.newchat.name.split(' ')[0]}</p></div></div>
-               <small class="brief">say hi to ${res.newchat.name.split(' ')[0]}</small></div>
-                <div class="message"><small></small></div>
-                </a>
-                    </div>         
-     `);*/
           $(fieldtoselect).val("");
           $(".new").css("display", "none");
         }
@@ -304,19 +258,20 @@
     for (let i = 0; i < cids.length; i++) {
       let cid = cids[i];
       if (cid.value.toString() === data.id.toString()) {
-        const small = cid.parentNode.childNodes[5];
-        const messageIdicator = cid.parentNode.children[1].children[1]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+        console.log(cid.parentNode.children)
+       const time = cid.parentNode.children[4].children[0];
+        const messageIdicator = cid.parentNode.children[3].children[0]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
         messageIdicator.textContent = "";
         messageIdicator.textContent = data.msg.length > 25 ? data.msg.substring(0, 25) + '...' : data.msg;
-        small.textContent = " ";
-        small.textContent = data.time;
+        time.textContent = " ";
+        time.textContent = data.time;
         //move the notification to the top
         const parent = $("#userChatsSmall");
         //add to the top  of the list
-        cid.parentNode.parentNode.style.backgroundColor = "#fff";
-        const content = cid.parentNode.parentNode;
-        cid.parentNode.parentNode.remove();
-        parent.prepend(content);
+        cid.parentNode.style.backgroundColor = "#fff";
+        const content = cid.parentNode;
+        cid.parentNode.remove();
+        parent.prepend(content); 
         break
       } else {
         continue;
@@ -327,49 +282,69 @@
     for (let i = 0; i < ids.length; i++) {
       let cid = ids[i];
       if (cid.value.toString() === data.id.toString()) {
-        const small = cid.parentNode.childNodes[5];
-        const messageIdicator =
-          cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+        const time = cid.parentNode.children[4].children[0];
+        const messageIdicator = cid.parentNode.children[3].children[0]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
         messageIdicator.textContent = "";
         messageIdicator.textContent = data.msg.length > 25 ? data.msg.substring(0, 25) + '...' : data.msg;
-        small.textContent = " ";
-        small.textContent = data.time;
+        time.textContent = " ";
+        time.textContent = data.time;
         //move the notification to the top
         const parent = $("#userChatsLarge");
         //add to the top  of the list
         cid.parentNode.parentNode.style.backgroundColor = "#fff";
-        const content = cid.parentNode.parentNode;
-        cid.parentNode.parentNode.remove();
+        const content = cid.parentNode;
+        cid.parentNode.remove();
         parent.prepend(content);
         return
       } else {
         continue;
       }
     }
-    $("#userChatsSmall").prepend(`            
-    <div class="chat list Cards pseudoTile" id="${data.id}" >
-          <a href="/chat/${data.id}>" >
-            <input class="chatids" type="hidden" value="${data.id}"/>
-       <div class="segment">
-      <div class="liststyle">
-        <div class="indicator pseudoTileIndicator"></div>
-   <div class="names"><p>${data.name}</p></div></div>
-    <small class="brief">${data.msg.length > 25 ? data.msg.substring(0, 25) : data.msg}...</small></div>
-   <div class="message"><small>${data.time}</small></div>
-     </a>
-     </div> `);
+    $("#userChatsSmall").prepend(`    
+    <li class="collection-item avatar Cards">
+    <input class="chatids" type="hidden"  value="${data.id}"/>
+    <img src="${user.img}" alt="" class="circle">
+    <div class="indicator" style="background-color:${ data.status === 'online' || data.anStatus === 'online'  ? 'rebeccapurple' : 'grey'}"></div>
+    <div>
+    <span class="title">   
+       <a href="/chat/${data.id}" >
+        ${data.name.split(' ')[0]} </a>
+
+    </span>
+    <p>
+    <small class="brief">
+      ${data.msg.length > 25 ? data.msg.substring(0, 25) + '...': data.msg}
+      </small>
+    </p></div>
+    <div class=" secondary-content">
+        <small>
+            ${data.time}
+        </small>
+    </div>
+  </li>
+ `);
     $("#userChatsLarge").prepend(`            
-    <div class="chat list Cards pseudoTile" id="${data.id}" >
-          <a href="/chat/${data.id}>" >
-            <input class="chatids" type="hidden" value="${data.id}"/>
-       <div class="segment">
-      <div class="liststyle">
-        <div class="indicator pseudoTileIndicator"></div>
-   <div class="names"><p>${data.name}</p></div></div>
-    <small class="brief">${data.msg.length > 25 ? data.msg.substring(0, 25) : data.msg}...</small></div>
-   <div class="message"><small>${data.time}</small></div>
-     </a>
-     </div> `);
+    <li class="collection-item avatar Cards">
+    <input class="chatids" type="hidden"  value="${data.id}"/>
+    <img src="${user.img}" alt="" class="circle" height="50px" width="50px">
+    <div class="indicator" style="background-color:${data.status === 'online' || data.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }"></div>
+    <div>
+    <span class="title">   
+       <a href="/chat/${data.id}" >
+        ${data.name.split(' ')[0]} </a>
+
+    </span>
+    <p>
+    <small class="brief">
+      ${data.msg.length > 25 ? data.msg.substring(0, 25) + '...': data.msg}
+      </small>
+    </p></div>
+    <div class=" secondary-content">
+        <small>
+            ${data.time}
+        </small>
+    </div>
+  </li> `);
   });
   $('.inform span').on('click', () => {
     $('.inform').css('display', 'none')
@@ -418,21 +393,24 @@
     const badge = $('.controls button:nth-child(2) span')
     badge.text(data.requests)
     $('.palsRequest').prepend(`
- 
-<div class="palsRequest">
-  <input class="rid" type="hidden" value="${data.fid}"/>
-  <div class="request list" id="" >
-<div class="segment">
-<div class="liststyle">
-<div class="names"><p>${data.name}</p></div></div>
-<small class="brief">i am dominic</small></div>
-<div>
+
+    <li class="collection-item avatar Cards">
+      <input class="rid" type="hidden" value="${data.fid}"/>
+    <img src="${data.img}" alt="" class="circle" height="50px" width="50px">
+    <div>
+    <span class="title">   
+        ${data.name.split(' ')[0]}
+    </span>
+    <p>
+    <small class="brief">
+      ${data.desc}
+            </small>
+    </p></div>
+    <div class=" secondary-content">
   <button id="decline" onclick="chatRequestHandler('${data.fid}','decline')">decline</button>
   <button id="grant" onclick="chatRequestHandler('${data.fid}','grant')">accept</button>
-</div>
-</div>
-
-</div>
+    </div>
+  </li>
  `)
   });
 </script>

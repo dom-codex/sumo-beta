@@ -47,7 +47,11 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
                     chatids.forEach((element) => {
                         socket.broadcast
                             .to(element)
-                            .emit("online", { name: me.anonymousName, fid: id });
+                            .emit("online", { name:
+                                 me.anonymousName, 
+                                 fid: id,
+                                 img:me.images.anonymous.link
+                                 });
                     });
                     //socket.broadcast.emit("online", { name: '6anonymous', fid: id, })
                     //  socket.emit("activeUsers", onlineUser);
@@ -66,6 +70,7 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
                     return {
                         name: aUser.name,
                         _id: aUser._id,
+                        img:aUser.images.open.link,
                         message: 'user removed you'
 
                     }
@@ -78,6 +83,7 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
                     name: aUser.name,
                     _id: aUser._id,
                     status: aUser.status,
+                    img:aUser.images.open.link,
                     isNew: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].isMsgNew : false,
                     message: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].body : 'say hi',
                     time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].time : ''
@@ -97,6 +103,7 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
             res.render("feed", {
                 name: me.name,
                 phone: me.phone,
+                img:me.images.anonymous.link,
                 uid: me.anonyString,
                 inform: inform.length > 0 ? inform[0] : { status: false, msg: '' },
                 csrfToken: req.csrfToken(),
@@ -220,7 +227,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
     let nTotalAnonyChats;
     let anonyids;
     User.findOne({ _id: req.session.user._id })
-    .select('name phone chats _id ')
+    .select('name phone chats _id images')
         .populate('chats.messages')
         .then((user) => {
             me = user
@@ -263,6 +270,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                         return {
                                             name: a.anonymousName,
                                             _id: a.anonyString,
+                                            img:a.images.anonymous.link,
                                             message: 'user removed you'
 
                                         }
@@ -271,6 +279,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                         return {
                                             name: a.anonymousName,
                                             _id: a.anonyString,
+                                            img: a.images.anonymous.link,
                                             anStatus: a.anonymousStatus,
                                             message: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1]._doc.body : 'anonymous chat',
                                             isNew: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1]._doc.isMsgNew : false,
@@ -306,7 +315,10 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                     /*chatids*/stillInChat.forEach((element) => {
                                         socket.broadcast
                                             .to(element)
-                                            .emit("online", { name: me.name, fid: id });
+                                            .emit("online", { name: me.name, 
+                                                fid: id,
+                                                img:me.images.open.link
+                                             });
                                     });
 
                                 });
@@ -324,15 +336,16 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                     return {
                                         name: aUser.name,
                                         _id: aUser._id,
+                                        img:aUser.images.open.link,
                                         message: 'user removed you'
 
                                     }
                                 } else {
                                     const myChatsWithUser = me.chats.find(chat => chat.chatId.toString() === aUser._id.toString())
-                                    console.log('my user ', myChatsWithUser)
                                     return {
                                         name: aUser.name,
                                         _id: aUser._id,
+                                        img: aUser.images.open.link,
                                         status: aUser.status,
                                         isNew: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].isMsgNew : false,
                                         message: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].body : 'say hi',
@@ -355,6 +368,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
                                 name: me.name,
                                 phone: me.phone,
                                 feed: me.feeds,
+                                img:me.images.open.link,
                                 sharelink: me.share,
                                 uid: me._id,
                                 chat: me.chatShare,

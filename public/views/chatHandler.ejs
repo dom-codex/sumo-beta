@@ -8,19 +8,23 @@
         data.requests.forEach((req) => {
           $(".palsRequest").prepend(`
  
-<div class="palRequest">
-    <input class="rid" type="hidden" value="${req.id}"/>
-  <div class="request list" id="" >
-<div class="segment">
-<div class="liststyle">
-<div class="names"><p>${req.name}</p></div></div>
-<small class="brief">${req.desc}</small></div>
-<div>
+          <li class="collection-item avatar Cards">
+      <input class="rid" type="hidden" value="${req.id}"/>
+    <img src="${req.img}" alt="" class="circle" height="50px" width="50px">
+    <div>
+    <span class="title">   
+        ${req.name.split(' ')[0]}
+    </span>
+    <p>
+    <small class="brief">
+      ${req.desc}
+            </small>
+    </p></div>
+    <div class=" secondary-content">
   <button id="decline" onclick="chatRequestHandler('${req.id}','decline')">decline</button>
   <button id="grant" onclick="chatRequestHandler('${req.id}','grant')">accept</button>
-</div>
-</div>
-</div>
+    </div>
+  </li>
  `);
         });
       });
@@ -63,40 +67,26 @@
         } else {
           // remove user from requests list
           $(".userChats").prepend(`  
-          <div class="chat list Cards" id="${res.newchat._id}">
-               <a href="/chat/${res.newchat._id}" >
-           <input class="chatids" type="hidden" value="${res.newchat._id}"/>
-                  <div class="segment">
-                  <div class="liststyle">
-                    <div class="indicator" style="background-color:${
-                      res.newchat.status === "online" ||
-                      res.newchat.anStatus === "online"
-                        ? "rebeccapurple"
-                        : "grey"
-                    }; display:${
-            res.newchat.status === "online" || res.newchat.anStatus === "online"
-              ? "block"
-              : "none"
-          }"></div>
- <div class="indicator" style="background-color:${
-   res.newchat.anStatus === "offline" || res.newchat.status === "offline"
-     ? "grey"
-     : "rebeccapurple"
- }; display:${
-            res.newchat.anStatus === "offline" ||
-            res.newchat.status === "offline"
-              ? "block"
-              : "none"
-          }"></div> 
-           <div class="names"><p>${
-             res.newchat.name.split(" ")[0]
-           }</p></div></div>
-          <small class="brief">say hi to ${
-            res.newchat.name.split(" ")[0]
-          }</small></div>
-           <div class="message"><small></small></div>
-           </a>
-               </div>         
+          <li class="collection-item avatar Cards">
+    <input class="chatids" type="hidden"  value="${res.newchat._id}"/>
+    <img src="${res.newchat.img}" alt="" class="circle" height="50px" width="50px">
+    <div class="indicator" style="background-color:${res.newchat.status === 'online' || res.newchat.anStatus === 'online'  ? 'rebeccapurple' : 'grey' };"></div>
+    <div>
+    <span class="title">   
+       <a href="/chat/${res.newchat._id}" >
+        ${res.newchat.name.split(' ')[0]} </a>
+
+    </span>
+    <p>
+    <small class="brief">
+      say hi to ${res.newchat.name.split(' ')[0]}
+      </small>
+    </p></div>
+    <div class=" secondary-content">
+        <small>
+        </small>
+    </div>
+  </li>       
 `);
         }
       });
@@ -176,32 +166,50 @@ loadFeed()
           $('.searchResult.large').html('')
           if(res.result.length > 0){
             res.result.forEach(user=>{
-              if(true){
+              if(!user.pals){
                 $('.searchResult').append(`
-              <div class="search list Cards" id="" >
-             <input class="${user.chatId}" type="hidden" value=""/>
-             <div class="segment">
-           <div class="liststyle">
-    <div class="names"><p>${user.name}</p></div></div>
-    <small class="brief">${user.desc}</small></div>
+
+     <li class="collection-item avatar Cards">
+    <input class="" type="hidden" value=""/>
+    <img src="${user.img}" alt="" class="circle">
     <div>
+    <span class="title">
+        ${user.name.split(' ')[0]} 
+
+    </span>
+    <p>
+    <small class="brief">
+      ${user.desc}</small>
+    </p></div>
+    <div class=" secondary-content">
+      <div>
       <button onclick="addUser('#chatString','${user.chatId}')">add</button>
     </div>
     </div>
-              `)
-             return 
-              }
-              $('.searchResult').append(`
-              <div class="search list Cards" id="" >
-      <input class="" type="hidden" value=""/>
-    <div class="segment">
-    <div class="liststyle">
-    <div class="names"><p>${user.name}</p></div></div>
-    <small class="brief">${user.desc}</small></div>
+  </li>
+   `)
+    return 
+    }
+   $('.searchResult').append(`
+   
+   <li class="collection-item avatar Cards">
+    <input class="" type="hidden" value=""/>
+    <img src="${user.img}" alt="" class="circle">
     <div>
-      <a href="/chat/${user.id}">chat</a>
+    <span class="title">
+        ${user.name.split(' ')[0]} 
+
+    </span>
+    <p>
+    <small class="brief">
+      ${user.desc}</small>
+    </p></div>
+    <div class=" secondary-content">
+      <div>
+        <a href="/chat/${user.id}">chat</a>
     </div>
     </div>
+  </li>
               `)   
             })
           }
