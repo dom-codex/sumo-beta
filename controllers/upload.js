@@ -26,7 +26,7 @@ module.exports.uploader = (req,res,storage) =>{
           .select('isAnonymous images')
           .then(user=>{
               if(!user) throw new Error('')
-              else if(user.images&&user.images.open.id.length > 0 &&  !user.isAnonymous){
+              else if(user.images &&user.images.open && user.images.open.id.length > 0 &&  !user.isAnonymous){
                 require('../utils/driveUpload').driveUploadUpdate(req,res,user.images.open.id,req.file.filename,req.file.path) 
               } else if(user.images &&user.images.anonymous.id.length > 0 && user.isAnonymous){
                 require('../utils/driveUpload').driveUploadUpdate(req,res,user.images.anonymous.id,req.file.filename,req.file.path) 

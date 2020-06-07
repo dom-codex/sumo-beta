@@ -375,6 +375,7 @@ module.exports.getProfilePage = (req, res, next) => {
       //used to create paginations
       const img = user.images.open.link
       const page = +req.query.page || 1;
+      const images = user.images.anonymous.link
       let ntotalOpenUsers;
       let nTotalAnonyUsers;
       let chatids = []
@@ -470,7 +471,7 @@ module.exports.getProfilePage = (req, res, next) => {
         });
       });
       if (req.session.user.isAnonymous) {
-        return require('../helpers/profileAnonymous').profileAnonymous(req, res, next)
+        return require('../helpers/profileAnonymous').profileAnonymous(req, res, next,images)
       }
       //pagination implementation
       User.findById(req.session.user._id)

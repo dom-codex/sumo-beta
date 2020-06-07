@@ -1,20 +1,19 @@
 const User = require('../models/user')
-module.exports.profileAnonymous = (req,res,next)=>{
+module.exports.profileAnonymous = (req,res,next,img)=>{
 const page = +req.query.page || 1
 let ntotalOpenUsers
 let chatids
-let img
     User.findById(req.session.user._id)
         .then((user) => {
-          let img = user.images.anonymous.link
           //filter out open chats id
           const chatid = user.anonyChats.map((id) => {
             return id.chatId;
           });
-          //initialize the somewhat global variable
+        //initialize the somewhat global variable
           chatids = chatid
           return chatid
-        }).catch(err => {
+        })
+        .catch(err => {
           throw err
         })
         .then(_=> {
@@ -34,7 +33,9 @@ let img
           the no of records returned based on a chosen
           filtering condition i.e max of 2 users per page
            */
-          User.find({ _id: { $in: chatids } }).sort({ $natural: -1 }).skip((page - 1) * 2)
+          User.find({ _id: { $in: chatids } })
+          .sort({ $natural: -1 })
+          .skip((page - 1) * 2)
             .limit(2)
             .then(openchats => {
               /*retrive users that chatted with user anonymously
@@ -76,10 +77,12 @@ let img
                     success: success ? success : { message: '' },
                     total:ntotalOpenUsers,
                   })
-                }).catch(err => {
+                })
+                .catch(err => {
                   next(err)
                 })
-            }).catch(err => {
+            })
+            .catch(err => {
               next(err)
             })//end of open chat then
         .catch((err) => {

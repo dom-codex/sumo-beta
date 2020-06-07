@@ -94,7 +94,7 @@ drive.files.create({
   } else {
     let img;
     console.log('File is : ', file);
-    User.findById(req.session.user._id).select('images')
+    User.findById(req.session.user._id).select('images isAnonymous')
     .then(user=>{
         if(!user) throw new Error('no user')
         else if(user.isAnonymous){

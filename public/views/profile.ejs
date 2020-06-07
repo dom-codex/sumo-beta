@@ -29,6 +29,7 @@
   <link href="/css/materialize.min.css" rel="stylesheet"/>
     <link href="/tabs.css" type="text/css" rel="stylesheet"/>
     <link href="/inputs-color.css" type="text/css" rel="stylesheet"/>
+    <link href="/materialize-override.css" type="text/css" rel="stylesheet"/>
     <link href="/sumoProfile.css" type="text/css" rel="stylesheet"/>
     <% if(anonymous) {%>
       <link href="/dark.css" rel="stylesheet" type="text/css" />
@@ -83,44 +84,71 @@
       <a href="/deleteuseraccount/<%=user._id%>" id="delete" class=" waves-effect waves-green btn-flat">Delete</a>
     </div>
   </div>
-
-  <heading>
+  <header>
           <nav>
-            <div>
-            <h2><%= user.name.split(' ')[0]%></h2>
+            <div class="my-title">
+              <img src="/ms-icon-144x144.png" alt="app logo"/>
+            </div>
             <a id="showdd" class='dropdown-trigger btn' href='#' data-target='dropdown1'><i class="material-icons">dehaze</i></a>
             <ul id='dropdown1' class='dropdown-content'>
           
-              <li><a href="/"><i class="material-icons">home</i>home</a></li>
+              <li><a href="/"><i class="material-icons">home</i>home</a>
+              </li>
               <li class="divider" tabindex="-1"></li>
               <li><a href="/userchannel/<%=user._id%>"><i class="material-icons">rss_feed</i>feeds</a></li>
               <li class="divider" tabindex="-1"></li>
               <li><a href="/logout"><i class="material-icons">keyboard_tabs</i>logout</a></li>
             </ul>
              <div class="nav-options">
-               <a href="/"><i class="material-icons">home</i></a>
-               <a href="/userchannel/<%=user._id%>"><i class="material-icons">rss_feed</i></a>
-               <a href="/logout"><i class="material-icons">keyboard_tabs</i></a>
-              </div>
+               <a href="/">
+                <div>
+                <i class="material-icons">home</i>
+                <div class="icon-desc">home</div>
+                </div>
+                </a>
+              </a>
+               <a href="/userchannel/<%=user._id%>">
+                <div>
+                <i class="material-icons">rss_feed</i>
+                <div class="icon-desc">feeds</div>
+                </div>
+              </a>
+               <a href="/logout">
+                <div>
+                <i class="material-icons">keyboard_tabs</i>
+                <div class="icon-desc">logout</div>
+                </div>
+              </a>
               </div>
           </nav>
-  </heading>
+  </header>
   <div class="<%=success.message.length>0?'success':''%>" id="board">
     <p><%=success.message%></p>
   </div>
   <section>
     <div class="window z-depth-0 col s12">
       <div class="row">
-        <div class="col s12">
+        <div class="col s12 m12 l12">
           <ul class="collapsible">
-            <div class="user-image-cont">
+            <li class="firstli">
+            <div class="user-image-cont firstdiv">
+              <a id="showdd" class='dropdown-trigger btn' href='#' data-target='dropdown1'><i class="material-icons">dehaze</i></a>
               <div class="pp user-image-cont">
-                <img class="profilePic" src="<%=img%>"/>
+                <img class="profilePic" src=" <%=img%>"/>
+              </div>
+              <div class="text-small">
+                <div>
+                <p>Dominic ibolo
+                </p>
+                <div style="display: flex;">
+                  <small class="small-desc">
+                  #iam dominic</small></div></div>
               </div>
               <div class="upload">
                 <button class="open-upload-modal upload">Change photo</button>
               </div>
             </div>
+          </li>
             <li>
               <div class="collapsible-header"><i class="material-icons">person</i>General info</div>
               <div class="collapsible-body">
@@ -175,7 +203,7 @@
             </li>
             <!--chats collapsible-->
             <li>
-              <div class="collapsible-header"><i class="material-icons">chats</i>Chats</div>
+              <div class="collapsible-header"><i class="material-icons">chats</i>Chats<span id="badge"><%=total%></span></div>
               <div class="collapsible-body">
                 <span>  <div id="test2" class="col s12 tchild">
                   <div class="small-title">Chats <span id="badge"><%=total%></span></div>
@@ -479,17 +507,6 @@
         </div>
       </div>
     </div> -->
-    <div class="fixed-action-btn click-to-toggle">
-      <a class="btn-floating btn-large red" style="background-color: indigo!important;">
-        <i class="large material-icons">adjust</i>
-      </a>
-      <ul>
-        <li><a class="btn-floating red acc"><i class="material-icons">account_circle</i></a></li>
-        <li><a class="btn-floating yellow darken-1  mychats"><i class="material-icons">chat</i></a></li>
-        <li><a class="btn-floating green  share"><i class="material-icons">share</i></a></li>
-        <li><a class="btn-floating blue  panel"><i class="material-icons">build</i></a></li>
-      </ul>
-    </div>
   </section>
 
   <script src="/js/materialize.min.js"></script>

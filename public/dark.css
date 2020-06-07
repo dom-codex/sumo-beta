@@ -40,3 +40,6 @@ nav{
 .checkbox:checked + .toggle { 
     background-color:black;
   } 
+  .user-image-cont{
+      background-color: rgba(0,0,0,.89)!important;
+  }

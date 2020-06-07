@@ -15,6 +15,7 @@ const UserSchema = new schema ({
         open:{
           id:{
             type:String,
+            default:''
           },
           link:String,
           thumbnail:String
