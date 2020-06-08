@@ -17,6 +17,9 @@ module.exports.gethome = (req, res, next) => {
   const didSave = req.flash('saved')
   //render home view
   res.render("home", { save: didSave });
+};module.exports.about = (req, res, next) => {
+  //render about view
+  res.render("about");
 };
 module.exports.createChannel = (req, res, next) => {
   //retrieve query parameter

@@ -23,7 +23,7 @@ nav{
   height:inherit;
   display:flex;
   justify-content: center;
-  padding-top:25px;
+  padding:15px 0
 }
 ul{
   list-style: none;
@@ -38,6 +38,7 @@ li a{
   font-family: Rubik;
   font-weight: 700;
 }
+
 section.theme{
   background-image: url('theme.jpg');
   background-repeat: no-repeat;
@@ -47,20 +48,17 @@ section.theme{
   flex-direction: column;
   justify-content: center;
 }
-section.about{
-  height: 200px;
+section.features{
+  padding:90px 0;
 }
-section.about, section.features{
-  padding:90px 0
-}
-section.about h4, section.features h4{
+section.features h4{
   font-size:2em;
   margin:15px;
   padding:0;
   border-bottom: 2px double #000;
   padding-bottom:7px;
 }
-section.about div:nth-child(1),.features-title{
+.features-title{
   display:flex;
   justify-content: center;
 }
@@ -194,29 +192,7 @@ section.about div:nth-child(1),.features-title{
   background-color: #fff;
   color:#000
 }
-#sub-cont{
-  display:flex;
-  justify-content: flex-end;
-  margin:30px 20px 30px 0;
-}
-.sub{
-  height:60px;
-  width:60px;
-  border-radius:50%;
-  background-color:rebeccapurple;
-  display:flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 7px 0 rgba(0,0,0,0.12), 0 3px 1px -1px rgba(0,0,0,0.2);
-}
-.sub button{
-  background: none;
-  border: none;
-}
-.sub i {
-  color:#fff;
-  font-size:2.5rem
-}
+
 /* modal styling */
 .modal, .modal-content{
   padding:0!important
@@ -290,7 +266,7 @@ button.btn:hover{
   #showdd{
     display: flex;
     align-items: center;
-    background-color:rgba(0,0,0,0.5)
+    background-color:rgb(110, 89, 126)
   }
   #firstul{
     display:none
@@ -317,6 +293,9 @@ button.btn:hover{
     box-shadow: none;
     padding:15px!important;
   }
+}
+.btn-floating{
+  background-color: indigo!important;
 }
 footer{
   background-color:rebeccapurple;
@@ -368,6 +347,9 @@ footer div:nth-child(2):hover,footer div:nth-child(2):active{
 @media all and (min-width:920px){
   .featuresList{
     display:grid;
+    width:80%;
+    margin:auto;
+    margin-right: 50px;
     grid-template-columns: 1fr 1fr;
   }
   #features{
@@ -376,4 +358,48 @@ footer div:nth-child(2):hover,footer div:nth-child(2):active{
     justify-content: center;
   }
 
+}
+.screenshot-title{
+  text-align: center;
+  margin:20px 0
+}
+.screenshot-title p{
+  display: inline-block;
+  font-size:2em;
+  border-bottom: 2px double #000;
+  padding:0 15px;
+  padding-bottom:7px;
+}
+.carousel{
+  margin:auto;
+  height:300px;
+  width:90%;
+}
+a.carousel-item{
+  height:100%!important;
+  width:50%!important;
+}
+a.carousel-item img{
+  height:100%;
+  width:100%;
+}
+.nav-left{
+  position: absolute;
+  top:50%;
+  left:0;
+  z-index: 2;
+}
+.nav-right{
+  position: absolute;
+  top:50%;
+  right:0;
+  z-index: 2;
+}
+.nav-left button, .nav-right button{
+  background: none;
+  border:none;
+}
+.nav-left i, .nav-right i{
+  font-size:45px;
+  color:rgba(0,0,0,.6)
 }

@@ -1,0 +1,35 @@
+
+section.about{
+    text-align: center;
+    padding:0 15px
+  }
+.description{
+    margin-top: 12px;
+    color:rosybrown
+}
+section.theHow{
+    margin-top:30px;
+}
+.how-cont{
+    text-align: center;
+}
+.how-title{
+    font-size: 2em;
+    display:inline-block;
+    border-bottom: thin solid #ccc;
+}
+ol{
+    text-align: center;
+    margin-top:20px
+}
+ol div:nth-child(1){
+    margin:8px 0
+}
+ol div:nth-child(1) p{
+    font-size: 1.5em;
+    color:rosybrown
+}
+
+ul li::before{
+    content: ' ';
+}

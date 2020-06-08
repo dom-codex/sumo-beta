@@ -11,6 +11,7 @@ const controller = require('../controllers/anonycontrollers');
 const validators = require('../utils/validators');
 
 router.get('/',controller.gethome);
+router.get('/about',controller.about);
 router.get('/getstarted',controller.createChannel)
 //validate new user input
 router.post('/createUserChannel', [

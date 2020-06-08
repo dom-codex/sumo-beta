@@ -4,18 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="msapplication-TileColor" content="#ffffff">
@@ -30,6 +18,20 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
     <link href="./newhome.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
+  <div class="fixed-action-btn click-to-toggle">
+    <a class="btn-floating btn-large red">
+      <i class="large material-icons">brightness_1</i>
+    </a>
+    <ul>
+      <li>
+        <a class="btn-floating top">
+          <i class="material-icons">arrow_upward</i>
+        </a></li>
+      <li>
+        <a class="btn-floating  btn modal-trigger" data-target="modal2">
+        <i class="material-icons">comment</i></a></li>
+    </ul>
+  </div>
 <main>
     <div class="background">
       <div id="modal2" class="modal modal-fixed-footer">
@@ -53,7 +55,7 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
           <a id="showdd" class='dropdown-trigger btn' href='#' data-target='dropdown1'><i class="material-icons">dehaze</i></a>
           <ul id="firstul">
             <li><a href="/" style="color:rgb(255, 136, 0)">HOME</a></li>
-            <li><a href="#about">ABOUT</a></li>
+            <li><a href="/about">ABOUT</a></li>
             <li> <a href="#features">FEATURES</a>
               <li><a href="/getstarted?login=true">LOGIN</a></li>
             </li>
@@ -61,7 +63,7 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
           <ul id='dropdown1' class='dropdown-content'>
             <li><a href="/" style="color:rgb(255, 136, 0)">HOME</a></li>
             <li class="divider" tabindex="-1"></li>
-            <li><a href="#about" style="color:grey">ABOUT</a></li>
+            <li><a href="/about" style="color:grey">ABOUT</a></li>
             <li class="divider" tabindex="-1"></li>
             <li> <a  href="#features">FEATURES</a>
             </li>
@@ -112,15 +114,14 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
      <!-- <div id="sub-cont"><div class="sub"><button data-target="modal2" class="btn modal-trigger"><i class="material-icons">comment</i></button></div>-->
   </div>
     </div>
-    <section class="about" id="about">
-      <div><h4>About</h4></div>
-      <div class="description">
-        <p>Sumo messenger is an interactive messaging application, 
-          which allows you engage in open conversations,secret conversations&
-          provides you with a medium for knowing what your peers think about you through its
-          anonymous feed implementations
-
-        </p>
+    <section class="screenshots">
+      <div class="screenshot-title"><p>App screenshots</p></div>
+      <div class="carousel">
+        <div class="nav-left"><button><i class="material-icons">chevron_left</i></button></div>
+        <div class="nav-right"><button><i class="material-icons">chevron_right</i></button></div>
+        <a class="carousel-item" href="#one!"><img src="/theme.jpg"></a>
+        <a class="carousel-item" href="#one!"><img src="/theme.jpg"></a>
+        <a class="carousel-item" href="#one!"><img src="/theme.jpg"></a>
       </div>
     </section>
     <section class="features" id="features">
@@ -184,13 +185,11 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
 
       </div>
     </section>
-    <div id="sub-cont"><div class="sub"><button data-target="modal2" class="btn modal-trigger"><i class="material-icons">comment</i></button></div> 
   </main>   
   <footer>
     <div class="footer-copyright">
       © 2020 Sumo messenger
     </div>
-    <div class="z-depth-2">Top</div>
 
   </footer>
 
@@ -199,10 +198,26 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
 
   <script>
       document.addEventListener('DOMContentLoaded', function() {
-        var elems = document.querySelectorAll('.modal');
+    var elems = document.querySelectorAll('.modal');
     var instances = M.Modal.init(elems);
     var elems = document.querySelectorAll('.dropdown-trigger');
     var instances = M.Dropdown.init(elems);
+
+    var fab = document.querySelectorAll('.fixed-action-btn');
+    var fabs = M.FloatingActionButton.init(fab,{
+      hoverEnabled: false
+    });
+    var fabin = M.FloatingActionButton.getInstance(document.querySelector('.fixed-action-btn'));
+    fabin.open();
+    const caro = document.querySelectorAll('.carousel');
+    const caroIN = M.Carousel.init(caro)
+    const carousel = M.Carousel.getInstance(document.querySelector('.carousel'));
+    $('.nav-right').on('click',()=>{
+      carousel.next()
+    })   
+     $('.nav-left').on('click',()=>{
+      carousel.next()
+    })
   });
     
     
@@ -257,7 +272,7 @@ goBtn.on('click',()=>{
   window.location.href = link
 
 })
-$('footer div:nth-child(2)').on('click',()=>{
+$('.top').on('click',()=>{
   window.scrollTo(0,0)
 })
   </script>
