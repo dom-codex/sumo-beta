@@ -42,12 +42,18 @@
       <nav>
         <div class="navs">
         <div id="info">
+          <div class="img-title-cont">
+          <div class="img-cont">
+          <img src="<%=img%>"/>
+          </div>
           <div id="name">
           <p><%=friend.split(' ')[0]%>
-          </p></div>
-        </div>
-        <div class="hnav">
-        
+            <div id="details">
+              <small id="status"><%=status%></small>
+              <small id="typing">typing...</small>
+            </div>
+          </p>
+        </div></div>
           <button class='dropdown-trigger btn'  data-target='dropdown1'><i class="material-icons">more_vert</i></button>
           <ul id='dropdown1' class='dropdown-content'>
             <li><a href="/"><i class="material-icons">home</i>home</a></li>
@@ -55,10 +61,6 @@
             <li><a href="/userchannel/<%=uid%>"><i class="material-icons">rss_feed</i>feed</a></li>
           </ul>
     </div>
-      </div>
-      <div id="details">
-        <small id="status"><%=status%></small>
-        <small id="typing">typing...</small>
       </div>
       </nav>
     </header>

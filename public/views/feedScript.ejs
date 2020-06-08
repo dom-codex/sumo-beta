@@ -32,14 +32,13 @@
     for (let i = 0; i < cids.length; i++) {
       let cid = cids[i];
       if (cid.value.toString() === data.chat.toString()) {
-        const indicator =
+        console.log(cid.parentNode.children)
+        const indicator = cid.parentNode.children[2]
+       /* const indicator2 =
           cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
-            .childNodes[1];
-        const indicator2 =
-          cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
-            .childNodes[3];
+            .childNodes[3];*/
         indicator.style.backgroundColor = "grey";
-        indicator2.style.backgroundColor = "grey";
+      //  indicator2.style.backgroundColor = "grey";
       }
     }
   });
@@ -49,14 +48,12 @@
     for (let i = 0; i < cids.length; i++) {
       let cid = cids[i];
       if (cid.value.toString() === data.chat.toString()) {
-        const indicator =
+        const indicator = cid.parentNode.children[2]
+        /*const indicator2 =
           cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
-            .childNodes[1];
-        const indicator2 =
-          cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
-            .childNodes[3];
+            .childNodes[3];*/
         indicator.style.backgroundColor = "rebeccapurple";
-        indicator2.style.backgroundColor = "rebeccapurple";
+       // indicator2.style.backgroundColor = "rebeccapurple";
       }
     }
   });
@@ -66,14 +63,13 @@
     for (let i = 0; i < cids.length; i++) {
       let cid = cids[i];
       if (cid.value.toString() === data.chat.toString()) {
-        const indicator =
+        const indicator = cid.parentNode.children[2]
+
+        /*const indicator2 =
           cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
-            .childNodes[1];
-        const indicator2 =
-          cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
-            .childNodes[3];
+            .childNodes[3];*/
         indicator.style.backgroundColor = "grey";
-        indicator2.style.backgroundColor = "grey";
+       // indicator2.style.backgroundColor = "grey";
       }
     }
   });
@@ -83,14 +79,12 @@
     for (let i = 0; i < cids.length; i++) {
       let cid = cids[i];
       if (cid.value.toString() === data.chat.toString()) {
-        const indicator =
+        const indicator = cid.parentNode.children[2]
+       /* const indicator2 =
           cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
-            .childNodes[1];
-        const indicator2 =
-          cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
-            .childNodes[3];
+            .childNodes[3];*/
         indicator.style.backgroundColor = "rebeccapurple";
-        indicator2.style.backgroundColor = "rebeccapurple";
+       // indicator2.style.backgroundColor = "rebeccapurple";
       }
     }
   });
@@ -140,7 +134,7 @@
     const isRendered = chatsids.some((id) => id === data.fid);
     if (!isRendered || uid == data.fid) {
       $(".userChats").prepend(` 
-      <li class="collection-item avatar Cards">
+      <li class="collection-item avatar Cards" style="background-color:${data.isNew ? 'white' : '' }">
     <input class="chatids" type="hidden" value="${data.fid}"/>
     <img src="${data.img}" alt="" class="circle">
     <div class="indicator" style="background-color:${ data.status === 'online' ||data.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }"></div>
@@ -183,7 +177,7 @@
       }
       $(".userChats").append(`  
       
-      <li class="collection-item avatar Cards">
+      <li class="collection-item avatar Cards" style="background-color:${ user.isNew ? 'white' : '' }">
     <input class="chatids" type="hidden" value="${user._id}"/>
     <img src="${user.img}" alt="" class="circle">
     <div class="indicator" style="background-color:${ user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey'}"></div>
@@ -301,9 +295,9 @@
       }
     }
     $("#userChatsSmall").prepend(`    
-    <li class="collection-item avatar Cards">
+    <li class="collection-item avatar Cards" style=" background-color:${ data.isNew ? 'white' : '' }">
     <input class="chatids" type="hidden"  value="${data.id}"/>
-    <img src="${user.img}" alt="" class="circle">
+    <img src="${data.img}" alt="" class="circle">
     <div class="indicator" style="background-color:${ data.status === 'online' || data.anStatus === 'online'  ? 'rebeccapurple' : 'grey'}"></div>
     <div>
     <span class="title">   
@@ -324,9 +318,9 @@
   </li>
  `);
     $("#userChatsLarge").prepend(`            
-    <li class="collection-item avatar Cards">
+    <li class="collection-item avatar Cards" style="background-color:${ user.isNew ? 'white' : '' }">
     <input class="chatids" type="hidden"  value="${data.id}"/>
-    <img src="${user.img}" alt="" class="circle" height="50px" width="50px">
+    <img src="${data.img}" alt="" class="circle" height="50px" width="50px">
     <div class="indicator" style="background-color:${data.status === 'online' || data.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }"></div>
     <div>
     <span class="title">   

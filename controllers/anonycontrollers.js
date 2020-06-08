@@ -1035,6 +1035,7 @@ module.exports.chatRequest = (req, res, next) => {
         return user.save()
       })
       .then(user => {
+        chatAccepter = user
         return User.findOne({ $or: [{ _id: id }, { anonyString: id }] })
       })
       .then(user => {
@@ -1061,7 +1062,7 @@ module.exports.chatRequest = (req, res, next) => {
           name: req.session.user.name,
           fid: req.session.user._id,
           status: 'online',
-          img:chatAccepter.images.open.link
+          img:chatAccepter.images.open.link,
         })
         if (user.isAnonymous) {
           res.json({
@@ -1070,7 +1071,8 @@ module.exports.chatRequest = (req, res, next) => {
               _id: user.anonyString,
               name: user.anonymousName,
               status: user.anonymousStatus,
-              img: user.images.anonymous.link
+              img: user.images.anonymous.link,
+              nreq:chatAccepter.requests.length
             }
           })
         } else {
@@ -1080,7 +1082,8 @@ module.exports.chatRequest = (req, res, next) => {
               _id: user._id,
               name: user.name,
               status: user.status,
-              img:user.images.open.link
+              img:user.images.open.link,
+              nreq:chatAccepter.requests.length
             }
           })
         }
@@ -1508,7 +1511,6 @@ module.exports.searchUser = (req, res, next) => {
   const searchName = req.body.searchKey
   const userId = req.session.user.isAnonymous ? req.session.user.anonyString : req.session.user._id
   const regex = new RegExp(searchName.toLowerCase().trim(), 'i')
-
   User.find({ "name": { $regex: regex } })
     .select('_id name chats chatShare desc images')
     .then(users => {
@@ -1518,14 +1520,14 @@ module.exports.searchUser = (req, res, next) => {
       const Users = users
       const result = Users.map(user => {
         const isFriend = user.chats.some(chat => chat.chatId.toString() === userId.toString())
-        if (!isFriend) {
+        if (isFriend) {
           return {
             name: user.name,
             desc: user.desc,
             id: user._id,
             chatId: user.chatShare,
             img: user.images.open.link,
-            pals: false
+            pals: true
           }
         } else {
           return {
@@ -1534,7 +1536,7 @@ module.exports.searchUser = (req, res, next) => {
             id: _id,
             img: user.images.open.link,
             chatId: user.chatShare,
-            pals: true
+            pals: false
           }
       }
     })

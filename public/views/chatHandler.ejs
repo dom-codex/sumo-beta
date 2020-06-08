@@ -54,12 +54,13 @@
           if (rids[i].value.toString() === res.newchat._id) {
             const parent = rids[i].parentNode.parentNode;
             parent.removeChild(rids[i].parentNode);
-            const nreq1 = badgea.text();
+           /* const nreq1 = badgea.text();
             const nreq2 = badgeb.text();
             const newVal1 = nreq1 != 0 ? parseInt(+nreq1) - 1 : 0;
             const newVal2 = nreq2 != 0 ? parseInt(+nreq2) - 1 : 0;
-            badgea.text(newVal1);
-            badgeb.text(newVal2);
+            */
+            badgea.text(res.newchat.nreq);
+            badgeb.text(res.newchat.nreq);
           } else continue;
         }
         if (res.code === 301) {
@@ -162,6 +163,7 @@ loadFeed()
         })
         .then(res=>res.json())
         .then(res=>{
+          alert('here')
           $('.searchResult').html('')
           $('.searchResult.large').html('')
           if(res.result.length > 0){

@@ -99,16 +99,22 @@ drive.files.create({
         if(!user) throw new Error('no user')
         else if(user.isAnonymous){
             user.images.anonymous.id = file.data.id,
-            user.images.anonymous.link = `https://drive.google.com/uc?id=${file.data.id}`,
-            img =  `https://drive.google.com/uc?id=${file.data.id}`,
-            
+            //https://drive.google.com/file/d/1SV2m3pejgUSr0xcMnfiWY2e9LxNa9af1/view?usp=sharing
+            user.images.anonymous.link = `https://drive.google.com/uc?export=view&id=${file.data.id}`;
+            //user.images.anonymous.link = `https://drive.google.com/uc?id=${file.data.id}`,
+           // user.images.anonymous.link = `https://drive.google.com/file/d/${file.data.id}/view`,
+            //img = `https://drive.google.com/file/d/${file.data.id}/view`,
+            img = ` https://drive.google.com/uc?export=view&id=${file.data.id}`,
             user.images.anonymous.thumbnail = file.data.thumbnailLink
             return user.save()
         }else{
             user.images.open.id = file.data.id,
-            user.images.open.link = `https://drive.google.com/uc?id=${file.data.id}`,
-            img  = `https://drive.google.com/uc?id=${file.data.id}`,
-            user.images.open.thumbnail = file.data.thumbnailLink
+            user.images.open.link = ` https://drive.google.com/uc?export=view&id=${file.data.id}`
+           // user.images.open.link = `https://drive.google.com/uc?id=${file.data.id}`,
+            //img = `https://drive.google.com/file/d/${file.data.id}/view`,
+           // img  = `https://drive.google.com/uc?id=${file.data.id}`,
+           img = ` https://drive.google.com/uc?export=view&id=${file.data.id}`
+           user.images.open.thumbnail = file.data.thumbnailLink
             return user.save() 
         }
     })
@@ -158,14 +164,14 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory) =>{
             if(!user) throw new Error('no user')
             else if(user.isAnonymous){
                 user.images.anonymous.id = file.data.id,
-                user.images.anonymous.link = `https://drive.google.com/uc?id=${file.data.id}`,
-                img = `https://drive.google.com/uc?id=${file.data.id}`,
+                user.images.anonymous.link =`https://drive.google.com/file/d/${file.data.id}/view`,
+                img = `https://drive.google.com/file/d/${file.data.id}/view`,
                 user.images.anonymous.thumbnail = file.data.thumbnailLink
                 return user.save()
             }else{
                 user.images.open.id = file.data.id,
-                user.images.open.link = `https://drive.google.com/uc?id=${file.data.id}`,
-                img = `https://drive.google.com/uc?id=${file.data.id}`,
+                user.images.open.link = `https://drive.google.com/file/d/${file.data.id}/view`,
+                img = `https://drive.google.com/file/d/${file.data.id}/view`,
                 user.images.open.thumbnail = file.data.thumbnailLink
                 return user.save() 
             }

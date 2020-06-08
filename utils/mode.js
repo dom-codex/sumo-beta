@@ -8,7 +8,7 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
     let chatids = []
     //reformat this line later
     User.findOne({ _id: req.session.user._id })
-    .select('name phone anonyChats anonyString ')
+    .select('name phone anonyChats anonyString images')
     .populate('anonyChats.messages')
         //find associated user with the session
         .then((user) => {
@@ -150,6 +150,7 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
                         const onList = myf.chats.some(chat => chat.chatId.toString() === req.session.user.anonyString.toString())
                         friend = myf.name;
                         status = onList ? myf.status : 'removed';
+                        img = myf.images.open.link
                         return null
                     } else {
                         //redundant remember to remove
@@ -161,6 +162,7 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
                         //set to their anonymous name later
                         const onList = myf.chats.some(chat => chat.chatId.toString() === req.session.user.anonyString.toString())
                         friend = myf.anonymousName
+                        img = myf.images.open.link
                         status = onList ? myf.anonymousStatus : 'removed you'
                     }
                     //set up socket connection listener
@@ -207,6 +209,7 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
                         fid: id,
                         csrfToken: req.csrfToken(),
                         uid: req.session.user.anonyString,
+                        img:img,
                         friend: friend,
                         status: status,
                         anonymous: req.session.user.isAnonymous ? true : false
@@ -426,6 +429,7 @@ module.exports.normalChatMode = (req, res, next, io) => {
 
                         friend = myf.name;
                         status = onList ? myf.status : 'removed you';
+                        img = myf.images.open.link
 
                         return null
                     } else {
@@ -438,7 +442,7 @@ module.exports.normalChatMode = (req, res, next, io) => {
                         const onList = myf.anonyChats.some(chat => chat.chatId.toString() === req.session.user._id.toString())
                         friend = myf.anonymousName;
                         status = onList ? myf.anonymousStatus : 'removed you';
-
+                         img = myf.images.anonymous.link
                     }
                     io().once("connect", (socket) => {
                         //online trigger
@@ -481,6 +485,7 @@ module.exports.normalChatMode = (req, res, next, io) => {
                         uid: req.session.user._id,
                         friend: friend,
                         status: status,
+                        img:img,
                         anStatus: anStatus,
                         anonymous: req.session.user.isAnonymous ? true : false
 

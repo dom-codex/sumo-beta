@@ -1,4 +1,4 @@
-<li class="collection-item avatar Cards">
+<li class="collection-item avatar Cards"  style="background-color:<%= user.isNew ? 'white' : 'transparent' %>">
     <input class="chatids" type="hidden" value="<%=user._id%>"/>
     <img src="<%=user.img%>" alt="" class="circle">
     <div class="indicator" style="background-color:<%= user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' %>; display:<%= user.status === 'online' || user.anStatus === 'online' ? 'block' : 'none' %>"></div>

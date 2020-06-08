@@ -15,21 +15,34 @@ nav{
   padding: 10px 25px 5px 15px;
   height:auto;
 }
-.navs{
-  display: flex;
+
+#info{
+  padding:0;
+  display:flex;
   justify-content: space-between;
   align-items: center;
 }
-#info{
-  padding:0;
-  
+.img-title-cont{
+  display:flex;
+  align-items: center;
+}
+.img-cont{
+  width:50px;
+  height:50px;
+  border-radius: 50%; 
+  margin-right: 12px
+}
+.img-cont img{
+  height:100%;
+  width:100%;
+  border-radius: 50%;
 }
 nav div:nth-child(1) p{
   font-size:2em;
   color:#fff;
   font-weight:bold;
   margin:0;
-  background-color: red;
+  line-height: 30px;
 }
 nav div:nth-child(1) p::first-letter{
   text-transform: uppercase;
@@ -49,13 +62,13 @@ a{
   font-weight:bold;
 }
 #details{
-  margin:5px 0
+  margin:0px 0;
+  line-height: 10px;
 }
 #status{
   color:#fff;
   margin:0;
   margin-left:5px;
-  background-color: hotpink;
   display:block
 }
 #typing{

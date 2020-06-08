@@ -311,6 +311,12 @@ section.desktop {
   background-color: rebeccapurple!important;
   display:block!important
 }*/
+.collection{
+  border:none
+}
+.collection-item.avatar{
+  border-bottom:thin solid #ccc!important
+}
 .collection-item p, .collection-item span{
   height:25px
 }
