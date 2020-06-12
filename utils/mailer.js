@@ -132,6 +132,8 @@ module.exports.confirmationMailer = (email,name,id)=>{
       <p>Your are one step away from activating your account,
        click the link below to activate your account</p>
       <a class="link" href="${headUrl}/channel?myid=${id}">Activate</a>
+      <div><small> *use the link below if you can't see the 'activate' button </small>
+      <div> ${headUrl}/channel?myid=${id} </div> 
       </body>
       </html>
       ` 
