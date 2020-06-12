@@ -16,6 +16,7 @@
     "express-validator": "^6.4.1",
     "googleapis": "^39.2.0",
     "helmet": "^3.22.0",
+    "jimp": "^0.13.0",
     "moment": "^2.25.1",
     "mongoose": "^5.9.11",
     "morgan": "^1.10.0",
