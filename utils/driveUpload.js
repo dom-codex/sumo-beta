@@ -93,7 +93,8 @@ drive.files.create({
     console.error(err);
   } else {
     let img;
-    console.log('File is : ', file);
+    console.log('uploaded')
+    //console.log('File is : ', file);
     User.findById(req.session.user._id)
     .select('images isAnonymous')
     .then(user=>{
@@ -166,7 +167,8 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory,mime) =>{
         // Handle error
         console.error(err);
       } else {
-        console.log('File is : ', file);
+       console.log('updated')
+        // console.log('File is : ', file);
         let img;
         User.findById(req.session.user._id).select('images')
         .then(user=>{
@@ -228,7 +230,8 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory,mime) =>{
         // Handle error
         console.error(err);
       } else {
-        console.log('File is : ', file);
+       console.log('removed')
+        // console.log('File is : ', file);
 
       }
     });

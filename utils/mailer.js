@@ -30,18 +30,18 @@ const nodemailer = require('nodemailer');
 module.exports.mailer = (req,res,email,name,link)=>{
   const headUrl = process.env.urlHead || `http://localhost:3000`
     const transporter = nodemailer.createTransport({
-      host: "smtp.mailtrap.io",
+      /*host: "smtp.mailtrap.io",
       port: 2525,
       auth: {
         user: "746d242333b2a4",
         pass: "93663e3aafe21d"
-      }
-  /*
+      }*/
+  
       service: "gmail",
         auth: {
           user: "sumomessenger.beta@gmail.com",
           pass: process.env.mailer_pass
-        } */
+        } 
       
     });
   const mailOptions = {
@@ -97,18 +97,18 @@ module.exports.mailer = (req,res,email,name,link)=>{
 module.exports.confirmationMailer = (email,name,id)=>{
   const headUrl = process.env.urlHead || `http://localhost:3000`
     const transporter = nodemailer.createTransport({
-      host: "smtp.mailtrap.io",
+      /*host: "smtp.mailtrap.io",
       port: 2525,
       auth: {
         user: "746d242333b2a4",
         pass: "93663e3aafe21d"
-      }
-  /*
+      }*/
+  
       service: "gmail",
         auth: {
           user: "sumomessenger.beta@gmail.com",
           pass: process.env.mailer_pass
-        } */
+        } 
       
     });
   const mailOptions = {
@@ -150,18 +150,18 @@ module.exports.confirmationMailer = (email,name,id)=>{
 };
 module.exports.suggestionMailer = (suggestion)=>{
     const transporter = nodemailer.createTransport({
-      host: "smtp.mailtrap.io",
+    /*  host: "smtp.mailtrap.io",
       port: 2525,
       auth: {
         user: "746d242333b2a4",
         pass: "93663e3aafe21d"
-      }
-  /*
+      }*/
+  
       service: "gmail",
         auth: {
           user: "sumomessenger.beta@gmail.com",
           pass: process.env.mailer_pass
-        } */
+        } 
       
     });
   const mailOptions = {
@@ -200,18 +200,18 @@ module.exports.suggestionMailer = (suggestion)=>{
 };
 module.exports.reportMailer = (email,report,link)=>{
     const transporter = nodemailer.createTransport({
-      host: "smtp.mailtrap.io",
+      /*host: "smtp.mailtrap.io",
       port: 2525,
       auth: {
         user: "746d242333b2a4",
         pass: "93663e3aafe21d"
-      }
-  /*
+      }*/
+  
       service: "gmail",
         auth: {
           user: "sumomessenger.beta@gmail.com",
           pass: process.env.mailer_pass
-        } */
+        } 
       
     });
   const mailOptions = {
