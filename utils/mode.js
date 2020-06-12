@@ -199,7 +199,6 @@ module.exports.normalUserMode = (req, res, next, io) => {
                 detectors.goOnline(me._id, socket)
                 //once a socket is connected it joins a room
                 //which is formed by thr user id
-                console.log(me._id)
                 socket.join(me._id); //user joins a specific room via their id
                 //listener to inform chats user is online
                 socket.on("identify", (id) => {

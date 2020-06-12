@@ -206,6 +206,7 @@ background-color: rgba(0,0,0,.4);
   width: 100% !important;
   padding-top:0;
   background-color:rgba(0,0,0,.015);
+  overflow: hidden;
 }
 .info{
   margin-top: 30px;

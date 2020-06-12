@@ -333,7 +333,6 @@ module.exports.postToFeed = (req, res, next) => {
   })
   return feed.save()
     .then(feed => {
-      console.log(feed)
       User.findOne({ share: feedString })
         .then((result) => {
           if (!result) {
