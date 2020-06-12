@@ -71,7 +71,7 @@ function getAccessToken(oAuth2Client, callback) {
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 }
-module.exports.driveUpload = (req,res,filename,directory) =>{
+module.exports.driveUpload = (req,res,filename,directory,mime) =>{
 function listFiles(auth) {
   const drive = google.drive({version: 'v3', auth});
 var folderId = '1E_lDURXuTgOWhtrrOxNqNY7-qGv1_Gdc';
@@ -80,7 +80,7 @@ var fileMetadata = {
   parents: [folderId]
 };
 var media = {
-  mimeType: 'image/jpg',
+  mimeType: mime,
   body: fs.createReadStream(directory)
 };
 drive.files.create({
@@ -94,27 +94,36 @@ drive.files.create({
   } else {
     let img;
     console.log('File is : ', file);
-    User.findById(req.session.user._id).select('images isAnonymous')
+    User.findById(req.session.user._id)
+    .select('images isAnonymous')
     .then(user=>{
         if(!user) throw new Error('no user')
         else if(user.isAnonymous){
+            //user.images.anonymous.link = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`;
+           // user.images.anonymous.thumbnail = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
             user.images.anonymous.id = file.data.id,
+            //https://lh3.googleusercontent.com/d/1_T1H42q6u3LosvPLYCRdMElLQgoSigxA=s220?authuser=0
             //https://drive.google.com/file/d/1SV2m3pejgUSr0xcMnfiWY2e9LxNa9af1/view?usp=sharing
-            user.images.anonymous.link = `https://drive.google.com/uc?export=view&id=${file.data.id}`;
-            //user.images.anonymous.link = `https://drive.google.com/uc?id=${file.data.id}`,
-           // user.images.anonymous.link = `https://drive.google.com/file/d/${file.data.id}/view`,
-            //img = `https://drive.google.com/file/d/${file.data.id}/view`,
-            img = ` https://drive.google.com/uc?export=view&id=${file.data.id}`,
-            user.images.anonymous.thumbnail = file.data.thumbnailLink
+            user.images.anonymous.link = `https://drive.google.com/uc?export=view&sz=w10h10&id=${file.data.id}`;
+            user.images.anonymous.thumbnail = `https://drive.google.com/uc?export=view&sz=w10h10&id=${file.data.id}`;
+            img = `https://drive.google.com/uc?export=view&sz=w10h10&id=${file.data.id}`;
+            //user.images.anonymous.link = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`;
+            //img = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`;
+           // user.images.anonymous.thumbnail = `https://drive.google.com/thumbnail?authuser=0&sz=w50h50&id=${file.data.id}`
+           //img = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
             return user.save()
         }else{
-            user.images.open.id = file.data.id,
+          //user.images.open.link = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`;
+          //user.images.open.thumbnail = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`;
+          user.images.open.id = file.data.id,
             user.images.open.link = ` https://drive.google.com/uc?export=view&id=${file.data.id}`
-           // user.images.open.link = `https://drive.google.com/uc?id=${file.data.id}`,
-            //img = `https://drive.google.com/file/d/${file.data.id}/view`,
-           // img  = `https://drive.google.com/uc?id=${file.data.id}`,
-           img = ` https://drive.google.com/uc?export=view&id=${file.data.id}`
-           user.images.open.thumbnail = file.data.thumbnailLink
+            user.images.open.thumbnail = ` https://drive.google.com/uc?export=view&id=${file.data.id}`
+             img = ` https://drive.google.com/uc?export=view&id=${file.data.id}`
+           //user.images.open.thumbnail = file.data.thumbnailLink 
+           //user.images.open.link = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`
+           //img = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`;
+          // user.images.open.thumbnail = `https://drive.google.com/thumbnail?authuser=0&sz=w50h50&id=${file.data.id}`
+          img = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
             return user.save() 
         }
     })
@@ -135,7 +144,7 @@ drive.files.create({
 }
 AUTHENTICATION(listFiles)
 }
-module.exports.driveUploadUpdate = (req,res,id,filename,directory) =>{
+module.exports.driveUploadUpdate = (req,res,id,filename,directory,mime) =>{
     function listFiles(auth) {
       const drive = google.drive({version: 'v3', auth});
   //  var folderId = '1E_lDURXuTgOWhtrrOxNqNY7-qGv1_Gdc';
@@ -144,7 +153,7 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory) =>{
      // parents: [folderId]
     };
     var media = {
-      mimeType: 'image/jpg',
+      mimeType: mime,
       body: fs.createReadStream(directory)
     };
     drive.files.update({
@@ -163,18 +172,32 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory) =>{
         .then(user=>{
             if(!user) throw new Error('no user')
             else if(user.isAnonymous){
-                user.images.anonymous.id = file.data.id,
-                user.images.anonymous.link =`https://drive.google.com/file/d/${file.data.id}/view`,
-                img = `https://drive.google.com/file/d/${file.data.id}/view`,
-                user.images.anonymous.thumbnail = file.data.thumbnailLink
-                return user.save()
-            }else{
-                user.images.open.id = file.data.id,
-                user.images.open.link = `https://drive.google.com/file/d/${file.data.id}/view`,
-                img = `https://drive.google.com/file/d/${file.data.id}/view`,
-                user.images.open.thumbnail = file.data.thumbnailLink
-                return user.save() 
-            }
+              user.images.anonymous.id = file.data.id,
+              //https://drive.google.com/file/d/1SV2m3pejgUSr0xcMnfiWY2e9LxNa9af1/view?usp=sharing
+              user.images.anonymous.link = `https://drive.google.com/uc?export=view&id=${file.data.id}`;
+              user.images.anonymous.thumbnail = `https://drive.google.com/uc?export=view&id=${file.data.id}`;
+              img = `https://drive.google.com/uc?export=view&id=${file.data.id}`;
+              //user.images.anonymous.link = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`
+              //img = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`
+              //user.images.anonymous.thumbnail = `https://drive.google.com/thumbnail?authuser=0&sz=w50h50&id=${file.data.id}`
+             // user.images.anonymous.link = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
+             // user.images.anonymous.thumbnail = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
+             // img =`https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
+              return user.save()
+          }else{
+              user.images.open.id = file.data.id,
+              user.images.open.link = ` https://drive.google.com/uc?export=view&id=${file.data.id}`
+              user.images.open.thumbnail = ` https://drive.google.com/uc?export=view&id=${file.data.id}`
+               img = ` https://drive.google.com/uc?export=view&id=${file.data.id}`
+             //user.images.open.thumbnail = file.data.thumbnailLink 
+             //user.images.open.link = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`
+             //img = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`
+             //user.images.open.thumbnail = `https://drive.google.com/thumbnail?authuser=0&sz=w50h50&id=${file.data.id}`
+             //user.images.open.link = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
+             //user.images.open.thumbnail =`https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
+             //img = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0` 
+             return user.save() 
+          }
         })
         .then(user=>{
             fs.unlink(directory, (err) => {
@@ -197,6 +220,7 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory) =>{
     function listFiles(auth) {
       const drive = google.drive({version: 'v3', auth});
   //  var folderId = '1E_lDURXuTgOWhtrrOxNqNY7-qGv1_Gdc';
+  
     drive.files.delete({
       fileId:id //1PkWb9cZJky6ILjopnJaKRm7Bhi-VwRIK
     }, function (err, file) {

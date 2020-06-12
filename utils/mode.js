@@ -3,33 +3,14 @@ const Message = require("../models/messages");
 const detectors = require('../utils/detectors')
 module.exports.anonymousUserMode = (req, res, next, io) => {
     let page = +req.query.page || 1;
-    let nAnonyChats;
-    let me;
-    let chatids = []
     //reformat this line later
     User.findOne({ _id: req.session.user._id })
-    .select('name phone anonyChats anonyString images')
-    .populate('anonyChats.messages')
-        //find associated user with the session
-        .then((user) => {
-            me = user;
+        .select('name email anonyChats anonyString images isAnonymous')
+        .then((me) => {
             //retrieve all user id the current user has discussed with anonymously
-            chatids = user.anonyChats.map((id) => {
+            const chatids = me.anonyChats.map((id) => {
                 return id.chatId;
             });
-            //query db for the number of users they are chatting with anonymously
-            return User.find({ _id: { $in: chatids } }).countDocuments()
-        })
-        .then(n => {
-            //initialize with the number received
-            nAnonyChats = n
-            //get actual details of users we are chatting with anonymously but limiting
-            //the result by a chosen preference
-            return User.find({ _id: { $in: chatids } })
-                .sort({ $natural: -1, 'chats.lastUpdate': -1 })
-                .skip((page - 1) * 5)
-                .limit(5)
-        }).then((onlineUser) => {
             //online user will be docs of the with the specified ids
             // get the underlying socket connection
             const feedRoom = io();
@@ -47,11 +28,12 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
                     chatids.forEach((element) => {
                         socket.broadcast
                             .to(element)
-                            .emit("online", { name:
-                                 me.anonymousName, 
-                                 fid: id,
-                                 img:me.images.anonymous.link
-                                 });
+                            .emit("online", {
+                                name:
+                                    me.anonymousName,
+                                fid: id,
+                                img: me.images.anonymous.thumbnail
+                            });
                     });
                     //socket.broadcast.emit("online", { name: '6anonymous', fid: id, })
                     //  socket.emit("activeUsers", onlineUser);
@@ -63,56 +45,21 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
                     socket.disconnect(true);
                 });
             });
-            //iterate through the chat list of the resulting users we are chatting with anonymously
-            const reformedChatList = onlineUser.map(aUser => {
-                const onList = aUser.chats.some(chat => chat.chatId.toString() === req.session.user.anonyString.toString())
-                if (!onList) {
-                    return {
-                        name: aUser.name,
-                        _id: aUser._id,
-                        img:aUser.images.open.link,
-                        message: 'user removed you'
-
-                    }
-                }
-                //retrieve particular element from user chats where the chatid in user chats matches with their id
-                const myChatsWithUser = me.anonyChats.find(chat => chat.chatId.toString() === aUser._id.toString())
-                // const myChatsWithUser = aUser.chats.find(chat => chat.chatId.toString() === req.session.user.anonyString.toString())
-                //format the result of this queries
-                return {
-                    name: aUser.name,
-                    _id: aUser._id,
-                    status: aUser.status,
-                    img:aUser.images.open.link,
-                    isNew: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].isMsgNew : false,
-                    message: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].body : 'say hi',
-                    time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].time : ''
-                }
-            })
-            //filter array so that new messages are displayed first or online users 
-            let filteredUsersList = [];
-            [...reformedChatList].forEach(user => {
-                if (user.isNew || user.status === 'online') {
-                    filteredUsersList.unshift(user)
-                } else {
-                    filteredUsersList.push(user)
-                }
-            })
             //render view with necesary data
             const inform = req.flash('inform')
             res.render("feed", {
                 name: me.name,
-                phone: me.phone,
-                img:me.images.anonymous.link,
+                email: me.email,
+                img: me.images.anonymous.link,
                 uid: me.anonyString,
                 inform: inform.length > 0 ? inform[0] : { status: false, msg: '' },
                 csrfToken: req.csrfToken(),
-                hasNext: 5 * page < nAnonyChats,
-                hasPrev: page > 1,
-                next: page + 1,
+                hasNext: false,//5 * page < nAnonyChats,
+                hasPrev: false,
+                next: 1,
                 prev: page - 1,
-                onlineUsers: filteredUsersList,
-                anonymous: req.session.user.isAnonymous ? true : false
+                onlineUsers: [],//filteredUsersList,
+                anonymous: me.isAnonymous ? true : false
 
             });
         });
@@ -132,7 +79,7 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
             let messagesWithUser = chatUser ? chatUser.messages : []
             messagesWithUser.forEach(msg => {
                 Message.updateOne(
-                    { _id: msg},
+                    { _id: msg },
                     { $set: { isMsgNew: false } }
                 ).then(_ => { })
             })
@@ -193,12 +140,12 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
                             User.findById(req.session.user._id)
                                 .then(user => {
                                     let messagesWithUser = user.anonyChats.find(chat => chat.chatId.toString() === id.toString()).messages
-                                        messagesWithUser.forEach(msg => {
-                                            Message.updateOne(
-                                                { _id: msg },
-                                                { $set: { isMsgNew: false } }
-                                            ).then(_ => { })
-                                        }) // retain old messages
+                                    messagesWithUser.forEach(msg => {
+                                        Message.updateOne(
+                                            { _id: msg },
+                                            { $set: { isMsgNew: false } }
+                                        ).then(_ => { })
+                                    }) // retain old messages
                                 }).catch(err => {
                                     //do nothing
                                 })
@@ -209,7 +156,7 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
                         fid: id,
                         csrfToken: req.csrfToken(),
                         uid: req.session.user.anonyString,
-                        img:img,
+                        img: img,
                         friend: friend,
                         status: status,
                         anonymous: req.session.user.isAnonymous ? true : false
@@ -222,18 +169,15 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
 };
 //logic for normal user mode
 module.exports.normalUserMode = (req, res, next, io) => {
-    const page = +req.query.page || 1
-    let anonymous = []
     let me;
     let chatids;
-    let nTotalOpenChats;
-    let nTotalAnonyChats;
-    let anonyids;
+    let OpenChats;
+    let AnonyChats;
     User.findOne({ _id: req.session.user._id })
-    .select('name phone chats _id images')
+        .select('name email chats _id images')
         .populate('chats.messages')
         .then((user) => {
-            me = user
+            me = user;
             //extract all chat ids in user chats array
             let chatid = user.chats.map((id) => {
                 return id.chatId;
@@ -241,255 +185,168 @@ module.exports.normalUserMode = (req, res, next, io) => {
             chatids = chatid
             //get a count of the total chats user has
             return User.find({ _id: { $in: chatids } })
-                .countDocuments()
         })
-        .then((nOpenChats) => {
+        .then((openChats) => {
             //online user will be docs of the with the specified ids
-            nTotalOpenChats = nOpenChats;
+            OpenChats = openChats;
             //get a count of the total anonymous chats user has
             return User.find({ anonyString: { $in: chatids } }).countDocuments()
         })
-        .then(nAnonyusers => {
-            nTotalAnonyChats = nAnonyusers
-            return
-        })
-        .then(_ => {
-            //query db for the chats but limiting the results based on the page user is in
-            User.find({ _id: { $in: chatids } })
-                .sort({ 'chats.lastUpdate': -1 })
-                .skip((page - 1) * 5)
-                .limit(5)
-                .then((onlineUser) => {
-                    //query db for anonymous chat but limiting the result based on the page user is in
-                    User.find({ anonyString: { $in: chatids } })
-                        .sort({ $natural: -1, 'chats.lastUpdate': -1 }).skip((page - 1) * 5)
-                        .limit(5)
-                        .then(anonyusers => {
-                            //reform the anonymous user docs
-                            if (anonyusers.length > 0) {
-                                anonymous = anonyusers.map((a, i) => {
-                                    const onList = a.anonyChats.some(chat => chat.chatId.toString() === req.session.user._id.toString())
-                                    if (!onList) {
-                                        return {
-                                            name: a.anonymousName,
-                                            _id: a.anonyString,
-                                            img:a.images.anonymous.link,
-                                            message: 'user removed you'
-
-                                        }
-                                    } else {
-                                        const myChatsWithUser = me.chats.find(chat => chat.chatId.toString() === a.anonyString.toString())
-                                        return {
-                                            name: a.anonymousName,
-                                            _id: a.anonyString,
-                                            img: a.images.anonymous.link,
-                                            anStatus: a.anonymousStatus,
-                                            message: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1]._doc.body : 'anonymous chat',
-                                            isNew: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1]._doc.isMsgNew : false,
-                                            time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1]._doc.time : '',
-                                            stamp: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1]._doc.stamp : ''
-
-                                        }
-                                    }
-                                })
-                            }
-                            const feedRoom = io();
-                            feedRoom.once("connect", (socket) => {
-                                detectors.goOnline(me._id, socket)
-
-                                //once a socket is connected it joins a room
-                                //which is formed by thr user id
-
-                                socket.join(me._id); //user joins a specific room via their id
-                                //listener to inform chats user is online
-                                socket.on("identify", (id) => {
-                                    //query db for user returning only the chats field
-                                    //we iterate through the ids and emit the online event
-                                    //to the rooms of our individual users
-                                    const stillInChat = [...onlineUser, ...anonyusers].map(active => {
-                                        const inOpenChat = active.chats.some(id => id.chatId === req.session.user._id)
-                                        const inClosedChat = active.anonyChats.some(id => id.chatId === req.session.user._id)
-                                        if (inOpenChat) {
-                                            return active._id
-                                        } else if (inClosedChat) {
-                                            return active.anonyString
-                                        }
-                                    })
-                                    /*chatids*/stillInChat.forEach((element) => {
-                                        socket.broadcast
-                                            .to(element)
-                                            .emit("online", { name: me.name, 
-                                                fid: id,
-                                                img:me.images.open.link
-                                             });
-                                    });
-
-                                });
-                                socket.on("disconnect", () => {
-                                    //  socket.broadcast.emit("left", me._id);
-                                    detectors.goOffline(me._id, socket)
-                                    socket.disconnect(true);
-                                });
-                            });
-                            //reformat the user list adding the last message recieved or sent ,the time and state
-                            const reformedChatList = onlineUser.map(aUser => {
-                                //check if we are on chatlist
-                                const onList = aUser.chats.some(chat => chat.chatId.toString() === req.session.user._id.toString())
-                                if (!onList) {
-                                    return {
-                                        name: aUser.name,
-                                        _id: aUser._id,
-                                        img:aUser.images.open.link,
-                                        message: 'user removed you'
-
-                                    }
-                                } else {
-                                    const myChatsWithUser = me.chats.find(chat => chat.chatId.toString() === aUser._id.toString())
-                                    return {
-                                        name: aUser.name,
-                                        _id: aUser._id,
-                                        img: aUser.images.open.link,
-                                        status: aUser.status,
-                                        isNew: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].isMsgNew : false,
-                                        message: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].body : 'say hi',
-                                        time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].time : '',
-                                        stamp: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].stamp : ''
-                                    }
-                                }
-                            })
-                            //filter array so that new messages are displayed first
-                            let filteredUsersList = [];
-                            [...reformedChatList, ...anonymous].forEach(user => {
-                                if (user.isNew || user.status === 'online' || user.anStatus === 'online') {
-                                    filteredUsersList.unshift(user)
-                                } else {
-                                    filteredUsersList.push(user)
-                                }
-                            })
-                            const inform = req.flash('inform')
-                            return res.render("feed", {
+        .then(anonychats=>{
+            AnonyChats = anonychats.length > 0?[...anonychats]: []
+            const feedRoom = io();
+            feedRoom.once("connect", (socket) => {
+                detectors.goOnline(me._id, socket)
+                //once a socket is connected it joins a room
+                //which is formed by thr user id
+                console.log(me._id)
+                socket.join(me._id); //user joins a specific room via their id
+                //listener to inform chats user is online
+                socket.on("identify", (id) => {
+                    //query db for user returning only the chats field
+                    //we iterate through the ids and emit the online event
+                    //to the rooms of our individual users
+                    const stillInChat = [...OpenChats, ...AnonyChats].map(active => {
+                        const inOpenChat = active.chats.some(id => id.chatId === req.session.user._id)
+                        const inClosedChat = active.anonyChats.some(id => id.chatId === req.session.user._id)
+                        if (inOpenChat) {
+                            return active._id
+                        } else if (inClosedChat) {
+                            return active.anonyString
+                        }
+                    })
+                        /*chatids*/stillInChat.forEach((element) => {
+                        socket.broadcast
+                            .to(element)
+                            .emit("online", {
                                 name: me.name,
-                                phone: me.phone,
-                                feed: me.feeds,
-                                img:me.images.open.link,
-                                sharelink: me.share,
-                                uid: me._id,
-                                chat: me.chatShare,
-                                inform: inform.length > 0 ? inform[0] : { status: false, msg: '' },
-                                csrfToken: req.csrfToken(),
-                                current: page,
-                                hasNext: 5 * page < nTotalAnonyChats + nTotalOpenChats,
-                                hasPrev: page > 1,
-                                next: page + 1,
-                                prev: page - 1,
-                                last: Math.ceil((nTotalOpenChats + nTotalAnonyChats) / 2),
-                                onlineUsers: filteredUsersList,//onlineUser.concat(anonymous)
-                                anonymous: req.session.user.isAnonymous ? true : false
-
-
+                                fid: id,
+                                img: me.images.open.thumbnail
                             });
-                        })
-                }) //end of anonyusers then
-        })//end of overall then
-};
+                    });
 
-//normal chat mode
-module.exports.normalChatMode = (req, res, next, io) => {
-    const id = req.params.chatId;
-    let friend;
-    let status;
-    let anStatus;
-    let messagesId
-    User.findById(req.session.user._id)
-        .then((me) => {
-            const chatUser = me.chats.find(chat => chat.chatId.toString() == id.toString())
-            const message = chatUser.messages
-            messagesId = message
-            return message
-        })
-        .then(_ => {
-            messagesId.forEach(m => {
-                Message.updateOne(
-                    { _id: m },
-                    { $set: { isMsgNew: false } }
-                ).then(_ => { })
+                });
+                socket.on("disconnect", () => {
+                    //  socket.broadcast.emit("left", me._id);
+                    detectors.goOffline(me._id, socket)
+                    socket.disconnect(true);
+                });
+            });
+            const inform = req.flash('inform')
+            res.render("feed", {
+                name: me.name,
+                email: me.email,
+                feed: me.feeds,
+                img: me.images.open.thumbnail,
+                sharelink: me.share,
+                uid: me._id,
+                chat: me.chatShare,
+                inform: inform.length > 0 ? inform[0] : { status: false, msg: '' },
+                csrfToken: req.csrfToken(),
+                onlineUsers: [],//filteredUsersList,//onlineUser.concat(anonymous)
+                anonymous: me.isAnonymous ? true : false
+
             })
-            return
-        })
-        .catch((er) => {
-            throw err;
-        })
-        .then((_) => {
-            User.findById(id).
-                then(myf => {
-                    //myf === myfriend
-                    if (myf) {
-                        //get friend name and online status if in normal mode
-                        const onList = myf.chats.some(chat => chat.chatId.toString() === req.session.user._id.toString())
+            })//end
+        };
 
-                        friend = myf.name;
-                        status = onList ? myf.status : 'removed you';
-                        img = myf.images.open.link
+    //normal chat mode
+    module.exports.normalChatMode = (req, res, next, io) => {
+        const id = req.params.chatId;
+        let friend;
+        let status;
+        let anStatus;
+        let messagesId
+        User.findById(req.session.user._id)
+            .then((me) => {
+                const chatUser = me.chats.find(chat => chat.chatId.toString() == id.toString())
+                const message = chatUser.messages
+                messagesId = message
+                return message
+            })
+            .then(_ => {
+                messagesId.forEach(m => {
+                    Message.updateOne(
+                        { _id: m },
+                        { $set: { isMsgNew: false } }
+                    ).then(_ => { })
+                })
+                return
+            })
+            .catch((er) => {
+                throw err;
+            })
+            .then((_) => {
+                User.findById(id).
+                    then(myf => {
+                        //myf === myfriend
+                        if (myf) {
+                            //get friend name and online status if in normal mode
+                            const onList = myf.chats.some(chat => chat.chatId.toString() === req.session.user._id.toString())
 
-                        return null
-                    } else {
-                        return User.findOne({ anonyString: id })
-                    }
-                }).then(myf => {
+                            friend = myf.name;
+                            status = onList ? myf.status : 'removed you';
+                            img = myf.images.open.link
 
-                    if (myf) {
-                        //get anonymous name and online status 
-                        const onList = myf.anonyChats.some(chat => chat.chatId.toString() === req.session.user._id.toString())
-                        friend = myf.anonymousName;
-                        status = onList ? myf.anonymousStatus : 'removed you';
-                         img = myf.images.anonymous.link
-                    }
-                    io().once("connect", (socket) => {
-                        //online trigger
-                        detectors.goOnline(req.session.user._id, socket)
-                        socket.on('disconnect', () => {
-                            //offline trigger
-                            detectors.goOffline(req.session.user._id, socket)
-                        })
-                        //user joins room corresponding to their id and that of the chats
-                        //this to maintain uniqueness
-                        socket.join(`${req.session.user._id}${id}`);
-                        socket.on('typing', (friendId) => {
-                            io().
-                                to(`${friendId}${req.session.user._id}`)
-                                .emit('isTyping')
-                        })
-                        socket.on('stopTyping', (friendId) => {
-                            io().
-                                to(`${friendId}${req.session.user._id}`)
-                                .emit('stoppedTyping')
-                        })
-                        socket.on('receive', () => {
-                            //set all isNew field in the mesage
-                            //to false if user reads message immediately
-                            User.findById(req.session.user._id)
-                                .then(user => {
-                                    let messagesWithUser = user.chats.find(chat => chat.chatId.toString() === id.toString()).messages
+                            return null
+                        } else {
+                            return User.findOne({ anonyString: id })
+                        }
+                    }).then(myf => {
+
+                        if (myf) {
+                            //get anonymous name and online status 
+                            const onList = myf.anonyChats.some(chat => chat.chatId.toString() === req.session.user._id.toString())
+                            friend = myf.anonymousName;
+                            status = onList ? myf.anonymousStatus : 'removed you';
+                            img = myf.images.anonymous.link
+                        }
+                        io().once("connect", (socket) => {
+                            //online trigger
+                            detectors.goOnline(req.session.user._id, socket)
+                            socket.on('disconnect', () => {
+                                //offline trigger
+                                detectors.goOffline(req.session.user._id, socket)
+                            })
+                            //user joins room corresponding to their id and that of the chats
+                            //this to maintain uniqueness
+                            socket.join(`${req.session.user._id}${id}`);
+                            socket.on('typing', (friendId) => {
+                                io().
+                                    to(`${friendId}${req.session.user._id}`)
+                                    .emit('isTyping')
+                            })
+                            socket.on('stopTyping', (friendId) => {
+                                io().
+                                    to(`${friendId}${req.session.user._id}`)
+                                    .emit('stoppedTyping')
+                            })
+                            socket.on('receive', () => {
+                                //set all isNew field in the mesage
+                                //to false if user reads message immediately
+                                User.findById(req.session.user._id)
+                                    .then(user => {
+                                        let messagesWithUser = user.chats.find(chat => chat.chatId.toString() === id.toString()).messages
                                         messagesWithUser.forEach(msg => {
                                             Message.updateOne(
-                                                { _id:msg},
+                                                { _id: msg },
                                                 { $set: { isMsgNew: false } }
-                                              ).then(_=>{})
+                                            ).then(_ => { })
+                                        })
                                     })
-                                    })
+                            })
+                        });
+                        res.render("chatPage", {
+                            fid: id,
+                            csrfToken: req.csrfToken(),
+                            uid: req.session.user._id,
+                            friend: friend,
+                            status: status,
+                            img: img,
+                            anStatus: anStatus,
+                            anonymous: req.session.user.isAnonymous ? true : false
+
                         })
                     });
-                    res.render("chatPage", {
-                        fid: id,
-                        csrfToken: req.csrfToken(),
-                        uid: req.session.user._id,
-                        friend: friend,
-                        status: status,
-                        img:img,
-                        anStatus: anStatus,
-                        anonymous: req.session.user.isAnonymous ? true : false
-
-                    })
-                });
-        })
-};
+            })
+    };

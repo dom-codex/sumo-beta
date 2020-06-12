@@ -63,18 +63,17 @@ section{
 }
 .window{
     min-height:72vh;
-    border-radius: 5px;
     max-width:780px;
     min-width:320px;
     margin:auto;
-    padding:0!important
+    padding:0!important;
 }
 .row{
   height:auto;
   max-height:95%;
   margin:0!important;
   padding:0!important;
-  border-left:thin solid rgba(0,0,0,.08)
+  border-left:thin solid rgba(0,0,0,.08);
 }
 div.col{
   padding:0!important
@@ -126,9 +125,19 @@ img{
 }
 .upload{
   position:absolute;
-  bottom:0;
+  bottom:5px;
   right:5px;
   width:200px;
+}
+.open-upload-modal{
+  border-radius: 50%;
+  height:50px;
+  width:50px;
+  border: none;
+  background-color: rgba(0,0,0,.3);
+}
+.open-upload-modal i{
+  color:#fff;
 }
 span.title{
   overflow-y: hidden!important;
@@ -177,10 +186,19 @@ span.title{
   justify-content: flex-end;
   padding:3px 0;
   padding-right:7px;
-  margin-bottom:4px;
 }
 .upload-error{
-  margin-top:9px
+  margin-top:20px
+}
+.btn-close button,.okay{
+  height:28px;
+  width:30px;
+  padding:5px;
+  border-radius: 50%;
+  border:none
+}
+.btn-close button:hover,.okay:hover{
+background-color: rgba(0,0,0,.4);
 }
 /*end of new styles */
 #test1, #test2, #test3, #test4{
@@ -236,11 +254,9 @@ input,textarea{
   padding:2px;
   border-radius: 5px;
 }
-
 .copy-btn{
   display:flex;
   justify-content: flex-end;
-  margin-bottom:17px;
 }
 .copy-btn button{
   background: none;
@@ -282,14 +298,23 @@ input,textarea{
 .password.open button{
   background: none;
   border: none;
-  color:indigo
+  color:#fff;
+  padding:5px;
+  border-radius: 5px;
+  background-color: rebeccapurple;
 }
 .password{
   margin-bottom:10px;
 }
 .change{
-  display:none
+  display:none;
 }
+.form{background-color: #fff;
+  padding:6px;
+  width:95%;
+  margin:auto
+}
+#cpf{margin-left:0;padding-left: 0;}
 label{
   display:block;
 }
@@ -297,7 +322,7 @@ label{
   margin:10px 0;
   display: flex;
   justify-content: flex-end;
-  width:85%;
+  width:95%;
 }
 .changepassbtn button{
   padding:7px;
@@ -316,7 +341,6 @@ label{
   margin-left:40px;
   display:none;
 }
-
 .logout{
   display:flex;
   justify-content: flex-end;
@@ -426,9 +450,8 @@ label{
     width:100%;
   }
 }
-
 .copy-btn, .copy, .input-field{
-  width:95%;
+  width:100%;
   padding-right: 0;
   margin-right:0
 }
@@ -438,10 +461,10 @@ label{
   margin-top:20px;
   margin-bottom: 10px;
 }
-.pages a{
-  display: inline-block;
+.pages a:nth-child(2){
   margin-left:30px
 }
+.next,.prev{display:none;}
 #board{
   display:none
 }
@@ -460,7 +483,6 @@ label{
   animation-duration: 5s;
   animation-fill-mode: forwards;
   transition: all 5s;
-
 }
 .success p{
   color:#fff;
@@ -533,4 +555,10 @@ nav{
   height:100%
 }
 }
-
+.loading{
+  display:none;
+  text-align: center;
+  padding-top:10px;
+  font-weight: bold;
+}
+div.info{width:95%;margin:auto;padding-top:38px}

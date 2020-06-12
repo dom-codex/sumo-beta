@@ -11,13 +11,15 @@
     <meta name="theme-color" content="#ffffff">
     
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link 
-href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
     <link href="/css/materialize.min.css" rel="stylesheet"/>
     <link href="./inputs-color.css" rel="stylesheet"/>
     <link href="./newhome.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
+  <div id="notifier" class="<%=save.length>0?'save':''%>" >
+    <p class="<%=save.length>0?'save':''%>">Sent successfully</p>
+  </div>
   <div class="fixed-action-btn click-to-toggle">
     <a class="btn-floating btn-large red">
       <i class="large material-icons">brightness_1</i>
@@ -34,22 +36,12 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
   </div>
 <main>
     <div class="background">
-      <div id="modal2" class="modal modal-fixed-footer">
-        <div class="modal-content">
-          <div class="h4"><h4>SUGGESTION BOX</h4></div>
-          <form method="POST" action="admin/suggestion">
-            <p>Suggestion body</p>
-            <div class="input-field col s12">
-              <textarea id="suggestion" name="suggestion" class="materialize-textarea" placeholder="suggestion..."></textarea>                 
-             </div>     
-           </form>
-        </div>
-        <div class="modal-footer">
-          <button class="modal-close waves-effect waves-green btn-flat" id="cancel">cancel</button>
-          <button class="waves-effect waves-green btn-flat" id="send">Send</button>
-        </div>
-      </div>
-
+      <%- include('modal.ejs',{
+        title:'SUGGESTION BOX',
+        link:'/suggest',
+        type:'suggestion',
+        csrf:csrfToken
+      })%>
       <header>
         <nav>
           <a id="showdd" class='dropdown-trigger btn' href='#' data-target='dropdown1'><i class="material-icons">dehaze</i></a>
@@ -63,7 +55,7 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
           <ul id='dropdown1' class='dropdown-content'>
             <li><a href="/" style="color:rgb(255, 136, 0)">HOME</a></li>
             <li class="divider" tabindex="-1"></li>
-            <li><a href="/about" style="color:grey">ABOUT</a></li>
+            <li><a href="/about">ABOUT</a></li>
             <li class="divider" tabindex="-1"></li>
             <li> <a  href="#features">FEATURES</a>
             </li>
@@ -117,12 +109,14 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
     <section class="screenshots">
       <div class="screenshot-title"><p>App screenshots</p></div>
       <div class="carousel">
-        <div class="nav-left"><button><i class="material-icons">chevron_left</i></button></div>
-        <div class="nav-right"><button><i class="material-icons">chevron_right</i></button></div>
-        <a class="carousel-item" href="#one!"><img src="/theme.jpg"></a>
-        <a class="carousel-item" href="#one!"><img src="/theme.jpg"></a>
-        <a class="carousel-item" href="#one!"><img src="/theme.jpg"></a>
+        <div class="carousel-item" ><img src="/sumo1.png"></div>
+        <div class="carousel-item" ><img src="/sumo2.png"></div>
+        <div class="carousel-item" ><img src="/sumo3.png"></div>
+        <div class="carousel-item" ><img src="/sumo4.png"></div>
+        <div class="carousel-item" ><img src="/sumo5.png"></div>
+        <div class="carousel-item"><img src="/sumo6.png"></div>
       </div>
+      <div style="text-align: center;margin-top: 14px;">slide on image</div>
     </section>
     <section class="features" id="features">
       <div class="features-title"><h4>Features</h4></div>
@@ -197,7 +191,7 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
   <script src="/js/jquery-3.4.1.min.js"></script>
 
   <script>
-      document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.modal');
     var instances = M.Modal.init(elems);
     var elems = document.querySelectorAll('.dropdown-trigger');
@@ -216,7 +210,7 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
       carousel.next()
     })   
      $('.nav-left').on('click',()=>{
-      carousel.next()
+      carousel.prev()
     })
   });
     

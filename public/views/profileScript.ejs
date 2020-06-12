@@ -11,49 +11,75 @@
     var col = M.Collapsible.init(collapsible);
   const elems = document.querySelectorAll('.modal');
   const instances = M.Modal.init(elems);
-  const float = document.querySelectorAll('.fixed-action-btn');
-    const floatinstance = M.FloatingActionButton.init(float,{
-      direction:'left',
-      hoverEnabled: false
-    });
-    const instance = M.FloatingActionButton.getInstance($('.fixed-action-btn'));
-
-    $('.acc').on('click',()=>{
-      const tbs = $('.tchild');
-      for(let i = 0; i<tbs.length;i++){
-        tbs[i].style.display = 'none'
-      }
-      $('#test1').css('display','block')
-      body.scrollTop = 0
-    })   
-     $('.mychats').on('click',()=>{
-      const tbs = $('.tchild');
-      for(let i = 0; i<tbs.length;i++){
-        tbs[i].style.display = 'none'
-      }
-      $('#test2').css('display','block')
-      body.scrollTop = 0
-    })   
-     $('.share').on('click',()=>{
-      const tbs = $('.tchild');
-      for(let i = 0; i<tbs.length;i++){
-        tbs[i].style.display = 'none'
-      }
-      $('#test3').css('display','block')
-      body.scrollTop = 0
-
-    })   
-     $('.panel').on('click',()=>{
-      const tbs = $('.tchild');
-      for(let i= 0; i<tbs.length;i++){
-        tbs[i].style.display = 'none'
-      }
-      $('#test4').css('display','block')
-      body.scrollTop = 0
-
-    })
+    LoadChats();
   })
-
+const showIndicator = ()=>{
+$('.upload-modal').css('display','flex');
+$('.file-cont').css('display','none');
+$('.preloader-wrapper').css('display','block');
+$('.btn-close').css('display','none')
+}
+const hideIndicator = () =>{
+$('.upload-modal').css('display','none');
+$('.file-cont').css('display','block');
+$('.preloader-wrapper').css('display','none');
+$('.btn-close').css('display','flex')
+}
+const LoadChats = () =>{
+  const token =  $('input[name="_csrf"]').val();
+  $('.loading').css('display','block')
+  fetch('/getprofilechats', {
+    method: 'GET',
+    credentials:'include',
+      headers: {
+        "csrf-token":token,
+      },
+}).then(res=>res.json())
+.then(res=>{
+  $('.loading').css('display','none')
+  $('#badge').text(res.chats.length)
+   if(res.chats.length > 0) {
+     $('.new').css('display','none')
+     if(res.hasNext){
+       $('.next').css('display','inline-block')
+       $('.next').attr('href',`/getprofilechats?page=${res.next}`)
+     }
+     if(res.hasPrev){
+      $('.prev').css('display','inline-block')
+      $('.prev').attr('href',`/getprofilechats?page=${res.prev}`)
+     }
+     if(res.code === 404){
+      $('.loading').css('display','none')
+      $('.collection').append(`
+     <div class="new"><h3>${res.message}</h3></div>
+`) 
+     }
+    res.chats.forEach((user,i)=>{ 
+    $('.collection').append(`
+    <form method="POST" action="/removeachat">
+    <input type="hidden" value="${token}" name="_csrf">   
+    <input type="hidden" value="${user._id}" name="uid">
+    <li class="collection-item avatar">
+    <img src="${user.img}" alt="" class="circle">
+    <span class="title">${user.name}</span>
+    <p>${user.desc} <br>
+    </p>
+    <div class="btncont secondary-content">
+        <a href="/chat/${user._id}" class="z-depth-1">
+          <i class="material-icons">near_me</i></a>
+        <button onclick="removeHandler(this,'dom')" 
+        data-target="modal1" class="btn modal-trigger"><i class="material-icons">delete</i></button>
+      </div>
+  </li></form>
+    `)
+})
+   }else{
+     $('.collection').append(`
+     <div class="new"><h3>No chats yet</h3></div>
+`)
+   }
+})
+}
   const Handler = (e, inputedit) => {
     if (inputedit === "name") {
       document.querySelector('#name').disabled = false;
@@ -109,13 +135,15 @@ clearTimeout(timer)
 });
 
   nameDone.addEventListener('click', () => {
+    showIndicator()
     const newName = document.querySelector('#name').value;
     socket.emit('newname', newName, () => {
+      hideIndicator()
       document.querySelector('#name').disabled = true;
       document.querySelector('#nameedit').style.display = 'inline-block'
       nameCancel.style.display = "none";
       nameDone.style.display = "none";
-      document.querySelector('h2').textContent = newName.split(' ')[0];
+      $('.myname').text(newName);
     });
   })
 
@@ -129,14 +157,18 @@ clearTimeout(timer)
 
   descDone.addEventListener('click', () => {
     const newdesc = document.querySelector('#desc').value;
+    showIndicator()
     socket.emit('newdesc', newdesc, () => {
+      hideIndicator()
       document.querySelector('#desc').disabled = true;
       document.querySelector('#descedit').style.display = 'inline-block'
       descCancel.style.display = "none";
       descDone.style.display = "none";
+      $('.small-desc').text(newdesc)
     });
   })
   emailDone.addEventListener('click', () => {
+    showIndicator()
     document.querySelector('#emailForm').submit()
       document.querySelector('#email').disabled = true;
       document.querySelector('#emailedit').style.display = 'inline-block'
@@ -145,7 +177,9 @@ clearTimeout(timer)
   })    
   chatDone.addEventListener('click', () => {
     const newChat = document.querySelector('#chat').value;
+    showIndicator()
     socket.emit('newchat', newChat, (declined) => {
+    hideIndicator()
     if(declined){
       //tell user that chat string is already taken
       $('#declined').css('display','block')
@@ -160,7 +194,9 @@ clearTimeout(timer)
   })   
    anonymousDone.addEventListener('click', () => {
     const newAnonymous = document.querySelector('#anonymous').value;
+    showIndicator()
     socket.emit('newanonymous', newAnonymous, () => {
+      hideIndicator();
       document.querySelector('#anonymous').disabled = true;
       document.querySelector('#anonymousedit').style.display = 'inline-block'
       anonymousCancel.style.display = "none";
@@ -174,7 +210,8 @@ $('#delete').css('display','none')
 $('#yes').css('display','inline-block')
 const yes = $('.modal-footer button:nth-child(2)');
 yes.on('click',()=>{
-const form = e.parentNode.parentNode.parentNode.children[0];
+showIndicator()
+const form = e.parentNode.parentNode.parentNode;
 form.submit()
 })
 }
@@ -191,12 +228,9 @@ switcher.on('click',()=>{
 if(!switcher.attr('checked')){
   return instances.open()
 }
+showIndicator();
 $('#modetoggler').submit()
 
-/*socket.emit('goAnonymous', null, () => {
-      switcher.prop('checked',false)
-      window.location.reload()
-    })*/
 })
 declineBtn.on('click',()=>{
 if(switcher.attr('checked')){
@@ -209,11 +243,10 @@ if(switcher.attr('checked')){
 
 })
 continueBtn.on('click',()=>{
-continueBtn.text('switching...')
+//continueBtn.text('switching...')
+showIndicator()
+instances.close();
 $('#modetoggler').submit()
-/*socket.emit('goAnonymous', null, () => {
-      window.location.reload()
-    })*/
 })
 //script for change password
 const changePasswordRevealer = $('.password button');
@@ -270,9 +303,13 @@ $('.logout.delete button').on('click',()=>{
   yesBtn.css('display','none')
   $('#modal1 p').text('Are you sure you want to delete your account?')
   const modal1 = M.Modal.getInstance(modal);
-  modal1.open()
+  modal1.open();
+  $('#delete').on('click',()=>{
+    modal1.close();
+    showIndicator();
+  })
 })
-//upload
+//image upload script
 $('.btn-close').on('click',()=>{
   $('.upload-modal').css('display','none')
 })
@@ -284,22 +321,20 @@ $('.open-upload-modal').on('click',()=>{
   $('.upload-modal').css('display','flex')
 })
 const uploadFile = (file) => {
-  $('.file-cont').css('display','none')
+  showIndicator()
   $('.file-cont input').val('')
-  $('.preloader-wrapper').css('display','block')
-console.log(file)
 if(!['image/jpeg', 'image/gif', 'image/png', 'image/svg+xml'].includes(file.type)) {
   $('.upload-error small').text('File must be an image.')
   $('.upload-error').css('display','block')
    $('.preloader-wrapper').css('display','none')
         return;
     }
-
-    // check file size (< 2MB)
+    // check file size (< 5MB)
     if(file.size > 5 * 1024 * 1024) {
         $('.upload-error small').text('File must be less than 5MB.')
         $('.preloader-wrapper').css('display','none')
         $('.upload-error').css('display','block')
+        $('.btn-close').css('display','flex')
 
         return;
     }
@@ -310,6 +345,7 @@ fd.append('image', file);
 // send `POST` request
 fetch('/upload', {
     method: 'POST',
+    credentials:'include',
       headers: {
         "csrf-token": token,
       },
@@ -317,11 +353,13 @@ fetch('/upload', {
 })
 .then(res => res.json())
 .then(data =>{ 
-  console.log(data)
 if(data.img){
+   $('.profilePic').attr('src',data.img);
   return window.location.reload()
 }
-$('.preloader-wrapper').css('display','none')
+$('.preloader-wrapper').css('display','none');
+$('.upload-error small').text(data)
+$('.upload-error').css('display','block')
 })
 .catch(err => console.error(err));
 }

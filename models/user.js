@@ -17,18 +17,33 @@ const UserSchema = new schema ({
             type:String,
             default:''
           },
-          link:String,
-          thumbnail:String
+          link:{
+          type:String,
+          default: ` https://drive.google.com/uc?export=view&id=1JRaLV1j3evf8p_F-zqtWBKu2Asn6ntqO`
+        },
+          thumbnail:{
+            type:String,
+            default: ` https://drive.google.com/uc?export=view&id=1JRaLV1j3evf8p_F-zqtWBKu2Asn6ntqO`
+          }
         },
         anonymous:{
           id:{ 
             type:String,
             default:''
           },
-          link: String,
-          thumbnail:String
-        },
-        defaultLink:String
+          link:{ 
+            type: String,
+            default: ` https://drive.google.com/uc?export=view&id=1nIQf8yGrjzFEV6v3BeIHIyVVO7yg7Xtt`
+          },
+          thumbnail:{
+            type:String,
+            default: ` https://drive.google.com/uc?export=view&id=1nIQf8yGrjzFEV6v3BeIHIyVVO7yg7Xtt`
+        }
+      },
+    },
+      isVerified:{
+        type:Boolean,
+        default:false
       },
       desc:String,
       gender: String,

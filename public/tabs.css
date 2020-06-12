@@ -31,4 +31,5 @@
     border-radius: 2px;
     position: absolute;
     right: 10px;
+    min-height: 21px;
   }

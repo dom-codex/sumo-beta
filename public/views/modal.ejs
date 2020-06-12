@@ -1,0 +1,31 @@
+<div id="modal2" class="modal modal-fixed-footer">
+    <div class="modal-content">
+      <div class="h4"><h4>
+          <%=title %></h4></div>
+      <form method="POST" action="<%=link%>">
+          <input type="hidden" value="<%=csrf%>" name="_csrf"/>
+        <% if(type === 'suggestion'){ %> 
+            <p>Suggestion body</p>
+            <div class="input-field col s12">
+              <textarea id="suggestion" name="suggestion" class="materialize-textarea" placeholder="suggestion..."></textarea>                 
+             </div>  
+            <%}else if(type === 'report'){%> 
+            <div class="form-cont">
+                <small>To help us rectify the error faster  pls provide us
+                    with the url of the page you were in before the error occured and also
+                    a statement of what you were trying to do before you experienced the
+                    error
+                </small>
+                <div class="form">
+                    <input type="url" name="link" placeholder="link"/>
+                    <textarea name = "report" placeholder="error statement"></textarea>
+                </div>
+            </div>
+            <%}%>   
+       </form>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-close waves-effect waves-green btn-flat" id="cancel">cancel</button>
+      <button class="waves-effect waves-green btn-flat" id="send">Send</button>
+    </div>
+  </div>

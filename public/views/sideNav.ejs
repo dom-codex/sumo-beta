@@ -5,7 +5,7 @@
       </div>
       <img src="<%=img%>" class="circle">
       <a href="#name"><span class="white-text name"><%=name%></span></a>
-      <a href="#email"><span class="white-text email"><%=phone%></span></a>
+      <a href="#email"><span class="white-text email"><%=email%></span></a>
     </div>
   </li>
   <div class="input-field join">
@@ -30,68 +30,30 @@
 
 </div>
 <ul class="search collection" style="display:none">
-  <div><h2>Result</h2></div> 
+  <div><h2>Result</h2></div>
+  <div class="search-loader">
+  <%- include('loader.ejs') %> 
+</div>
   <div class="searchResult">
-  <!-- <div class="search list" id="" >
-      <input class="fid" type="hidden" value=""/>
-    <div class="segment">
-    <div class="liststyle">
-    <div class="names"><p>dominic</p></div></div>
-    <small class="brief">i am dominic</small></div>
-    <div>
-      <button>decline</button>
-      <button>accept</button>
-    </div>
-    </div> -->
   </div>
 </ul>
 <ul class="requests collection">
   <div><h2>Requests</h2></div>
-
+  <div class="requests-loader">
+  <%- include('loader.ejs') %></div>
 <div class="palsRequest">
- <!-- <div class="request list" id="" >
-  <input class="fid" type="hidden" value=""/>
-<div class="segment">
-<div class="liststyle">
-<div class="names"><p>dominic</p></div></div>
-<small class="brief">i am dominic</small></div>
-<div>
-  <button>decline</button>
-  <button>accept</button>
-</div>
-</div> -->
-
 </div>
 </ul>
     <div class="chats current">
           <div><h2>Chats</h2></div>
+          <div class="chats-loader">
+          <%- include('loader.ejs') %>
+          </div>
          <ul class="userChats collection" id="userChatsSmall">
-            <% if(onlineUsers.length>0) { %>
-                <% onlineUsers.forEach((user,i)=>{ %>
-                  <%- include('chatTiles.ejs',{user:user})%>
-                   <!-- <div class="chat list" id="<%=user._id%>" style="background-color:<%= user.isNew ? 'white' : '' %>">
-                        <a href="/chat/<%=user._id%>" >
-                            <input class="chatids" type="hidden" value="<%=user._id%>"/>
-                  <div class="segment">
-                  <div class="liststyle">
-                  <div class="indicator" style="background-color:<%= user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' %>; display:<%= user.status === 'online' || user.anStatus === 'online' ? 'block' : 'none' %>"></div>
-                  <div class="indicator" style="background-color:<%= user.anStatus === 'offline' || user.status === 'offline' ? 'grey' : 'rebeccapurple' %>; display:<%= user.anStatus === 'offline' || user.status === 'offline' ? 'block' : 'none' %>"></div>
-                  <div class="names"><p><%=user.name.split(' ')[0]%></p></div></div>
-                  <small class="brief"><%=user.message.length > 24 ? user.message.substring(0,25)+' ...': user.message%></small></div>
-                  <div class="message"><small><%=user.time%></small></div>
-                </a>
-                </div> -->
-                <% })%>
-                <% } else {%> 
-                  <div class="new newchatwindow">
-                    <h3>No chats yet !!!</h3>
-                  </div>
-                  <%}%></ul> 
-          <div class="pages"><ul>
-              <% if(hasPrev) {%>
-            <li><a href="/userchannel/<%=uid%>?page=<%=prev%>">Prev</a></li> <%}%>
-            <% if(hasNext) { %>
-            <li><a href="/userchannel/<%=uid%>?page=<%=next%>">Next</a></li> <%}%>
-            </ul></div>
+          </ul> 
+          <div class="pages">
+            <ul>
+            </ul>
+          </div>
     </div>
   </ul>

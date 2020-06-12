@@ -107,6 +107,8 @@ router.post('/addchat',controller.addChat)
 
 router.post('/retrievechat',controller.retrieveMoreChats)
 router.get('/retrievefeeds',controller.retrieveFeed)
+router.get('/loadchats',controller.retrieveChats)
+router.get('/getprofilechats',controller.retrieveProfileChats)
 router.post('/chatrequest',controller.chatRequest)
 router.post('/searchuser',controller.searchUser)
 router.get('/retrieverequest',isAuth,controller.retrieveRequests)

@@ -23,7 +23,7 @@ nav{
   height:inherit;
   display:flex;
   justify-content: center;
-  padding:15px 0
+  padding:15px 0;
 }
 ul{
   list-style: none;
@@ -214,29 +214,36 @@ section.features h4{
   margin-left:15px;
 }
 #notifier{
-  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height: 80px;
+  z-index: 5000;
+  background-color: rgb(155, 194, 155);
+  display:flex;
   justify-content: center;
-  margin: 40px 0 30px 0;
   opacity:0
 }
 #notifier p{
-  background-color: rgba(0,0,0,.7);
   border-radius:5px;
-  color:#fff;
+  color:green;
   padding:15px;
   letter-spacing: 1px;
 }
 @keyframes save{
   from{
-    opacity:1
+    opacity:1;
+    z-index: 50000000000000000000;
   }
   to{
-    opacity:0
+    opacity:0;
+    z-index:5000
   }
 }
 .save{
   animation-name: save;
-  animation-duration: 3s;
+  animation-duration: 3.5s;
 }
 /* overriding default materializes styles */
 button.btn{
@@ -359,6 +366,10 @@ footer div:nth-child(2):hover,footer div:nth-child(2):active{
   }
 
 }
+section.screenshots{
+  background-color: rgba(0,0,0,.02);
+  padding:12px 0 15px 0
+}
 .screenshot-title{
   text-align: center;
   margin:20px 0
@@ -375,31 +386,11 @@ footer div:nth-child(2):hover,footer div:nth-child(2):active{
   height:300px;
   width:90%;
 }
-a.carousel-item{
+div.carousel-item{
   height:100%!important;
   width:50%!important;
 }
-a.carousel-item img{
+div.carousel-item img{
   height:100%;
   width:100%;
-}
-.nav-left{
-  position: absolute;
-  top:50%;
-  left:0;
-  z-index: 2;
-}
-.nav-right{
-  position: absolute;
-  top:50%;
-  right:0;
-  z-index: 2;
-}
-.nav-left button, .nav-right button{
-  background: none;
-  border:none;
-}
-.nav-left i, .nav-right i{
-  font-size:45px;
-  color:rgba(0,0,0,.6)
 }

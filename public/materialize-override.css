@@ -1,6 +1,7 @@
 /* dropdown styles*/
 #showdd{
-    height:100%;
+    position: absolute;
+    top:0;
     background: none;
     box-shadow: none;
     margin-right:20px

@@ -16,8 +16,11 @@ module.exports.gethome = (req, res, next) => {
   //display success message if suggestion was sent sucessfully
   const didSave = req.flash('saved')
   //render home view
-  res.render("home", { save: didSave });
-};module.exports.about = (req, res, next) => {
+  res.render("home", {
+    save: didSave,
+    csrfToken: req.csrfToken(),
+  });
+}; module.exports.about = (req, res, next) => {
   //render about view
   res.render("about");
 };
@@ -32,8 +35,6 @@ module.exports.createChannel = (req, res, next) => {
   //reformat errors into chunks
   let errors;
   let loginErrors;
-  let otherErrors;
-
   if (error.length > 0 && error[0].mode === 'signUp') {
     const nameError = error[0].errors.find(err => err.param === 'name')
     const emailError = error[0].errors.find(err => err.param === 'email')
@@ -57,23 +58,24 @@ module.exports.createChannel = (req, res, next) => {
         message: passwordError ? passwordError.message : '',
       },
     }
-  }
+  };
   if (error.length > 0 && error[0].mode === 'login') {
     const emailError = error[0].errors.find(err => err.param === 'email')
     const passwordError = error[0].errors.find(err => err.param === 'pwd')
     loginErrors = {
       emailError: {
-        isAvailable: phoneError ? true : false,
+        isAvailable: emailError ? true : false,
       },
       passwordError: {
         isAvailable: passwordError ? true : false,
       },
       mode: true
     }
-  }
+  };
   //const success = req.flash('success')
   res.render("auth", {
     csrfToken: req.csrfToken(),
+    other: other.length > 0 ? other[0] : { isSet: false, message: '' },
     loginErrors: loginErrors ? loginErrors :
       {
         emailError: {
@@ -206,10 +208,12 @@ module.exports.loginUser = (req, res, next) => {
   }
   //find associated user
   User.findOne({ email: email })
+    .select()
     .then((user) => {
-      console.log(user)
       if (!user) {
         throw new Error('not found')
+      } else if (!user.isVerified) {
+        throw new Error('no verified')
       }
       //validate the password
       bcrypt.compare(password, user.password)
@@ -218,6 +222,7 @@ module.exports.loginUser = (req, res, next) => {
             //initialize a session for them if successful
             req.session.isauth = true;
             req.session.user = user;
+            req.session.isVerified = user.isVerified
             //save session to db and redirect user to main screen
             return req.session.save((err) => {
               res.redirect(`/userchannel/${user._id}`);
@@ -247,7 +252,13 @@ module.exports.loginUser = (req, res, next) => {
       //redirect user to getstarted page
       //if any error occurs
       if (err.message === 'not found') {
-        req.flash('otherErr', { otherMode: true, message: 'invalid credentials' });
+        req.flash('otherErr', { isSet: true, message: 'invalid credentials' });
+        return req.session.save(() => {
+          res.redirect('/getstarted')
+        })
+      }
+      else if (err.message === 'no verified') {
+        req.flash('otherErr', { isSet: true, message: 'user is not verified' });
         return req.session.save(() => {
           res.redirect('/getstarted')
         })
@@ -302,7 +313,7 @@ module.exports.userChannel = (req, res, next) => {
         return res.redirect('/getstarted')
       }
       if (err.name == 'CastError') {
-        return res.redirect('/getstarted')
+        next(err)
       }
       next(err)
     })
@@ -368,20 +379,18 @@ module.exports.getProfilePage = (req, res, next) => {
   }
   //find the associated user either via their id
   //or via their anonymous token
-  User.findOne({ $or: [{ _id: req.params.id }, { anonyString: req.params.id }] })
+  let me
+  User.findOne({ $or: [{ _id: req.params.id }, 
+    { anonyString: req.params.id }] })
     .then(user => {
       if (!user) {
         //throw error if no user is found
         throw new Error('not found')
       }
-      //initialize necessary variables which will be 
-      //used to create paginations
-      const img = user.images.open.link
+      me = user;
+      const img = user.images.open.link || ''
       const page = +req.query.page || 1;
-      const images = user.images.anonymous.link
-      let ntotalOpenUsers;
-      let nTotalAnonyUsers;
-      let chatids = []
+      const images = user.images.anonymous.link || ''
       if (!req.session.isauth) {
         //if user is not authenticated
         //take them to the get started page
@@ -396,7 +405,7 @@ module.exports.getProfilePage = (req, res, next) => {
         disconnected an offline timer is set which
         if not intercepted on time will make the
         user appear offline */
-        detectors.goOnline(user._id, socket)
+        detectors.goOnline(user._id, socket);
         //listener for user who wants to change
         //their display name
         socket.on("newname", (data, fn) => {
@@ -407,19 +416,19 @@ module.exports.getProfilePage = (req, res, next) => {
           ).then((u) => {
             //fn() is called to notifer them of the
             //update
-            req.session.user.name = data
+            req.session.user.name = data;
             req.session.save(() => {
               fn(); //notify user of the change
             })
           }).catch(err => {
-            throw err
+            throw err;
           });
         });
         //if socket is disconnected an offline timer
         //will be set
         socket.on('disconnect', () => {
           detectors.goOffline(user._id, socket);
-        })
+        });
 
         //listener to add a brief description of user
         socket.on("newdesc", (data, fn) => {
@@ -473,8 +482,8 @@ module.exports.getProfilePage = (req, res, next) => {
             })
         });
       });
-      if (req.session.user.isAnonymous) {
-        return require('../helpers/profileAnonymous').profileAnonymous(req, res, next,images)
+      if (me.isAnonymous) {
+        return require('../helpers/profileAnonymous').profileAnonymous(req, res, next, images)
       }
       //pagination implementation
       User.findById(req.session.user._id)
@@ -484,124 +493,37 @@ module.exports.getProfilePage = (req, res, next) => {
             return id.chatId;
           });
           //initialize the somewhat global variable
-          chatids = chatid
-          return chatid
+
+          //retrieve flash message
+          const error = req.flash('error')
+          const succes = req.flash('success')
+          let errors
+          let success;
+          if (error.length > 0) {
+            errors = error[0]
+          }
+          if (succes.length > 0) {
+            success = succes[0]
+          }
+          res.render("profile", {
+            csrfToken: req.csrfToken(),
+            user: me,
+            img: img,
+            chats: [],
+            current: page,
+            anonymous: req.session.user.isAnonymous ? true : false,
+            errors: errors ? errors : { field: '', message: '' },
+            success: success ? success : { message: '' },
+          })
         }).catch(err => {
-          throw err
-        })
-        .then(_ => {
-          //get a of users the user  openly chat with
-          return User.find({ _id: { $in: chatids } }).countDocuments()
-        }).catch(err => {
-          throw err
-        })
-        .then(nOpenUsers => {
-          ntotalOpenUsers = nOpenUsers
-          return
-        }).catch(err => {
-          throw err
-        })
-        .then(_ => {
-          //get a count of users who chatted with user anonymously
-          return User.find({ anonyString: { $in: chatids } }).countDocuments()
-        }).catch(err => {
-          throw err
-        })
-        .then(nAnonymousChats => {
-          //initialize the some what global variable
-          //to hold the total no of users that chatted with user anonymously
-          nTotalAnonyUsers = nAnonymousChats
-          return
-        }).catch(err => {
-          throw err
-        })
-        .then(_ => {
-          /*retrieve actual users we chatted with but limiting
-          the no of records returned based on a chosen
-          filtering condition i.e max of 2 users per page
-           */
-          User.find({ _id: { $in: chatids } })
-            .sort({ $natural: -1 })
-            .skip((page - 1) * 2)
-            .limit(2)
-            .then(openchats => {
-              openchats = [...openchats].map(chats => {
-                return {
-                  name: chats.name,
-                  _id: chats._id,
-                  desc: chats.desc,
-                  img: chats.images.open.thumbnail,
-                  status: chats.status
-                }
-              })
-              /*retrive users that chatted with user anonymously
-              limiting the records returned by a chosen preference */
-              User.find({ anonyString: { $in: chatids } }).sort('-1').skip((page - 1) * 5)
-                .limit(2)
-                .then(anonychats => {
-                  //reformating the users returned so that their 
-                  //actual identity remains protected
-                  const anonymousChats = [...anonychats].map(chats => {
-                    return {
-                      name: chats.anonymousName,
-                      _id: chats.anonyString,
-                      desc: 'anonymous user',
-                      img: chats.images.anonymous.thumbnail,
-                      status: chats.anonymousStatus
-                    }
-                  })
-                  let filteredUsersList = [];
-                  //format list so that online users appear at the start of the list
-                  [...openchats, ...anonymousChats].forEach(user => {
-                    if (user.anonymousStatus === 'online' || user.status === 'online' || user.anStatus === 'online') {
-                      filteredUsersList.unshift(user)
-                    } else {
-                      filteredUsersList.push(user)
-                    }
-                  })
-                  //render profile view with data to aid the display of users
-                  //and actual pagination
-                  //retrieve flash message
-                  const error = req.flash('error')
-                  const succes = req.flash('success')
-                  let errors
-                  let success;
-                  if (error.length > 0) {
-                    errors = error[0]
-                  }
-                  if (succes.length > 0) {
-                    success = succes[0]
-                  }
-                  res.render("profile", {
-                    csrfToken: req.csrfToken(),
-                    user: req.session.user,
-                    img: img,
-                    chats: [...filteredUsersList],
-                    current: page,
-                    hasNext: 2 * page < nTotalAnonyUsers + ntotalOpenUsers,
-                    hasPrev: page > 1,
-                    next: page + 1,
-                    prev: page - 1,
-                    anonymous: req.session.user.isAnonymous ? true : false,
-                    errors: errors ? errors : { field: '', message: '' },
-                    success: success ? success : { message: '' },
-                    total: nTotalAnonyUsers + ntotalOpenUsers,
-                    last: Math.ceil((ntotalOpenUsers + nTotalAnonyUsers) / 2)
-                  })
-                }).catch(err => {
-                  next(err)
-                })//end of anony chat then
-            }).catch(err => {
-              next(err)
-            })//end of open chat then
-        })//end of main then
-        .catch((err) => {
           next(err)
-        });
-    })
-    .catch(err => {
+        })//end of anony chat then
+    }).catch(err => {
       next(err)
-    })
+    }).catch(err=>{
+      next(err)
+    })//end of open chat then
+  //end of main then
 };
 module.exports.modifyPhone = (req, res, next) => {
   const phone = req.body.phone
@@ -891,7 +813,7 @@ module.exports.addChat = (req, res, next) => {
             })
             throw new Error(400)
           }
-          if (user._id.toString() === userId.toString() || user.anonyString === userId.toString()) {
+          if (user._id.toString() === userId.toString() || user.anonyString.toString() === userId.toString()) {
             //tell user they cant add themselves
             res.json({
               code: 400,
@@ -912,7 +834,7 @@ module.exports.addChat = (req, res, next) => {
             const request = user.requests
             request.push({
               id: userId,
-              name: Auser.name,
+              name: Auser.name.length > 9  ? Auser.name.substring(0,6)+'...':Auser.name,
               desc: Auser.desc,
               img: Auser.img
             })
@@ -978,8 +900,8 @@ module.exports.addChat = (req, res, next) => {
              fid: userId,
              status: 'online'
            }) */
-          io().to(newChat._id).emit('newRequest', {
-            name: Auser.name,
+          io().to(newChat._id).emit('new', {
+            name: Auser.name.substring(0,5)+'...',
             fid: userId,
             status: 'online',
             img: Auser.img,
@@ -988,7 +910,8 @@ module.exports.addChat = (req, res, next) => {
           })
 
           res.json({
-            code: 200
+            code: 200,
+            message: 'request sent successfully'
           })
           /*res.json({
             code: 200,
@@ -1039,7 +962,9 @@ module.exports.chatRequest = (req, res, next) => {
       })
       .then(user => {
         chatAccepter = user
-        return User.findOne({ $or: [{ _id: id }, { anonyString: id }] })
+        return User.findOne({ $or: [{ _id: id }, 
+          { anonyString: id }] })
+          .select('-password -phone -email -messages -feeds')
       })
       .then(user => {
         let chats
@@ -1061,54 +986,58 @@ module.exports.chatRequest = (req, res, next) => {
         return user.save()
       })
       .then(user => {
+        const name = req.session.user.name;
         io().to(id).emit("online", {
-          name: req.session.user.name,
+          name: name.length > 9 ? name.substring(0,6)+'...':name,
           fid: req.session.user._id,
           status: 'online',
-          img:chatAccepter.images.open.link,
+          img: chatAccepter.images.open.link,
         })
         if (user.isAnonymous) {
+          const name = user.anonymousName
           res.json({
             code: 200,
             newchat: {
               _id: user.anonyString,
-              name: user.anonymousName,
+              name: name.length > 9?name.substring(0,6)+'...':name,
               status: user.anonymousStatus,
               img: user.images.anonymous.link,
-              nreq:chatAccepter.requests.length
+              nreq: chatAccepter.requests.length
             }
           })
         } else {
+          const name = user.name
           res.json({
             code: 200,
             newchat: {
               _id: user._id,
-              name: user.name,
+              name: name.length > 9 ? name.substring(0,6)+'...':name,
               status: user.status,
-              img:user.images.open.link,
-              nreq:chatAccepter.requests.length
+              img: user.images.open.link,
+              nreq: chatAccepter.requests.length
             }
           })
         }
       })
   } else if (state === 'decline') {
+    let me
     User.findById(req.session.user._id)
       .then(user => {
         let requests = user.requests
         requests = requests.filter(request => request.id.toString() !== id.toString())
         user.requests = requests
-        return user.save()
-      }).then(_ => {
+        return user.save();
+      }).then(user => {
+        me = user;
         return User.findOne({ $or: [{ _id: id }, { anonyString: id }] })
       })
       .then(user => {
-       /* if (user.isAnonymous) {
+        if (user.isAnonymous) {
           res.json({
             code: 301,
             newchat: {
               _id: user.anonyString,
-              name: user.anonymousName,
-              status: user.anonymousStatus
+              nreq: me.requests.length
             }
           })
         } else {
@@ -1116,11 +1045,10 @@ module.exports.chatRequest = (req, res, next) => {
             code: 301,
             newchat: {
               _id: user._id,
-              name: user.name,
-              status: user.status
-            } 
+              nreq: me.requests.length
+            }
           })
-        }*/
+        }
       })
   }
 }
@@ -1319,11 +1247,16 @@ module.exports.removeAChat = (req, res, next) => {
 };
 module.exports.deleteAccount = (req, res, next) => {
   const id = req.params.id;
-  User.findById(id)
+  const deleteImage = require('../utils/driveUpload').driveUploadDelete
+  User.findOne({ $or: [{ _id: id }, { anonyString: id }] })
     .then(user => {
       if (!user) {
         throw new Error('invalid id')
       }
+      const oid = user.images.open.id;
+      const aid = user.images.anonymous.id;
+      if (oid.length > 0) deleteImage(oid);
+      if (aid.length > 0) deleteImage(aid);
       const ids = user.chats.map(users => {
         return users.chatId
       })
@@ -1339,6 +1272,17 @@ module.exports.deleteAccount = (req, res, next) => {
         chats.anonyChats.filter(id => id.toString() !== req.session.user._id.toString())
         chats.save()
       })
+      return Feed.findOneAndDelete({user:req.session.user.share})
+    }).then(_=>{
+       Message.deleteMany({
+        sender:{$in:[req.session.user._id,req.session.user.anonyString]}
+      }).then(_=>{
+        return Message.deleteMany({
+          receiver:{$in:[req.session.user._id,req.session.user.anonyString]}
+        })
+      })
+    })
+    .then(_=>{
       return User.findByIdAndDelete(id)
     })
     .then(_ => {
@@ -1505,23 +1449,38 @@ module.exports.setNewPassword = (req, res, next) => {
 module.exports.retrieveMoreChats = (req, res, next) => {
   const chatPaginator = require('../helpers/paginators').chatPaginator
   chatPaginator(req, res, next)
-}
+};
 module.exports.retrieveFeed = (req, res, next) => {
   const feedLoader = require('../helpers/paginators').loadFeeds
   feedLoader(req, res, next)
-}
+};
+module.exports.retrieveChats = (req, res, next) => {
+  if (req.session.user.isAnonymous) {
+    const chatLoader = require('../helpers/paginators').loadChatsForAnonymousUser
+    return chatLoader(req, res, next)
+  } const chatLoader = require('../helpers/paginators').loadChats
+  chatLoader(req, res, next)
+};
+module.exports.retrieveProfileChats = (req, res, next) => {
+  if (req.session.user.isAnonymous) {
+    const chatsLoader = require('../helpers/paginators').loadChatsForAnonymousProfile
+    return chatsLoader(req, res, next)
+  }
+  const chatsLoader = require('../helpers/paginators').loadChatsInProfile
+  chatsLoader(req, res, next)
+};
 module.exports.searchUser = (req, res, next) => {
-  const searchName = req.body.searchKey
+  const searchName = req.body.searchKey.toLowerCase().trim()
   const userId = req.session.user.isAnonymous ? req.session.user.anonyString : req.session.user._id
-  const regex = new RegExp(searchName.toLowerCase().trim(), 'i')
+  const regex = new RegExp(searchName, 'i')
   User.find({ "name": { $regex: regex } })
     .select('_id name chats chatShare desc images')
     .then(users => {
-            if (users.length <= 0) {
+      console.log(users)
+      if (users.length <= 0) {
         throw new Error('no user found')
       }
-      const Users = users
-      const result = Users.map(user => {
+      const result = users.map(user => {
         const isFriend = user.chats.some(chat => chat.chatId.toString() === userId.toString())
         if (isFriend) {
           return {
@@ -1536,19 +1495,24 @@ module.exports.searchUser = (req, res, next) => {
           return {
             name: user.name,
             desc: user.desc,
-            id: _id,
+            id: user._id,
             img: user.images.open.link,
             chatId: user.chatShare,
             pals: false
           }
+        }
+      })
+      res.json({
+        code: 200,
+        result: result
+      })
+    })
+    .catch(err => {
+      if (err.message === 'no user found') {
+        res.json({
+          code: 400,
+          message: 'no user was found'
+        })
       }
     })
-    console.log(result)
-    res.json({
-      result:result
-    })
-  })
-  .catch(err => {
-    
-  })
 }

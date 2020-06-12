@@ -1,10 +1,19 @@
 <script>
   const LoadRequests = () => {
-    fetch("/retrieverequest")
+    fetch("/retrieverequest",{
+      method:'GET',
+      credentials:'include'
+    })
       .then((data) => data.json())
       .then((data) => {
         const badge = $(".controls button:nth-child(2) span");
         badge.text(data.requestLength);
+        if(data.requests.length <=0){
+          return $('.palsRequest').append(
+            `<div class="notfound req"><small>
+              you don't have any pending requests</small></div>`
+          )
+        }
         data.requests.forEach((req) => {
           $(".palsRequest").prepend(`
  
@@ -31,10 +40,11 @@
   };
   //script for accepting and decline a chat
   const chatRequestHandler = (id, state) => {
-    $(".spinner-cont").css("display", "flex");
     const token = $('input[name="_csrf"]').val();
+    $('.requests-loader').css('display','block')
     fetch("/chatrequest", {
       method: "POST",
+      credentials:'include',
       headers: {
         "csrf-token": token,
         "Content-Type": "application/json",
@@ -46,7 +56,7 @@
     })
       .then((res) => res.json())
       .then((res) => {
-        $(".spinner-cont").css("display", "none");
+        $('.requests-loader').css('display','none')
         const rids = $(".rid");
         const badgea = $(".controls .smally");
         const badgeb = $(".controls .biggy");
@@ -54,11 +64,6 @@
           if (rids[i].value.toString() === res.newchat._id) {
             const parent = rids[i].parentNode.parentNode;
             parent.removeChild(rids[i].parentNode);
-           /* const nreq1 = badgea.text();
-            const nreq2 = badgeb.text();
-            const newVal1 = nreq1 != 0 ? parseInt(+nreq1) - 1 : 0;
-            const newVal2 = nreq2 != 0 ? parseInt(+nreq2) - 1 : 0;
-            */
             badgea.text(res.newchat.nreq);
             badgeb.text(res.newchat.nreq);
           } else continue;
@@ -66,7 +71,7 @@
         if (res.code === 301) {
           return;
         } else {
-          // remove user from requests list
+          $('.notfound.chat').remove()
           $(".userChats").prepend(`  
           <li class="collection-item avatar Cards">
     <input class="chatids" type="hidden"  value="${res.newchat._id}"/>
@@ -102,8 +107,13 @@ const loadFeed = () => {
   else if ((feedView.scrollTop === 0 || page == 1)) {
     height = feedView.scrollHeight;
     //$('.loader').css('display','flex')
+    $('.feeds').append(`
+    <div class="notfound feed">
+      <small>Loading... </small></div>
+    `)
     fetch(`/retrievefeeds?page=${page}`, {
       method: 'GET',
+      credentials:'include',
       headers: {
         "csrf-token": document.querySelector('input[name="_csrf"]').value,
         "Content-Type": 'application/json'
@@ -111,6 +121,7 @@ const loadFeed = () => {
     })
       .then(res => res.json())
       .then(res => {
+        $('.notfound.feed').remove()
        // $('.loader').css('display','none')
         page = res.next
         if(res.code === 301){
@@ -132,27 +143,28 @@ const loadFeed = () => {
                      <i>sent: ${msg.time}</i></div>
                 </div> `)
           })
+        }else if(res.feeds.length <=0){
+         return $('.feeds').append(`
+          <div class="notfound feed">
+            <small> you have got no feeds yet, why not
+              share your feed link with loved ones to get
+              the fun started <small></div>
+          `)
         }
         feedView.scrollTop = feedView.scrollHeight - height
       }).catch(err=>{
-        alert('here')
-        $('.loader').css('display','none')
       })
 
   }
 }
 </script>
 <script>
-document.addEventListener("DOMContentLoaded",()=> {
-loadFeed()
-});
-</script>
-<script>
   //script for search mechanism
   const search = (field) =>{
-    const searchKey = $(field).val()
+    const searchKey = $(field).val();
     fetch(`/searchuser`, {
           method: 'POST',
+          credentials:'include',
           headers: {
             "csrf-token": document.querySelector('input[name="_csrf"]').value,
             "Content-Type": 'application/json'
@@ -163,9 +175,9 @@ loadFeed()
         })
         .then(res=>res.json())
         .then(res=>{
-          alert('here')
-          $('.searchResult').html('')
-          $('.searchResult.large').html('')
+          $('.chats-loader').css('display','none');
+          $('.searchResult').html('');
+          $('.searchResult.large').html('');
           if(res.result.length > 0){
             res.result.forEach(user=>{
               if(!user.pals){
@@ -217,11 +229,111 @@ loadFeed()
           }
         })
       }
-
   const addUser = (field,val) =>{
     $('#chatString').val(val)
     joinHandler(field)
   }
   $('#startsearch').on('click',()=>search('#searchStringLarge'))
   $('#startsearchsmall').on('click',()=>search('#searchString'))
+</script>
+<script>
+  //script for loading chats
+    let next;
+    let prev
+
+  const loadChats = (action = '') =>{
+    let page =1
+    if(action === 'next'){
+      page = next;
+    }else if(action === 'prev'){
+      page = prev
+    }
+    $('.chats-loader').css('display','block')
+    fetch(`/loadchats?page=${page}`, {
+          method: 'GET',
+          credentials:'include',
+          headers: {
+            "csrf-token": document.querySelector('input[name="_csrf"]').value,
+            "Content-Type": 'application/json'
+          },
+        })
+        .then(res=>res.json())
+        .then(res=>{
+          $('.chats-loader').css('display','none');
+          if(res.chats.length <= 0){
+            $('#userChatsLarge').append(
+              `<div class="notfound chat">
+                <small> you don't have any chat yet
+                  </small></div>`
+            );
+            return $('#userChatsSmall').append(
+              `<div class="notfound chat">
+                <small> you don't have any chat yet
+                  </small></div>`
+            )
+          }
+          next = res.next;
+          prev = res.prev;
+
+          if(res.hasNext){
+       $('.pages ul').append(
+         `<button onClick="loadChats('next')" class="next">Next</button>`
+       )
+     }else{
+       $('.next').remove()
+     }
+     if(res.hasPrev){
+      $('.pages ul').append(
+         `<button onClick="loadChats('prev')" class="prev" >Prev</button>`
+       )
+     }else{
+       $('.prev').remove()
+     }
+     $('.userChats').html('')
+    res.chats.forEach((user,i)=>{
+      $('#userChatsLarge').append(`
+      <li class="collection-item avatar Cards"  style="background-color:${user.isNew ? 'white' : 'transparent' }">
+    <input class="chatids" type="hidden" value="${user._id}"/>
+    <img src="${user.img}" alt="" class="circle">
+    <div class="indicator" style="background-color:${ user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }"></div>
+    <div>
+    <div class="title">    
+      <a href="/chat/${user._id}" >
+        ${user.name.split(' ')[0]} </a>  
+    </div>
+    <p>
+    <small class="brief">
+      ${user.message.length > 24 ? user.message.substring(0,25)+' ...': user.message}
+    </small>
+    </p></div>
+    <div class=" secondary-content">
+        <small>
+            ${user.time}
+        </small>
+    </div>
+  </li>`);          
+   $('#userChatsSmall').append(`
+          <li class="collection-item avatar Cards"  style="background-color:${user.isNew ? 'white' : 'transparent' }">
+    <input class="chatids" type="hidden" value="${user._id}"/>
+    <img src="${user.img}" alt="" class="circle">
+    <div class="indicator" style="background-color:${ user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }"></div>
+    <div>
+    <div class="title">    
+      <a href="/chat/${user._id}" >
+        ${user.name.split(' ')[0]} </a>  
+    </div>
+    <p>
+    <small class="brief">
+      ${user.message.length > 24 ? user.message.substring(0,25)+' ...': user.message}
+    </small>
+    </p></div>
+    <div class=" secondary-content">
+        <small>
+            ${user.time}
+        </small>
+    </div>
+  </li>`)
+          })
+        })
+      }
 </script>

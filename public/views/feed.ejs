@@ -1,22 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title> <%= name %>'s feed </title>
-  <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
-  <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
-  <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
-  <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
-  <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="/android-icon-192x192.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/manifest.json">
   <meta name="msapplication-TileColor" content="#ffffff">
@@ -24,7 +11,7 @@
   <meta name="theme-color" content="#ffffff">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet" />
-  <link href="../css/materialize.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   <link href="/inputs-color.css" rel="stylesheet" type="text/css" />
   <link href="/c-user.css" rel="stylesheet" type="text/css" />
   <link href="/sidenav.css" rel="stylesheet" />
@@ -41,7 +28,7 @@
   <%- include('sideNav.ejs',{
   onlineUsers:onlineUsers,
   name:name,
-  phone:phone,
+  email:email,
   uid:uid
 }) %>
   <!--end of side nav import-->
@@ -101,8 +88,9 @@
           <div>
           <img src="<%= img %>" 
           class="circle" height="50px" width="50px">
-          <div><a href="#name"><span class="white-text name"><%=name%></span></a>
-          <a href="#email"><span class="white-text email"><%=phone%></span></a>
+          <div>
+            <a href="#name"><span class="white-text name"><%=name%></span></a> <br>
+          <a href="#email"><span class="white-text email"><%=email%></span></a>
         </div>
         </div>
       </div>
@@ -112,8 +100,8 @@
             <button>Requests <span class="circle-badge smally">0</span></button>
             <button>Search</button></div>
           <div class="addById current">
-          <input type="text" placeholder="enter chat id" class="chatString"/>
-          <div class="join-btn"><button id="startchat">add</button>
+          <input type="text" id="chatStringLarge" placeholder="enter chat id" class="chatString"/>
+          <div class="join-btn"><button id="startchatlarge">add</button>
             <small class="errdisplay"></small>
           </div>
         </div>
@@ -130,95 +118,36 @@
         <ul>
           <div class="requests">
           <div><h2>Requests</h2></div>
-        
+          <div class="requests-loader">
+            <%- include('loader.ejs') %>
+            </div>
        <ul class="palsRequest collection">
-        <!-- <div class="request list" id="" >
-          <input class="fid" type="hidden" value=""/>
-        <div class="segment">
-        <div class="liststyle">
-        <div class="names"><p>dominic</p></div></div>
-        <small class="brief">i am dominic</small></div>
-        <div>
-          <button>decline</button>
-          <button>accept</button>
-        </div>
-        </div> -->
-        
       </ul>
         </div>
         <ul class="search collection" style="display:none">
           <div><h2>Result</h2></div> 
-          <div class="searchResult large">
-          <!-- <div class="search list" id="" >
-              <input class="fid" type="hidden" value=""/>
-            <div class="segment">
-            <div class="liststyle">
-            <div class="names"><p>dominic</p></div></div>
-            <small class="brief">i am dominic</small></div>
-            <div>
-              <button>decline</button>
-              <button>accept</button>
+          <div class="search-loader">
+            <%- include('loader.ejs') %>
             </div>
-            </div> -->
+          <div class="searchResult large">
           </div>
         </ul>
           <div class="chats current">
-         <!--   <div class="input-field join">
-                <div class="controls"><button>Requests<span class="circle-badge">81</span></button><Button>Search</Button></div>
-                <div class="addById current">
-                <input type="text" placeholder="enter chat id" id="chatString"/>
-                <div class="join-btn"><button id="startchat">add</button><small class="errdisplay"></small></div>
-              </div>
-              
-              <div class="search">
-                <input type="text" placeholder="enter name" id="searchString"/>
-                <div class="join-btn"><button id="startsearch">search</button>
-              </div>
-              </div>
-              
-              </div> -->
-            <!--  <input type="text" placeholder="enter chat string" id="chatStringLarge" />
-              <div class="join-btn"><button id="largeStartChat">start chat</button><small class="errdisplay"
-                  id="largeErr"></small></div> -->
             <div>
               <h2>Chats</h2>
             </div>
+            <div class="chats-loader">
+              <%- include('loader.ejs') %>
+              </div>
             <ul class="userChats collection" id="userChatsLarge">
-              <% if(onlineUsers.length>0) { %>
-              <% onlineUsers.forEach((user,i)=>{ %>
-                <%-include('chatTiles.ejs',{user:user})%>
-            <!--  <div class="chat list Cards" id="<%=user._id%>" style="background-color:<%= user.isNew ? 'white' : '' %>">
-                <a href="/chat/<%=user._id%>">
-                  <input class="chatids" type="hidden" value="<%=user._id%>" />
-                  <div class="segment">
-                    <div class="liststyle">
-                      <div class="indicator"
-                        style="background-color:<%= user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' %>; display:<%= user.status === 'online' || user.anStatus === 'online' ? 'block' : 'none' %>">
-                      </div>
-                      <div class="indicator"
-                        style="background-color:<%= user.anStatus === 'offline' || user.status === 'offline' ? 'grey' : 'rebeccapurple' %>; display:<%= user.anStatus === 'offline' || user.status === 'offline' ? 'block' : 'none' %>">
-                      </div>
-                      <div class="names">
-                        <p><%=user.name.split(' ')[0] %></p>
-                      </div>
-                    </div>
-                    <small class="brief"><%=user.message.length > 24?user.message.substring(0,25)+' ...':user.message%></small>
-                  </div>
-                  <div class="message"><small><%=user.time%></small></div>
-                </a>
-              </div> -->
-              <% })%>
-              <% } else { %>
+              <% if(onlineUsers.length < 0) { %>
               <div class="new newchatwindow">
                 <h3>No chats!!!</h3>
               </div>
               <% } %> </ul> 
-            <div class="pages">
-              <ul>
-                <% if(hasPrev) {%>
-                <li><a href="/userchannel/<%=uid%>?page=<%=prev%>">Prev</a></li> <%}%>
-            <% if(hasNext) { %>
-                <li><a href="/userchannel/<%=uid%>?page=<%=next%>">Next</a></li> <%}%>
+            <div class="pages big">
+              <ul>         
+
             </ul></div>
     </div>
   </ul>
@@ -239,11 +168,15 @@
   <script>
     const feedWindow = document.querySelector('.feeds')
     feedWindow.scrollTop = feedWindow.scrollHeight</script>
-  <script src="/js/materialize.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <%- include('feedScript.ejs') %>
   <%- include('chatHandler.ejs') %>
+  <script>  LoadRequests();
+    loadChats();
+    loadFeed()
+</script>
 </body>
 
 </html>

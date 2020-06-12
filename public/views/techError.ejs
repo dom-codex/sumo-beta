@@ -4,18 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Error</title>
-    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="msapplication-TileColor" content="#ffffff">
@@ -23,9 +11,16 @@
     <meta name="theme-color" content="#ffffff">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="/css/materialize.min.css" rel="stylesheet"/>
+    <link href="/inputs-color.css" rel="stylesheet"/>
     <link href="/error.css" rel="stylesheet"/>
 </head>
-<body>
+<body class="body">
+    <%- include('modal.ejs',{
+        title:'REPORT FORM',
+        link:'/report',
+        type:'report',
+        csrf:csrfToken
+      })%>
     <header>
         <nav>
             <h3>SUMO</h3>
@@ -35,6 +30,30 @@
         </div>
         </nav>
     </header>
-    <h1>Sorry for the inconvinence,We hope to restore your view soon</h1>
+    <section>
+    <h1> Ooops!!!</h1>
+    <p>An unexpected error seems to have occured. Head back to the page
+        you were in before this error occured and refresh, else if you
+        manually inputed the url please check if your spellings are correct
+        and necessary parameters are supplied. Or you can report the
+        error if it persists.
+    </p>
+    <div class="report">
+        <button class="modal-trigger" data-target="modal2">Report <i class="material-icons">bug_report</i></button>
+    </div>
+</section>
+<script src="/js/materialize.min.js"></script>
+<script>
+     document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems);})
+    //https://drive.google.com/thumbnail?authuser=0&sz=w50&id=1ZJ7yh_4zEiQmDLt3VatVO-QPbbGIUe7y
+   // https://drive.google.com/thumbnail?authuser=0&sz=w50&id=1ZJ7yh_4zEiQmDLt3VatVO-QPbbGIUe7y
+    const sendBtn = document.querySelector('#send')
+sendBtn.addEventListener('click',()=>{
+    document.querySelector('form').submit()
+    document.querySelector('form').reset()
+})
+</script>
 </body>
 </html>

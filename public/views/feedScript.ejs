@@ -7,9 +7,7 @@
     const dropdown = M.Dropdown.init(elems);
     const instance = M.Sidenav.getInstance($(".sidenav"));
     instance.open();
-    LoadRequests()
   });
-
   const feedList = document.querySelector(".feeds");
   feedList.scrollTop = feedList.scrollHeight;
 
@@ -32,7 +30,6 @@
     for (let i = 0; i < cids.length; i++) {
       let cid = cids[i];
       if (cid.value.toString() === data.chat.toString()) {
-        console.log(cid.parentNode.children)
         const indicator = cid.parentNode.children[2]
        /* const indicator2 =
           cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
@@ -103,6 +100,7 @@
         </div>
         <div class="cardf"><small>${data.length}</small> <i>sent: ${data.time}</i></div>
       </div> `);
+      $('.notfound.feed').css('display','none')
     feedWindow.scrollTop = feedWindow.scrollHeight;
     $(".newfeedwindow").css("display", "none");
   });
@@ -133,6 +131,9 @@
     }
     const isRendered = chatsids.some((id) => id === data.fid);
     if (!isRendered || uid == data.fid) {
+      $('.notfound.chat').remove();
+      $(".errdisplay").css("display", "none");
+    $("#largeErr").css("display", "none");
       $(".userChats").prepend(` 
       <li class="collection-item avatar Cards" style="background-color:${data.isNew ? 'white' : '' }">
     <input class="chatids" type="hidden" value="${data.fid}"/>
@@ -228,16 +229,15 @@
           $(".errdisplay").text(res.message).css("display", "block");
           $("#largeErr").text(res.message).css("display", "block");
         } else if (res.code === 200) {
-          $(".errdisplay").css("display", "none");
-          $("#largeErr").css("display", "none");
-
           $(fieldtoselect).val("");
-          $(".new").css("display", "none");
+          $(".errdisplay").text(res.message).css("display", "block").css('color','indigo');
+          $("#largeErr").text(res.message).css("display", "block").css('color','indigo');
+         // $(".new").css("display", "none");
         }
       });
   };
   const chatBtn = $("#startchat");
-  const largeChatBtn = $("#largeStartChat");
+  const largeChatBtn = $("#startchatlarge");
   chatBtn.on("click", () => joinHandler("#chatString"));
   largeChatBtn.on("click", () => joinHandler("#chatStringLarge"));
 
@@ -252,9 +252,8 @@
     for (let i = 0; i < cids.length; i++) {
       let cid = cids[i];
       if (cid.value.toString() === data.id.toString()) {
-        console.log(cid.parentNode.children)
-       const time = cid.parentNode.children[4].children[0];
-        const messageIdicator = cid.parentNode.children[3].children[0]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+        const time = cid.parentNode.children[4].children[0];
+        const messageIdicator = cid.parentNode.children[3].children[1].children[0]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
         messageIdicator.textContent = "";
         messageIdicator.textContent = data.msg.length > 25 ? data.msg.substring(0, 25) + '...' : data.msg;
         time.textContent = " ";
@@ -277,7 +276,7 @@
       let cid = ids[i];
       if (cid.value.toString() === data.id.toString()) {
         const time = cid.parentNode.children[4].children[0];
-        const messageIdicator = cid.parentNode.children[3].children[0]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+        const messageIdicator = cid.parentNode.children[3].children[1].children[0]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
         messageIdicator.textContent = "";
         messageIdicator.textContent = data.msg.length > 25 ? data.msg.substring(0, 25) + '...' : data.msg;
         time.textContent = " ";
@@ -348,6 +347,8 @@
   const requestBtn = $('.controls button:nth-child(2)')
   const searchBtn = $('.controls button:nth-child(3)')
   requestBtn.on('click', () => {
+    $(".errdisplay").css("display", "none");
+    $("#largeErr").css("display", "none");
     $('.chats').removeClass('current')
     $('.search').removeClass('current')
     $('.searchcontrols').removeClass('current')
@@ -358,6 +359,8 @@
 
   })
   chatsBtn.on('click', () => {
+    $(".errdisplay").css("display", "none");
+    $("#largeErr").css("display", "none");
     $('.requests').removeClass('current')
     $('.search').removeClass('current')
     $('.searchcontrols').removeClass('current')
@@ -367,6 +370,8 @@
     chatsBtn.css('display', 'none')
   })
   searchBtn.on('click', () => {
+    $(".errdisplay").css("display", "none");
+    $("#largeErr").css("display", "none");
     const currentText = searchBtn.text().substring(0, 6)
     if(currentText === 'Search'){
       $('.search').addClass('current')
@@ -383,11 +388,11 @@
     searchBtn.text(`${currentText === 'Search' ? 'Add Chat' : 'Search'}`)
   })
   //new request event
-  socket.on("newRequest", (data) => {
+  socket.on("new", (data) => {
     const badge = $('.controls button:nth-child(2) span')
     badge.text(data.requests)
+    $('.notfound.req').remove()
     $('.palsRequest').prepend(`
-
     <li class="collection-item avatar Cards">
       <input class="rid" type="hidden" value="${data.fid}"/>
     <img src="${data.img}" alt="" class="circle" height="50px" width="50px">

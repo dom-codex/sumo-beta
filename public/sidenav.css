@@ -8,11 +8,13 @@
   height:calc(100vh - 5px)
 }
 .user-view, .background, .profile-view{
- /* background:indigo;*/
- background-image: url('apple-icon-152x152.png');
- background-size: cover;
- background-repeat: no-repeat;
- background-position-y: -40px;
+background-color: indigo;
+}
+.name::first-letter{
+  text-transform: capitalize;
+}
+.email{
+  padding-left:5px
 }
 .controls button{
   width:48%;
@@ -21,7 +23,7 @@
   border-radius: 5px;
 }
 .requests{
-  display:none!important
+  display:none!important;
 }
 .circle-badge{
   display:inline-flex;
@@ -87,19 +89,7 @@ display:none;
 }
 .userChats{
   min-height:30%;
-}
-.chat.list{
- /* padding:10px;
-  border-bottom:thin solid #ccc;*/
-}
-.chat.list a{
- /* display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color:black;
-  padding-right:20px;
-  padding-left:15px;*/
-  
+  height: 100%;;
 }
 .collection-item{
   padding-bottom: 0!important;
@@ -122,15 +112,7 @@ display:none;
 .name{
   padding-left: 8px;
 }
-.message{
-  /*border-radius:14px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color:#000;
-  height:100%;
-  padding:2px;*/
-}
+
 .brief{
   margin:0;
   padding:0;
@@ -143,17 +125,24 @@ display:none;
   justify-content: center;
 }
 .pages li{
-  display: inline-block;
   margin-left: 10px;
 }
+.pages ul{
+  display:flex;
+}
 .join-btn button{
-  border:thin solid #000;
+  border:thin solid #ccc;
   padding:3px;
   border-radius: 5px;
+  width:48px;
 }
-.join-btn button:hover, .join-btn button:active,.join-btn button:focus{
-  background-color: rgb(101, 87, 110);
-  color:#fff
+.join-btn button:hover, 
+.join-btn button:active,
+.join-btn button:focus,
+.controls button:focus,
+.controls button:hover{
+  background-color: rgba(106, 68, 134, 0.678);
+  color:#fff;
 }
 .search.list{
   display:flex!important;
@@ -161,4 +150,29 @@ display:none;
   align-items:center;
   padding-right:13px;
   border-bottom:thin solid #ccc;
+}
+.myModal{
+  position: relative;
+  width:100%; 
+}
+.modal-myModal{
+  position: absolute;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  left:40%;
+  z-index:20000000;
+  margin:17px 0;
+  height:50px;
+  width:50px;
+  background-color:rgba(0,0,0,.1)!important;
+  border-radius: 3px;
+  padding:4px;
+
+}
+.spinner-layer{
+  border-color: indigo;
+}
+.search-loader, .chats-loader, .requests-loader{
+  display:none
 }

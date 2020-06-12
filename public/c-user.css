@@ -38,6 +38,7 @@ nav,
 header {
   background-color: rebeccapurple;
   width: 100vw !important;
+  
 }
  h2 {
   margin: 0;
@@ -162,7 +163,7 @@ section.desktop {
   color:#fff;
   font-size:.83em;
 }
-@media all and (min-width: 781px) {
+@media all and (min-width: 921px) {
   #slide-out, .sidenav-overlay{
     display:none!important;
     width:0px!important;
@@ -213,7 +214,7 @@ section.desktop {
 #showdd {
   display: none;
 }
-@media all and (max-width: 780px) {
+@media all and (max-width: 920px) {
   #showdd {
     display: block;
   }
@@ -303,14 +304,6 @@ section.desktop {
     transform: rotateX(0deg);
   }
 }
-/*
-.pseudoTile{
-  background-color: #fff!important;
-}
-.pseudoTileIndicator{
-  background-color: rebeccapurple!important;
-  display:block!important
-}*/
 .collection{
   border:none
 }
@@ -320,7 +313,6 @@ section.desktop {
 .collection-item p, .collection-item span{
   height:25px
 }
-
 .indicator{
   position: absolute;
   top:70%;
@@ -357,4 +349,31 @@ section.desktop {
   text-decoration: underline;
   font-family: Rubik;
   cursor: pointer;
+}
+.notfound{
+  text-align: center;
+  margin-top: 30px;
+  color:indigo
+}
+.notfound.feed{
+  height:70%;
+  width:100%;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.next, .prev{
+  background: none;
+  padding:8px;
+  border:none;
+  background-color:rgba(0, 0, 0, 0.019);
+  border-radius: 5px;
+  margin-left:20px;
+}
+#grant{margin-left:5px}
+#decline,#grant{
+  padding:3px;
+  border:thin solid #ccc;
+  border-radius: 5px;
 }
