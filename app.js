@@ -23,7 +23,7 @@ const errorController = require('./controllers/erros')
 const isAuth = require('./utils/isAuth')
 //models
 const User = require("./models/user");
-const uri = process.env.db  ;
+const uri = process.env.db ;
 
 //template engine configuration
 app.set("view engine", "ejs");
@@ -47,7 +47,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store:new MongoStore({ 
-      url: process.env.session_store}) , 
+      url: process.env.session_store }) , 
       cookie:{
         maxAge:1000 * 60 * 60 * 24 * 7//session will last for a week
       }, 
@@ -74,7 +74,7 @@ const storage = multer.diskStorage({
 //path.extname('name to exclude')
   // By default, multer removes file extensions so let's add them back
   filename: function(req, file, cb) {
-      cb(null,file.originalname +'-' + file.fieldname + '-' + Date.now());
+      cb(null,file.fieldname + '-' + Date.now()+'-'+file.originalname);
   }
 });
 app.use((req,res,next)=>{
