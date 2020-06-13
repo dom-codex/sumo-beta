@@ -156,6 +156,7 @@ span.title{
 #bg{
   display:none;
   z-index: 400;
+  background-color:rgba(0,0,0,.5)
 }
 .modal-upload, .modal-myModal{
   text-align: center;

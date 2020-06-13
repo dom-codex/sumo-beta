@@ -68,7 +68,8 @@ app.use(express.static(path.join(__dirname, "/", "assets")));
 //routers for user and admin
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-      cb(null, __dirname + '/images');
+    cb(null, path.resolve(__dirname, 'images'))  
+    //cb(null, __dirname + '/images');
   },
 //path.extname('name to exclude')
   // By default, multer removes file extensions so let's add them back
