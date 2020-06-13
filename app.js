@@ -6,7 +6,6 @@ const express = require("express");
 const app = express();
 const server = http.createServer(app);
 const bodyparser = require("body-parser");
-const multer = require('multer')
 //const upload = multer({dest: __dirname + '/models'})
 const session = require("express-session");
 const moongoose = require("mongoose");
@@ -23,7 +22,7 @@ const errorController = require('./controllers/erros')
 const isAuth = require('./utils/isAuth')
 //models
 const User = require("./models/user");
-const uri = process.env.db ;
+const uri = process.env.db;
 
 //template engine configuration
 app.set("view engine", "ejs");
@@ -66,17 +65,6 @@ app.use(helmet())
 app.use(express.static(path.join(__dirname, "/", "public")));
 app.use(express.static(path.join(__dirname, "/", "assets")));
 //routers for user and admin
-const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, path.resolve(__dirname, 'images'))  
-    //cb(null, __dirname + '/images');
-  },
-//path.extname('name to exclude')
-  // By default, multer removes file extensions so let's add them back
-  filename: function(req, file, cb) {
-      cb(null,file.fieldname + '-' + Date.now()+'-'+file.originalname);
-  }
-});
 app.use((req,res,next)=>{
 req.session.cookie.maxAge += 60 * 60 * 1000 * 3;
 req.session.save(()=>{
@@ -84,7 +72,7 @@ req.session.save(()=>{
 })
 })
 app.post('/upload',isAuth,(req, res) => {
-require('./controllers/upload').uploader(req,res,storage)
+require('./controllers/upload').uploader(req,res)
 });
 app.post('/report',require('./utils/auth'),errorController.reportError)
 app.post('/suggest',errorController.suggest)

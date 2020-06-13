@@ -1,8 +1,20 @@
 const multer = require('multer')
 const fs = require('fs')
 const User = require('../models/user');
-module.exports.uploader = (req,res,storage) =>{
-   // const regex = new RegExp('/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/')
+const path = require('path')
+module.exports.uploader = (req,res) =>{
+  const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+     // cb(null, path.resolve(__dirname, '/images'))  
+      cb(null,path.join( __dirname ,'..', 'images'));
+    },
+  //path.extname('name to exclude')
+    // By default, multer removes file extensions so let's add them back
+    filename: function(req, file, cb) {
+        cb(null,file.fieldname + '-' + Date.now()+'-'+file.originalname);
+    }
+  });
+  // const regex = new RegExp('/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/')
     const regex = /\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/
     let upload = multer({ 
         storage: storage,
@@ -11,13 +23,14 @@ module.exports.uploader = (req,res,storage) =>{
             if (!file.originalname.match(regex)){
                 return cb(new Error('Only image files are allowed!'), false);
             }
-            cb(null, true);
+            return cb(null, true);
         }
     }).single('image');
   
     upload(req, res, function(err) {
       // req.file contains information of uploaded file
       // req.body contains information of text fields, if there were any
+      console.log(req.file)
       if (!req.file) {
           return res.json('upload failed,try again');
       }else if (req.file.size > 5 * 1024 * 1024){
