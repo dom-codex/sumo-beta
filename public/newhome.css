@@ -8,7 +8,7 @@ body{
   overflow-x: hidden;
   height:100%;
   position: relative;
-  top:90px;
+  top:66px;
   min-width:350px;
 }
 header{
@@ -38,7 +38,26 @@ li a{
   font-family: Rubik;
   font-weight: 700;
 }
-
+.logo{
+  display:none;
+  position: relative;
+  color:indigo; 
+  text-align: center;
+  width:70%;
+  height:50px;
+  overflow: hidden;
+  font-size:2em;
+  font-weight: bold;
+  padding-bottom: 10px;
+  z-index: 5000000;
+}
+.logo img{
+  border-radius:50%;
+  height: 100%;
+}
+#modal2{
+  z-index:20304420932092;
+}
 section.theme{
   background-image: url('theme.jpg');
   background-repeat: no-repeat;
@@ -50,12 +69,14 @@ section.theme{
 }
 section.features{
   padding:90px 0;
+  background-color: rebeccapurple;
 }
 section.features h4{
   font-size:2em;
+  color:#fff;
   margin:15px;
   padding:0;
-  border-bottom: 2px double #000;
+  border-bottom: 2px double #fff;
   padding-bottom:7px;
 }
 .features-title{
@@ -76,6 +97,7 @@ section.features h4{
   display:flex;
   flex-direction: column;
   align-items: center;
+  color:#fff
 }
 .feature-tile{
   width:55%;
@@ -194,14 +216,21 @@ section.features h4{
 }
 
 /* modal styling */
-.modal, .modal-content{
+.modal{
+  margin-top:70px
+}
+.modal,.modal-content{
   padding:0!important
+}
+.h4 h4{
+  padding:5px 0
 }
 .modal-content .h4 {
   display:flex;
   justify-content: center;
   align-items: center;
-  height:75px;
+  text-align: center;
+  height:80px;
   color:#fff;
   background-color: rebeccapurple;
 }
@@ -212,6 +241,7 @@ section.features h4{
 .modal-content textarea {
   width:95%;
   margin-left:15px;
+  padding:0 5px;
 }
 #notifier{
   position:fixed;
@@ -261,20 +291,19 @@ button.btn:hover{
 #showdd{
   display:none
 }
-/*bottom sheet link*/
-#modal3 .modal-content{
-  width:75%;
-  margin:auto
-}
 @media all and (max-width: 600px){
+  .logo{
+    display:block;
+  }
   #showdd{
     display: block;
   }
   #showdd{
     display: flex;
     align-items: center;
-    background-color:rgb(110, 89, 126)
+    background-color: transparent;
   }
+  #showdd i{color:indigo}
   #firstul{
     display:none
   }
@@ -305,7 +334,7 @@ button.btn:hover{
   background-color: indigo!important;
 }
 footer{
-  background-color:rebeccapurple;
+  background-color:indigo;
   display:flex;
   justify-content: space-between;
   align-items: center;
@@ -352,6 +381,7 @@ footer div:nth-child(2):hover,footer div:nth-child(2):active{
   }
 }
 @media all and (min-width:920px){
+
   .featuresList{
     display:grid;
     width:80%;
@@ -367,7 +397,7 @@ footer div:nth-child(2):hover,footer div:nth-child(2):active{
 
 }
 section.screenshots{
-  background-color: rgba(0,0,0,.02);
+  background-color:rgba(0,0,0,.1);
   padding:12px 0 15px 0
 }
 .screenshot-title{
@@ -384,13 +414,16 @@ section.screenshots{
 .carousel{
   margin:auto;
   height:300px;
-  width:90%;
+  width:95%;
 }
 div.carousel-item{
-  height:100%!important;
-  width:50%!important;
+  height:75%!important;
+  width:75%!important;
+  min-width:200px!important;
+  max-width:300px;
+  margin:auto;
 }
 div.carousel-item img{
-  height:100%;
-  width:100%;
+  height:100%!important;
+  width:100%!important;
 }

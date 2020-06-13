@@ -9,14 +9,13 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
-    
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
     <link href="/css/materialize.min.css" rel="stylesheet"/>
     <link href="./inputs-color.css" rel="stylesheet"/>
     <link href="./newhome.css" type="text/css" rel="stylesheet"/>
 </head>
-<body>
+<body id="body">
   <div id="notifier" class="<%=save.length>0?'save':''%>" >
     <p class="<%=save.length>0?'save':''%>">Sent successfully</p>
   </div>
@@ -26,7 +25,7 @@
     </a>
     <ul>
       <li>
-        <a class="btn-floating top">
+        <a class="btn-floating top" href="#body">
           <i class="material-icons">arrow_upward</i>
         </a></li>
       <li>
@@ -44,7 +43,13 @@
       })%>
       <header>
         <nav>
-          <a id="showdd" class='dropdown-trigger btn' href='#' data-target='dropdown1'><i class="material-icons">dehaze</i></a>
+          <a id="showdd" class='dropdown-trigger btn' href='#' data-target='dropdown1'>
+            <i class="material-icons">dehaze</i></a>
+          <div class="logo">            
+            <img class="z-depth-1" 
+             src="/ms-icon-144x144.png"
+              alt="app logo"/>
+          </div>
           <ul id="firstul">
             <li><a href="/" style="color:rgb(255, 136, 0)">HOME</a></li>
             <li><a href="/about">ABOUT</a></li>
@@ -62,12 +67,11 @@
             <li class="divider" tabindex="-1"></li>
             <li><a href="/getstarted?login=true">LOGIN</a></li>
           </ul>
-         
         </nav>
       </header>
       <section class="theme">
         <div class="showcase">
-          <h2>SUMO MESSENGER!</h2>
+          <h2>SUMO MESSENGER!!!</h2>
            <div class="container"> 
   
   <!-- Full-width images with caption text -->
@@ -265,9 +269,6 @@ goBtn.on('click',()=>{
   const link = $('#linktext').val();
   window.location.href = link
 
-})
-$('.top').on('click',()=>{
-  window.scrollTo(0,0)
 })
   </script>
 </body>
