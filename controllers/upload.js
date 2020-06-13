@@ -30,7 +30,6 @@ module.exports.uploader = (req,res) =>{
     upload(req, res, function(err) {
       // req.file contains information of uploaded file
       // req.body contains information of text fields, if there were any
-      console.log(req.file)
       if (!req.file) {
           return res.json('upload failed,try again');
       }else if (req.file.size > 5 * 1024 * 1024){
