@@ -19,7 +19,7 @@ module.exports.uploader = (req,res,storage) =>{
       // req.file contains information of uploaded file
       // req.body contains information of text fields, if there were any
       if (!req.file) {
-          return res.json('Only image files are allowed');
+          return res.json('upload failed,try again');
       }else if (req.file.size > 5 * 1024 * 1024){
         fs.unlink(req.file.path, (err) => {
             if (err) {

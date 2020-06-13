@@ -1,19 +1,20 @@
 <script>
+  document.addEventListener('DOMContentLoaded',()=>{
+  LoadChats();
+})
   const body = document.querySelector('section')
   const instance = M.Tabs.init(document.querySelector('.tabs'));
-  $(document).ready(function () {
     M.updateTextFields();
   const elems = document.querySelectorAll('.dropdown-trigger');
-  const instances = M.Dropdown.init(elems);
-  });
-  document.addEventListener('DOMContentLoaded', function() {
+  const instancess = M.Dropdown.init(elems);
     var collapsible= document.querySelectorAll('.collapsible');
     var col = M.Collapsible.init(collapsible);
-  const elems = document.querySelectorAll('.modal');
-  const instances = M.Modal.init(elems);
-    LoadChats();
-  })
+  const elemss = document.querySelectorAll('.modal');
+  const instances = M.Modal.init(elemss);
+
 const showIndicator = ()=>{
+  const bodyHeight = document.querySelector('body').scrollHeight;
+  $('#bg').css('height',`${bodyHeight}px`);
 $('.upload-modal').css('display','flex');
 $('.file-cont').css('display','none');
 $('.preloader-wrapper').css('display','block');
@@ -24,6 +25,7 @@ $('.upload-modal').css('display','none');
 $('.file-cont').css('display','block');
 $('.preloader-wrapper').css('display','none');
 $('.btn-close').css('display','flex')
+  $('#bg').css('display',`none`);
 }
 const LoadChats = () =>{
   const token =  $('input[name="_csrf"]').val();
@@ -216,8 +218,8 @@ form.submit()
 })
 }
 //script for toggle element
-const elems = document.querySelector('#modal2');
-const instances = M.Modal.init(elems);
+const elemes = document.querySelector('#modal2');
+const modal2instance = M.Modal.init(elemes);
 const switcher = $('#switch');
 const toggler = $('.toggle');
 const declineBtn = $('#decline')
@@ -226,7 +228,7 @@ const continueBtn = $('#continue')
 
 switcher.on('click',()=>{
 if(!switcher.attr('checked')){
-  return instances.open()
+  return modal2instance.open()
 }
 showIndicator();
 $('#modetoggler').submit()
@@ -235,17 +237,17 @@ $('#modetoggler').submit()
 declineBtn.on('click',()=>{
 if(switcher.attr('checked')){
   switcher.prop("checked", true);
-  instances.close();
+  modal2instance.close();
 }else{
   switcher.prop("checked", false);
- instances.close();
+ modal2instance.close();
 }
 
 })
 continueBtn.on('click',()=>{
 //continueBtn.text('switching...')
 showIndicator()
-instances.close();
+modal2instance.close();
 $('#modetoggler').submit()
 })
 //script for change password
@@ -311,14 +313,19 @@ $('.logout.delete button').on('click',()=>{
 })
 //image upload script
 $('.btn-close').on('click',()=>{
-  $('.upload-modal').css('display','none')
+  $('.upload-modal').css('display','none');
+  $('#bg').css('display','none');
 })
 $('.okay').on('click',()=>{
   $('.file-cont').css('display','block')
-  $('.upload-error').css('display','none')
+  $('.upload-error').css('display','none');
+  $('.btn-close').css('display','flex')
 })
 $('.open-upload-modal').on('click',()=>{
-  $('.upload-modal').css('display','flex')
+  const bodyHeight = document.querySelector('body').scrollHeight;
+  $('.upload-modal').css('display','flex');
+  $('#bg').css('height',`${bodyHeight}px`);
+  $('#bg').css('display',`block`);
 })
 const uploadFile = (file) => {
   showIndicator()
@@ -335,7 +342,6 @@ if(!['image/jpeg', 'image/gif', 'image/png', 'image/svg+xml'].includes(file.type
         $('.preloader-wrapper').css('display','none')
         $('.upload-error').css('display','block')
         $('.btn-close').css('display','flex')
-
         return;
     }
 const token = $('input[name="_csrf"]').val()
@@ -358,8 +364,10 @@ if(data.img){
   return window.location.reload()
 }
 $('.preloader-wrapper').css('display','none');
-$('.upload-error small').text(data)
-$('.upload-error').css('display','block')
+$('.upload-error small').text(data);
+$('.upload-error').css('display','block');
+$('.btn-close').css('display','flex');
+
 })
 .catch(err => console.error(err));
 }

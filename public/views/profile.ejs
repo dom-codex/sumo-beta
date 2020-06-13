@@ -29,7 +29,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <%- include('upload-loader.ejs')%>
-    <%- include('loader.ejs')%>
     <!--
     <div id="fb-root"></div>
     <script>(function(d, s, id) {
@@ -202,8 +201,10 @@
               <div class="collapsible-header"><i class="material-icons">chats</i>Chats<span id="badge"></span></div>
               <div class="collapsible-body">
                 <span>  <div id="test2" class="col s12 tchild">
+                  <%- include('upload-loader.ejs')%>
                   <div class="small-title">Chats <span id="badge"></span></div>
                 <ul class="collection">
+
                   <div class="loading">Loading...</div>
                 </ul>
                   <div class="pages"> 

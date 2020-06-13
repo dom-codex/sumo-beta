@@ -47,7 +47,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store:new MongoStore({ 
-      url: process.env.session_store }) , 
+      url: process.env.session_store}) , 
       cookie:{
         maxAge:1000 * 60 * 60 * 24 * 7//session will last for a week
       }, 
