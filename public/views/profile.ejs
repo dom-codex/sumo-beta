@@ -29,8 +29,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <%- include('upload-loader.ejs')%>
-    <!--
-    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v5.0&appId=2233666083405370&autoLogAppEvents=1"></script>
+
+    <!--<div id="fb-root"></div>
     <script>(function(d, s, id) {
       var js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) return;
@@ -129,13 +130,14 @@
 <!--                <img class="profilePic" src=" <%=img%>"/> -->
               </div>
               <div class="text-small">
-                <div>
+              <div id="mydetails">
                 <p class="myname">
                   <%=user.name%>
                 </p>
                 <div style="display: flex;">
                   <small class="small-desc">
-                  <%=user.desc%></small></div></div>
+                  <%=user.desc%></small></div>
+                </div>
               </div>
               <div class="upload">
                 <button class="open-upload-modal upload z-depth-2">
@@ -240,13 +242,13 @@
                         <div class="icons-whatsapp"><img src="/whatsapp.png"/></div>
                         <a id="wa-share" href=""> Share on whatsapp</a></div>
                       </div>
-                     <!-- <div>
-                        
-                        <a href="https://www.facebook.com/sharer/?u=https://sumo-beta.herokuapp.com/sendmsg/3" target="_blank" class="">
+                      <div>
+                        <button id="shareBtn">share on fb</button>
+                      <!--  <a href="https://www.facebook.com/sharer/?u=https://sumo-beta.herokuapp.com/sendmsg/" target="_blank" class="">
                           <i class="fa fa-facebook-official"></i>
                           Share on Facebook
-                        </a> 
-                      </div>-->
+                        </a> -->
+                      </div>
                     <div class="notifier"><p>copied!</p></div>
                 </div>
               </div>
@@ -316,7 +318,20 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="/profile.js"></script>
   <script>
-   
+   $('#shareBtn').on('click', () => {
+  FB.ui({
+    method: 'share',
+    link: 'https://sumo-beta.herokuapp.com',
+  }, (response) => {
+    if (response && !response.error_code) {
+      if (typeof response !== 'undefined') {
+        alert('success')
+      }
+    } else {
+  alert('here')
+    }
+  });
+}); 
   </script>
   <%-include('profileScript.ejs') %>
   
