@@ -24,15 +24,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <%- include('upload-loader.ejs')%>
+<<<<<<< HEAD
 
     <div id="fb-root"></div>
+=======
+<div id="fb-root"></div>
+>>>>>>> 1e176bb9d095964e14f484fe8712a2c8afbce0d6
     <script>(function(d, s, id) {
       var js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) return;
       js = d.createElement(s); js.id = id;
       js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
       fjs.parentNode.insertBefore(js, fjs);
+<<<<<<< HEAD
     }(document, 'script', 'facebook-jssdk'));</script>
+=======
+    }(document, 'script', 'facebook-jssdk'));</script> 
+>>>>>>> 1e176bb9d095964e14f484fe8712a2c8afbce0d6
   
     <input type="hidden" id="uid" value="<%=user._id%>">
   <!--modal with footer-->
@@ -237,7 +245,12 @@
                         <a id="wa-share" href=""> Share on whatsapp</a></div>
                       </div>
                       <div>
+<<<<<<< HEAD
                         <a href="https://www.facebook.com/sharer/?u=https://sumo-beta.herokuapp.com/sendmsg/<%=user.share%>" target="_blank" class="">
+=======
+                       
+                        <a href="https://www.facebook.com/sharer/?u=https://sumo-beta.herokuapp.com/sendmsg/" target="_blank" class="">
+>>>>>>> 1e176bb9d095964e14f484fe8712a2c8afbce0d6
                           <i class="fa fa-facebook-official"></i>
                           Share on Facebook
                         </a> 
