@@ -162,6 +162,7 @@ const loadFeed = () => {
   //script for search mechanism
   const search = (field) =>{
     const searchKey = $(field).val();
+    $('.search-loader').css('display','block')
     fetch(`/searchuser`, {
           method: 'POST',
           credentials:'include',
@@ -175,7 +176,7 @@ const loadFeed = () => {
         })
         .then(res=>res.json())
         .then(res=>{
-          $('.chats-loader').css('display','none');
+          $('.search-loader').css('display','none');
           $('.searchResult').html('');
           $('.searchResult.large').html('');
           if(res.result.length > 0){

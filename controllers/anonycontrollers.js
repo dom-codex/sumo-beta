@@ -1476,17 +1476,17 @@ module.exports.retrieveProfileChats = (req, res, next) => {
 };
 module.exports.searchUser = (req, res, next) => {
   const searchName = req.body.searchKey.toLowerCase().trim()
-  const userId = req.session.user.isAnonymous ? req.session.user.anonyString : req.session.user._id
+  const userId = req.session.user._id
   const regex = new RegExp(searchName, 'i')
   User.find({ "name": { $regex: regex } })
     .select('_id name chats chatShare desc images')
     .then(users => {
-      console.log(users)
       if (users.length <= 0) {
         throw new Error('no user found')
       }
       const result = users.map(user => {
         const isFriend = user.chats.some(chat => chat.chatId.toString() === userId.toString())
+        const isMe = user._id.toString() === userId.toString()
         if (isFriend) {
           return {
             name: user.name,
@@ -1496,7 +1496,9 @@ module.exports.searchUser = (req, res, next) => {
             img: user.images.open.link,
             pals: true
           }
-        } else {
+        }if(isMe){
+        }
+         else {
           return {
             name: user.name,
             desc: user.desc,

@@ -161,18 +161,22 @@ display:none;
   justify-content: center;
   align-items: center;
   left:40%;
+  top:25%;
   z-index:20000000;
-  margin:17px 0;
   height:50px;
   width:50px;
   background-color:rgba(0,0,0,.1)!important;
   border-radius: 3px;
   padding:4px;
-
 }
 .spinner-layer{
   border-color: indigo;
 }
 .search-loader, .chats-loader, .requests-loader{
-  display:none
+  display:none;
+  position: relative;
+}
+.requests,.search{
+  position: relative;
+  min-height: 100px;
 }
