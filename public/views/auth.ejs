@@ -54,18 +54,20 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
             <input type="hidden" value="<%=csrfToken%>" name="_csrf">
             <div class="input wrapper input-field">
             <i class="material-icons prefix">account_circle</i>
-              <label for="name">Name</label> 
-              <input id="name" maxlength="30" name="name" type="text"  style="border-bottom-color:<%= errors.nameError.isAvailable ? 'red' : '' %>" >
+              <label for="name">Name</label>
+              <% const isNameError = errors.nameError.isAvailable %>
+              <input id="name" onfocus="changeColor(this)" value="<%= isNameError ? errors.nameError.value  : '' %>" maxlength="30" name="name" type="text"  style="border-bottom-color:<%= isNameError ? 'red' : '' %>;color:<%= isNameError  ? 'red' : '' %>" >
               <% if(errors.nameError.isAvailable) { %>
-                <div class="warn" style="display:<%= errors.nameError.isAvailable? 'block' : 'none' %>"><small style="color:<%= errors.nameError.isAvailable ? 'red' : '' %>"><%=errors.nameError.message%></small></div>
+                <div class="warn" style="display:<%= isNameError? 'block' : 'none' %>"><small style="color:<%= isNameError ? 'red' : '' %>"><%=errors.nameError.message%></small></div>
                 <%}%>
             </div> 
 
             <div class="input wrapper input-field">
                <i class="material-icons prefix">email</i>
                <label for="email">Email</label>
-              <input id="email" name="email" type="email" style="border-bottom-color:<%= errors.emailError.isAvailable  ? 'red' : '' %>"> 
-              <div class="warn" style="display:<%= errors.emailError.isAvailable ? 'block' : 'none' %>"><small style="color:<%= errors.emailError.isAvailable ? 'red' : '' %>"><%=errors.emailError.message%></small></div>
+               <% const isEmailError = errors.emailError.isAvailable %>
+              <input id="email" onfocus="changeColor(this)" value="<%= isEmailError ? errors.emailError.value  : '' %>" name="email" type="email" style="border-bottom-color:<%= isEmailError ? 'red' : '' %>;color:<%= isEmailError  ? 'red' : '' %>"> 
+              <div class="warn" style="display:<%= isEmailError ? 'block' : 'none' %>"><small style="color:<%= isEmailError ? 'red' : '' %>"><%=errors.emailError.message%></small></div>
             </div>
 
               <div class="input wrapper input-field">
@@ -78,8 +80,9 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
              <div class="input wrapper input-field">
                <i class="material-icons prefix">lock</i>
               <label for="pwd">password</label> 
-               <input id="pwd" name="pwd" type="password" required style="border-bottom-color:<%= errors.passwordError.isAvailable  ? 'red' : '' %>"> 
-               <div class="warn" style="display:<%= errors.passwordError.isAvailable ? 'block' : 'none' %>"><small style="color:<%= errors.passwordError.isAvailable ? 'red' : '' %>"><%=errors.passwordError.message%></small></div>
+              <% const isPasswordError = errors.passwordError.isAvailable %>
+               <input id="pwd" value="<%= isPasswordError ? errors.passwordError.value  : '' %>" name="pwd" type="password" required style="border-bottom-color:<%= isPasswordError  ? 'red' : '' %>;color:<%= isPasswordError  ? 'red' : '' %>"> 
+               <div class="warn" style="display:<%= isPasswordError ? 'block' : 'none' %>"><small style="color:<%= isPasswordError ? 'red' : '' %>"><%=errors.passwordError.message%></small></div>
               </div>
 
               <div class="input wrapper input-field">
@@ -110,4 +113,9 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
     </section>
     <script src="js/materialize.min.js"></script>
     <script src="newChannelForm.js"></script>
+    <script>
+   const changeColor = (input) =>{
+     input.style.color = ''
+   }
+    </script>
   </body></html>

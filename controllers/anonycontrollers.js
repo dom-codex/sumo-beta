@@ -44,14 +44,17 @@ module.exports.createChannel = (req, res, next) => {
       nameError: {
         isAvailable: nameError ? true : false,
         message: nameError ? nameError.message : '',
+        value: nameError ? nameError.value :'',
       },
       emailError: {
         isAvailable: emailError ? true : false,
         message: emailError ? emailError.message : '',
+        value: emailError ? emailError.value:''
       },
       phoneError: {
         isAvailable: phoneError ? true : false,
         message: phoneError ? phoneError.message : '',
+        value: phoneError ? phoneError.value :''
       },
       passwordError: {
         isAvailable: passwordError ? true : false,
@@ -75,7 +78,9 @@ module.exports.createChannel = (req, res, next) => {
   //const success = req.flash('success')
   res.render("auth", {
     csrfToken: req.csrfToken(),
-    other: other.length > 0 ? other[0] : { isSet: false, message: '' },
+    other: other.length > 0 ? other[0] : { 
+      isSet: false, message: ''
+     },
     loginErrors: loginErrors ? loginErrors :
       {
         emailError: {
@@ -118,6 +123,7 @@ module.exports.createUserChannel = (req, res, next) => {
       return {
         param: err.param,
         message: err.msg,
+        value : err.value
       }
     })
     const err = {
