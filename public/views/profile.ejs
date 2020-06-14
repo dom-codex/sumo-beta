@@ -231,16 +231,20 @@
                       <label for="phone" class="active">Chat Link</label>
                       <div class="copy-btn"><button id="copy2">Copy</button></div>
                     </div>
-                    <div class="whatsapp-cont">
-                      <div class="whatsapp">
-                        <div class="icons-whatsapp"><img src="/whatsapp.png"/></div>
+                    <div class="social-cont">
+                      <div class="social">
+                        <div class="icons-social whatsapp"><img src="/whatsapp.svg"/></div>
                         <a id="wa-share" href=""> Share on whatsapp</a></div>
                       </div>
-                      <div>
-                        <a href="https://www.facebook.com/sharer/?u=https://sumo-beta.herokuapp.com/sendmsg/<%=user.share%>" target="_blank" class="">
+                      <div class="social-cont fb-cont">
+                        <div class="social">
+                          <div class="icons-social fb">
+                            <img src="/fb-logo.svg"/>
+                          </div>
+                        <a id="fb-share" href="https://www.facebook.com/sharer/?u=https://sumo-beta.herokuapp.com/sendmsg/<%=user.share%>" target="_blank" class="">
                           <i class="fa fa-facebook-official"></i>
                           Share on Facebook
-                        </a> 
+                        </a> </div>
                       </div>
                     <div class="notifier"><p>copied!</p></div>
                 </div>

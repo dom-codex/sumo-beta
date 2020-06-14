@@ -1,7 +1,16 @@
+
 *{
   padding:0;
   margin:0;
   font-family: Rubik;
+}
+@-webkit-keyframes showbody{
+  from{
+    opacity:0
+  }
+  to{
+    opacity:1
+  }
 }
 @keyframes showbody{
   from{
@@ -12,9 +21,15 @@
   }
 }
 .showBody{
-  animation-name: showbody;
-  animation-duration: 2s;
-  animation-fill-mode: forwards;
+  -webkit-animation-name: showbody;
+          animation-name: showbody;
+  -webkit-animation-duration: 2s;
+          animation-duration: 2s;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+}
+body{
+  opacity:0;
 }
 nav{
   background-color: indigo;
@@ -29,9 +44,15 @@ h2{
   padding:5px;
 }
 nav div{
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 .form-body{
   border-radius:6px;
@@ -50,8 +71,12 @@ nav div{
   margin-right:35px
 }
 .forgotPass{
+  display:-webkit-box;
+  display:-ms-flexbox;
   display:flex;
-  justify-content: flex-end;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
   padding-top:15px;
   padding-right: 18px;
 }
@@ -60,7 +85,9 @@ nav div{
   text-decoration: underline;
 }
 .warning-board, .success{
-  justify-content: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   margin-top:10px;
   display: none;
   opacity:0;
@@ -107,8 +134,12 @@ label[for="pwd"]::after{
   font-size:.8em;
 }
 .button{
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: flex-end;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
 }
 
 .button button{
@@ -119,6 +150,22 @@ label[for="pwd"]::after{
   background: indigo;
   color:#fff;
   font-weight: 600;
+}
+@-webkit-keyframes show{
+  0%{
+    opacity:1
+  }
+  80%{
+    background-color: transparent;
+  }
+  79%{
+    opacity:0;
+  }
+  100%{
+    opacity:0;
+    display: none;
+    height:0px;
+  }
 }
 @keyframes show{
   0%{
@@ -137,16 +184,24 @@ label[for="pwd"]::after{
   }
 }
 .display{
-  animation-name: show;
-  animation-duration: 8s;
+  -webkit-animation-name: show;
+          animation-name: show;
+  -webkit-animation-duration: 8s;
+          animation-duration: 8s;
+  display:-webkit-box;
+  display:-ms-flexbox;
   display:flex;
-  animation-fill-mode: forwards;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
 }
 .other{
   position:fixed;
-  animation-name: show;
-  animation-duration: 8s;
-  animation-fill-mode: forwards;
+  -webkit-animation-name: show;
+          animation-name: show;
+  -webkit-animation-duration: 8s;
+          animation-duration: 8s;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
   text-align: center;
   padding-top:20px;
   opacity:0;

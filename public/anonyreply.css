@@ -6,7 +6,21 @@
 body{
   height:100vh; 
   background-color: rebeccapurple;
-  min-width:320px
+  min-width:320px;
+  opacity:0;
+}
+@keyframes showbody{
+  from{
+    opacity:0
+  }
+  to{
+    opacity:1
+  }
+}
+.showBody{
+  animation-name: showbody;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
 }
 nav{
   background-color: indigo;
