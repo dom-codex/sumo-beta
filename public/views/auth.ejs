@@ -50,13 +50,13 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
       </ul>
     </div>
     <div id="signup" class="col s12">
-      <form action='/createUserChannel' method="post">
+      <form action='/createUserChannel' method="post" autocomplete="off">
             <input type="hidden" value="<%=csrfToken%>" name="_csrf">
             <div class="input wrapper input-field">
             <i class="material-icons prefix">account_circle</i>
               <label for="name">Name</label>
               <% const isNameError = errors.nameError.isAvailable %>
-              <input id="name" onfocus="changeColor(this)" value="<%= isNameError ? errors.nameError.value  : '' %>" maxlength="30" name="name" type="text"  style="border-bottom-color:<%= isNameError ? 'red' : '' %>;color:<%= isNameError  ? 'red' : '' %>" >
+              <input id="name" onfocus="changeColor(this)" value="<%= isNameError ? errors.nameError.value  : '' %>" maxlength="30" name="name" type="text"  style="border-bottom-color:<%= isNameError ? 'red' : '' %>;color:<%= isNameError  ? 'red' : '' %>" autocomplete="off" >
               <% if(errors.nameError.isAvailable) { %>
                 <div class="warn" style="display:<%= isNameError? 'block' : 'none' %>"><small style="color:<%= isNameError ? 'red' : '' %>"><%=errors.nameError.message%></small></div>
                 <%}%>
@@ -66,14 +66,14 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
                <i class="material-icons prefix">email</i>
                <label for="email">Email</label>
                <% const isEmailError = errors.emailError.isAvailable %>
-              <input id="email" onfocus="changeColor(this)" value="<%= isEmailError ? errors.emailError.value  : '' %>" name="email" type="email" style="border-bottom-color:<%= isEmailError ? 'red' : '' %>;color:<%= isEmailError  ? 'red' : '' %>"> 
+              <input id="email" autocomplete="off" onfocus="changeColor(this)" value="<%= isEmailError ? errors.emailError.value  : '' %>" name="email" type="email" style="border-bottom-color:<%= isEmailError ? 'red' : '' %>;color:<%= isEmailError  ? 'red' : '' %>"> 
               <div class="warn" style="display:<%= isEmailError ? 'block' : 'none' %>"><small style="color:<%= isEmailError ? 'red' : '' %>"><%=errors.emailError.message%></small></div>
             </div>
 
               <div class="input wrapper input-field">
                <i class="material-icons prefix">phone</i>
                <label for="phone">phone</label>
-              <input id="phone" name="phone" type="number" style="border-bottom-color:<%= errors.phoneError.isAvailable  ? 'red' : '' %>">
+              <input id="phone" autocomplete="off" name="phone" type="number" style="border-bottom-color:<%= errors.phoneError.isAvailable  ? 'red' : '' %>">
               <div class="warn" style="display:<%= errors.phoneError.isAvailable ? 'block' : 'none' %>"><small style="color:<%= errors.phoneError.isAvailable ? 'red' : '' %>"><%=errors.phoneError.message%></small></div>
              </div>
 
@@ -81,30 +81,30 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
                <i class="material-icons prefix">lock</i>
               <label for="pwd">password</label> 
               <% const isPasswordError = errors.passwordError.isAvailable %>
-               <input id="pwd" value="<%= isPasswordError ? errors.passwordError.value  : '' %>" name="pwd" type="password" required style="border-bottom-color:<%= isPasswordError  ? 'red' : '' %>;color:<%= isPasswordError  ? 'red' : '' %>"> 
+               <input id="pwd" autocomplete="off" value="<%= isPasswordError ? errors.passwordError.value  : '' %>" name="pwd" type="password" required style="border-bottom-color:<%= isPasswordError  ? 'red' : '' %>;color:<%= isPasswordError  ? 'red' : '' %>"> 
                <div class="warn" style="display:<%= isPasswordError ? 'block' : 'none' %>"><small style="color:<%= isPasswordError ? 'red' : '' %>"><%=errors.passwordError.message%></small></div>
               </div>
 
               <div class="input wrapper input-field">
               <i class="material-icons prefix">enhanced_encryption</i>
                <label for="cpwd">comfirm password</label> 
-                <input id="cpwd" name="cpwd" type="password" required>
+                <input id="cpwd" autocomplete="off" name="cpwd" type="password" required>
               </div>
 
               <div class="button wrap"><button type="submit" class="z-depth-2">Submit</button></div>
           </form>
       </div>
     <div id="login" class="col s12">
-      <form action='/loginuser' method="post" autocomplete="off">
+      <form action='/loginuser' autocomplete="off" method="post" autocomplete="off">
         <input type="hidden" value="<%=csrfToken%>" name="_csrf">
             <div class="input wrapper input-field">
                <i class="material-icons prefix">mail</i>
                <label for="mails">Email</label> 
-              <input id="mails" name="email" type="email" required> </div>
+              <input id="mails" autocomplete="off" name="email" type="email" required> </div>
              <div class="input wrapper input-field">
               <i class="material-icons prefix">lock</i>
               <label for="pwds">password</label> 
-               <input id="pwds" name="pwd" type="password" required> </div>
+               <input id="pwds" autocomplete="off" name="pwd" type="password" required> </div>
               <div class="button wrap"><button type="submit">Submit</button></div>
           </form>
       </div>
