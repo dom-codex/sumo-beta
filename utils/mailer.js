@@ -25,6 +25,9 @@ a.link{
   color:white;
   letter-spacing:1px
 }
+.notice{
+  margin-top:20px;
+}
 `;
 const nodemailer = require('nodemailer');
 module.exports.mailer = (req,res,email,name,link)=>{
@@ -67,7 +70,15 @@ module.exports.mailer = (req,res,email,name,link)=>{
       <p class="name">HI ${name},</p>
       <p>Forgot your password ? no probs!!! just click the link below to reset your password</p>
       <a class="link" href="${headUrl}/setnewpassword/${link}">Reset password</a>
+      <div class="notice">
+      <small> if reset button is not visible use the link below </small>
+      <div class="notice">
+      ${headUrl}/setnewpassword/${link}
+      </div> </div>
       <div class="note">
+      <div>
+      <small>* link is valid for 5mins * </small>
+      </div>
       <i>
       *If you didn’t make this request, or made it by mistake, please ignore this email. Your password will remain as it was.
       </i></div>
@@ -97,7 +108,7 @@ module.exports.mailer = (req,res,email,name,link)=>{
 module.exports.confirmationMailer = (email,name,id)=>{
   const headUrl = process.env.urlHead || `http://localhost:3000`
     const transporter = nodemailer.createTransport({
-      /*host: "smtp.mailtrap.io",
+    /*  host: "smtp.mailtrap.io",
       port: 2525,
       auth: {
         user: "746d242333b2a4",
@@ -132,8 +143,9 @@ module.exports.confirmationMailer = (email,name,id)=>{
       <p>Your are one step away from activating your account,
        click the link below to activate your account</p>
       <a class="link" href="${headUrl}/channel?myid=${id}">Activate</a>
-      <div><small> *use the link below if you can't see the 'activate' button </small>
-      <div> ${headUrl}/channel?myid=${id} </div> 
+      <div class="notice"><small> *use the link below if you can't 
+          see the 'activate' button </small>
+      <div class="notice"> ${headUrl}/channel?myid=${id} </div> 
       </body>
       </html>
       ` 
