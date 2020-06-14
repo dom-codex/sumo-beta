@@ -22,7 +22,7 @@ const errorController = require('./controllers/erros')
 const isAuth = require('./utils/isAuth')
 //models
 const User = require("./models/user");
-const uri = process.env.db;
+const uri = process.env.db ;
 
 //template engine configuration
 app.set("view engine", "ejs");
