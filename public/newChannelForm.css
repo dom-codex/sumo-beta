@@ -3,6 +3,19 @@
   margin:0;
   font-family: Rubik;
 }
+@keyframes showbody{
+  from{
+    opacity:0
+  }
+  to{
+    opacity:1
+  }
+}
+.showBody{
+  animation-name: showbody;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+}
 nav{
   background-color: indigo;
   height:inherit;

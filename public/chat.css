@@ -4,8 +4,22 @@
   font-family:Rubik;
   box-sizing: border-box;
 }
+@keyframes showbody{
+  from{
+    opacity:0
+  }
+  to{
+    opacity:1
+  }
+}
+.showBody{
+  animation-name: showbody;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+}
 body{ 
   overflow: hidden;
+  min-width:312px
 }
 nav{
   background-color: indigo;

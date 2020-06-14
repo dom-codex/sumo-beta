@@ -2,6 +2,19 @@
   margin: 0;
   padding: 0;
 }
+@keyframes showbody{
+  from{
+    opacity:0
+  }
+  to{
+    opacity:1
+  }
+}
+.showBody{
+  animation-name: showbody;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+}
 body {
   height: 100vh;
   width: 100vw;

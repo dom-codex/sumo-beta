@@ -5,6 +5,19 @@
   outline: none;
   font-family:Rubik;
 }
+@keyframes showbody{
+  from{
+    opacity:0
+  }
+  to{
+    opacity:1
+  }
+}
+.showBody{
+  animation-name: showbody;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+}
 body{
   height:100%;
   width:100%;
@@ -100,7 +113,7 @@ div.col{
 }
 .pp{
   margin-left: 40px;
-  background-color: rebeccapurple;
+  background-color: rebeccapurple!important;
 }
 #mydetails{
   margin-bottom:12px
