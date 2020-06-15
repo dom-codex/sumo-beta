@@ -1,0 +1,138 @@
+/*media queries */
+@media all and (max-width: 300px) {
+    body {
+      overflow: scroll;
+    }
+    #badge {
+      right: 25px;
+    }
+  }
+  .text-small {
+    width: 53%;
+  }
+  .myname,
+  small.small-desc {
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  
+@media all and (max-width: 780px) {
+  nav {
+    display: none !important;
+  }
+  .row,
+  section,
+  .window {
+    margin-top: 0 !important;
+    width: 100% !important;
+  }
+  .user-image-cont {
+    position: relative;
+    background-color: indigo;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    width: 100%;
+  }
+  .user-image-cont #showdd {
+    position: absolute;
+    right: 0;
+    margin-right: 0;
+  }
+  #showdd i {
+    font-size: 24px;
+  }
+  .pp,
+  .profilePic {
+    display: block;
+    height: 150px;
+    width: 150px;
+    border-radius: 75px;
+  }
+  .pp {
+    margin-left: 20px;
+    background-color: rebeccapurple;
+  }
+  .text-small {
+    padding-left: 30px;
+    font-size: 2em;
+    color: #fff;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    height: 100%;
+  }
+}
+@media all and (min-width: 781px) {
+  #showdd {
+    display: none;
+  }
+  .row {
+    border-left: thin solid rgba(0, 0, 0, 0.08);
+  }
+}
+@media all and (max-width: 500px) {
+  #test1,
+  #test2,
+  #test3,
+  #test4 {
+    width: 100%;
+  }
+}
+@media all and (max-width: 300px) {
+  body {
+    overflow: scroll;
+  }
+  .myname {
+    padding-right: 20px;
+  }
+}
+@media all and (max-width: 450px) {
+  .pp {
+    margin-left: 10px;
+  }
+  .upload {
+    left: 56px;
+    bottom: 17px;
+    background-color: rgba(0, 0, 0, 0.75);
+  }
+}
+
+@media all and (max-width:350px){
+    .firstdiv{
+      flex-direction: column;
+      padding-top:20px;
+      text-align: center;
+    }
+    .upload{
+      z-index:20;
+      bottom:22px;
+      left:95px
+    } 
+     .text-small{
+      font-size:.9em;
+      padding-left:0;
+      width:100%;
+      text-align:center;
+    }
+    .small-desc{
+      display:inline;
+      margin:auto;
+    }
+    .myname{
+      padding-right:0
+    }
+  
+  }

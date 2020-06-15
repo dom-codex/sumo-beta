@@ -112,7 +112,7 @@ div.col{
 }
 /* new styles */
 .firstdiv{
-  height:200px;
+  min-height:200px;
 }
 .user-image-cont{
   position: relative;
@@ -141,7 +141,6 @@ div.col{
 }
 .pp{
   margin-left: 40px;
-  background-color: rebeccapurple!important;
 }
 #mydetails{
   margin-bottom:12px
@@ -555,20 +554,6 @@ label{
 .checkbox {  
   display : none; 
 } 
-/*media queries */
-@media all and (min-width:781px){
-  #showdd{
-    display:none;
-  }
-  .row{
-    border-left:thin solid rgba(0,0,0,.08);
-  }
-}
-@media all and (max-width:500px){
-  #test1,#test2,#test3,#test4{
-    width:100%;
-  }
-}
 .copy-btn, .copy, .input-field{
   width:100%;
   padding-right: 0;
@@ -668,63 +653,10 @@ label{
     height:0px;
   }
 }
-@media all and (max-width:780px){
-nav{
-  display:none!important
-}
-.row,section,.window{
-  margin-top:0!important;
-  width:100%!important
-}
-.user-image-cont{
-  position: relative;
-  background-color: indigo;
-  display:-webkit-box;
-  display:-ms-flexbox;
-  display:flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  width:100%;
-}
-.user-image-cont #showdd{
-  position: absolute;
-  right:0;
-}
-#showdd i{
-  font-size:24px
-}
-.pp, .profilePic{
-  display:block;
-  height:150px;
-  width:150px;
-  border-radius:75px;
-}
-.pp{
-  margin-left: 40px;
-  background-color: seagreen;
-}
-.text-small{
-  padding-left:30px;
-  font-size:2em;
-  color:#fff;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  height:100%
-}
-}
 .loading{
   display:none;
   text-align: center;
   padding-top:10px;
   font-weight: bold;
 }
-div.info{width:95%;margin:auto;padding-top:38px}
+div.info{width:95%;margin:auto;padding-top:38px}y

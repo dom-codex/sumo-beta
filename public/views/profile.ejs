@@ -16,6 +16,7 @@
     <link href="/inputs-color.css" type="text/css" rel="stylesheet"/>
     <link href="/materialize-override.css" type="text/css" rel="stylesheet"/>
     <link href="/sumoProfile.css" type="text/css" rel="stylesheet"/>
+    <link href="/profile-mediaQueries.css" type="text/css" rel="stylesheet"/>
     <% if(anonymous) {%>
       <link href="/dark.css" rel="stylesheet" type="text/css" />
        <%}%>
@@ -128,7 +129,7 @@
                 <p class="myname">
                   <%=user.name%>
                 </p>
-                <div style="display: flex;">
+                <div  style="display: flex;">
                   <small class="small-desc">
                   <%=user.desc%></small></div>
                 </div>
@@ -150,7 +151,7 @@
                     <div class="input-field">
                        <i class="material-icons prefix">account_circle</i>
                           <label for="name" class="active">Name</label>
-                      <input id="name" type="text" name="name" value="<%=user.name%>" class="validate" data-length="15" disabled>
+                      <input maxlength="25" id="name" type="text" name="name" value="<%=user.name%>" class="validate" data-length="15" disabled>
                     </div>
                     <div class="ctrl"><button id="nameedit" onclick="Handler(this,'name')">edit</button>
                       <button class="temp" id="namecancel">cancel</button>
@@ -175,7 +176,6 @@
                         <label for="email" class="active">email</label>
                         <input id="email" name="email" type="email" value="<%=user.email%>" disabled>
                         <small style="display:<%= errors.field === 'email'? 'block': 'none' %>;margin-left:35px;color:red"><%=errors.message%></small>
-                        <small style="display:<%= user.email.length > 0? 'none': 'block' %>;margin-left:35px">add email for password recovery purpose</small>
                     </form>
                     </div>
                     <div class="ctrl"><button onclick="Handler(this,'email')" id="emailedit">edit</button><button class="temp"
@@ -183,7 +183,7 @@
         
                     <div class="input-field">
                        <i class="material-icons prefix">account_circle</i>
-                      <textarea id="desc" disabled class="materialize-textarea"><%= user.desc%></textarea>
+                      <textarea maxlength="200" id="desc" disabled class="materialize-textarea"><%= user.desc%></textarea>
                       <label for="desc" class="active">About</label>
                     </div>
                     <div class="ctrl"><button onclick="Handler(this,'desc')" id="descedit">edit</button><button class="temp"
