@@ -108,4 +108,106 @@ socket.on('connect', (error) => {
        $('#status').css('display','block')
        $('#typing').css('display','none')
      })
+     //chat loader on scroll
+     const Scroll = () => {
+      if(page == -1) return
+      else if ((chatWindow.scrollTop === 0 && page > 1)) {
+        height = chatWindow.scrollHeight;
+        $('.loader').css('display','flex')
+        fetch(`/retrievechat?page=${page}`, {
+          method: 'POST',
+          headers: {
+            "csrf-token": document.querySelector('input[name="_csrf"]').value,
+            "Content-Type": 'application/json'
+          },
+          body: JSON.stringify({
+            fid: document.querySelector('#friendId').value,
+            uid: document.querySelector('#uid').value,
+          })
+        })
+          .then(res => res.json())
+          .then(res => {
+            $('.loader').css('display','none')
+            page = res.next
+            if(res.code === 301){
+              page = -1
+              section.scrollTop = 0
+              return
+            }
+            else if (res.messages.length > 0) {
+              res.messages.forEach((msg, i) => {
+                if (msg.receiver.toString() === $('#friendId').val().toString()) {
+                  $('.chats').prepend(`
+              <span class="u2 chat">${msg.body}
+                <div class="time">
+                  ${msg.time} &nbsp; 
+                  <div class="time"><i class="material-icons">done_all</i></div> 
+                </div>
+              </span>
+              `)
+                } else {
+                  $('.chats').prepend(`               
+                <span class="u1 chat">${msg.body}
+                  <div class="time">${msg.time}</div>
+                </span>`)
+
+                }
+              })
+            }
+            chatWindow.scrollTop = chatWindow.scrollHeight - height
+          }).catch(err=>{
+            $('.loader').css('display','none')
+          })
+
+      }
+     }
+    //load top 10 latest chats with user
+    const loadLatestChats = () =>{
+      $('.loader').css('display','flex')
+        fetch(`/retrievechat?page=1`, {
+          method: 'POST',
+          headers: {
+            "csrf-token": document.querySelector('input[name="_csrf"]').value,
+            "Content-Type": 'application/json'
+          },
+          body: JSON.stringify({
+            fid: document.querySelector('#friendId').value,
+            uid: document.querySelector('#uid').value,
+          })
+        })
+          .then(res => res.json())
+          .then(res => {
+            $('.loader').css('display','none')
+            page = res.next
+            if(res.code === 301){
+              page = -1
+              section.scrollTop = 0
+              return
+            }
+            else if (res.messages.length > 0) {
+              res.messages.forEach((msg, i) => {
+                if (msg.receiver.toString() === $('#friendId').val().toString()) {
+                  $('.chats').prepend(`
+              <span class="u2 chat">${msg.body}
+                <div class="time">
+                  ${msg.time} &nbsp; 
+                  <div class="time"><i class="material-icons">done_all</i></div> 
+                </div>
+              </span>
+              `)
+                } else {
+                  $('.chats').prepend(`               
+                <span class="u1 chat">${msg.body}
+                  <div class="time">${msg.time}</div>
+                </span>`)
+
+                }
+              })
+            }
+            chatWindow.scrollTop = chatWindow.scrollHeight - height
+          }).catch(err=>{
+            $('.loader').css('display','none')
+          })
+
+    }
     </script>

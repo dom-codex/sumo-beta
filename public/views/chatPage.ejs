@@ -81,67 +81,10 @@
   <script>
       const menu = document.querySelectorAll('.dropdown-trigger');
     const drop = M.Dropdown.init(menu);
-  </script>
-  <script>
-      let page = 1
-      let height = 0
-    const Scroll = () => {
-      if(page == -1) return
-      else if ((chatWindow.scrollTop === 0 || page == 1)) {
-        height = chatWindow.scrollHeight;
-        $('.loader').css('display','flex')
-        fetch(`/retrievechat?page=${page}`, {
-          method: 'POST',
-          headers: {
-            "csrf-token": document.querySelector('input[name="_csrf"]').value,
-            "Content-Type": 'application/json'
-          },
-          body: JSON.stringify({
-            fid: document.querySelector('#friendId').value,
-            uid: document.querySelector('#uid').value,
-          })
-        })
-          .then(res => res.json())
-          .then(res => {
-            $('.loader').css('display','none')
-            page = res.next
-            if(res.code === 301){
-              page = -1
-              section.scrollTop = 0
-              return
-            }
-            else if (res.messages.length > 0) {
-              res.messages.forEach((msg, i) => {
-                if (msg.receiver.toString() === $('#friendId').val().toString()) {
-                  $('.chats').prepend(`
-              <span class="u2 chat">${msg.body}
-                <div class="time">
-                  ${msg.time} &nbsp; 
-                  <div class="time"><i class="material-icons">done_all</i></div> 
-                </div>
-              </span>
-              `)
-                } else {
-                  $('.chats').prepend(`               
-                <span class="u1 chat">${msg.body}
-                  <div class="time">${msg.time}</div>
-                </span>`)
-
-                }
-              })
-            }
-            chatWindow.scrollTop = chatWindow.scrollHeight - height
-          }).catch(err=>{
-            alert('here')
-            $('.loader').css('display','none')
-          })
-
-      }
-    }
-  </script>
-  <script>
+    let page = 1
+    let height = 0
     document.addEventListener("DOMContentLoaded",()=> {
-    Scroll()
+    loadLatestChats()
   });
   </script>
   <%- include('chatScript.ejs') %>
