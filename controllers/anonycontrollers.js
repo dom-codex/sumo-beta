@@ -338,29 +338,23 @@ module.exports.postToFeed = (req, res, next) => {
     time: time
   })
   return feed.save()
-    .then(feed => {
+    .then(_=> {
+      return Feed.find({user:feedString}).countDocuments()
+    })
+    .then(nfeeds=>{
       User.findOne({ share: feedString })
         .then((result) => {
           if (!result) {
             //if invalid take them to the homescreen
             throw new Error('not found')
           }
-          //get the user feeds array
-          //append the new feeds
-          let feeds = result.feeds;
-          feeds.push(feed._id);
-          result.feeds = feeds;
-          //save changes
-          result
-            .save()
-            .then((result) => {
               //send a notifier to the user to update their ui instantly
               io()
                 .to(result._id)
-                .emit("notification", { message: message, length: result.feeds.length, time: time });
+                .emit("notification", { message: message, length: nfeeds , time: time });
               io()
                 .to(result.anonyString)
-                .emit("notification", { message: message, length: result.feeds.length, time: time });
+                .emit("notification", { message: message, length:nfeeds , time: time });
 
               res.redirect("/");
             })
@@ -368,7 +362,6 @@ module.exports.postToFeed = (req, res, next) => {
               throw e;
             });
         })
-    })
     .catch((err) => {
       if (err === 'not found') {
         return res.redirect("/");
@@ -1114,9 +1107,7 @@ module.exports.sendChat = (req, res, next) => {
               //add message to chat messages array in user chats
               chats.lastUpdate = new Date()
               let msgs = chats.messages;
-              msgs.push(
-                message._id
-              );
+              msgs[0] = message._id
               chats.messages = msgs;
               return chats;
             } else {
@@ -1155,9 +1146,7 @@ module.exports.sendChat = (req, res, next) => {
               ) {
                 chats.lastUpdate = new Date()
                 let msgs = chats.messages;
-                msgs.push(
-                  msgID
-                );
+                msgs[0]= msgID
                 chats.messages = msgs;
                 return chats;
               }
@@ -1177,9 +1166,7 @@ module.exports.sendChat = (req, res, next) => {
                 //add message to messages array
                 chats.lastUpdate = new Date()
                 let msgs = chats.messages;
-                msgs.push(
-                  msgID
-                );
+                msgs[0] = msgID
                 chats.messages = msgs;
                 return chats;
               }
@@ -1220,22 +1207,37 @@ module.exports.sendChat = (req, res, next) => {
 }
 module.exports.removeAChat = (req, res, next) => {
   let myChats
-  User.findById(req.session.user._id)
+  const uid = req.body.uid;
+  let userId
+  User.findById(req.session.user._id).select(' isAnonymous chats anonyChats _id')
     .then(user => {
       if (user.isAnonymous) {
         myChats = user.anonyChats
+        userId = req.session.user.anonyString
       } else {
-        myChats = user.chats
+        myChats = user.chats;
+        userId = req.session.user._id
       }
       //filter out unwanted user from chat list
-      const filteredList = myChats.filter(chat => chat.chatId.toString() !== req.body.uid.toString())
+      const filteredList = myChats.filter(chat => chat.chatId.toString() !== uid.toString())
       if (user.isAnonymous) {
         user.anonyChats = filteredList
+        return Message.deleteMany({ $or: [{ $and: [{ sender: uid }, 
+          { receiver: userId }] }, 
+          { $and: [{ sender: userId }, 
+          { receiver: uid }] }] }).then(_=>{
+            return user.save()
+          })
+
       } else {
         user.chats = filteredList
-
+        return Message.deleteMany({ $or: [{ $and: [{ sender: uid }, 
+          { receiver: userId }] }, 
+          { $and: [{ sender: userId }, 
+          { receiver: uid }] }] }).then(_=>{
+            return user.save()
+          })
       }
-      return user.save()
     }).catch(err => {
       throw err
     })

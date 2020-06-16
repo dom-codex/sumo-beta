@@ -34,15 +34,15 @@ module.exports.loadFeeds = (req, res, next) => {
     let totalFeeds;
     let last;
     if (page <= 0) return
-    User.findById(req.session.user._id).select('feeds')
+    User.findById(req.session.user._id).select('share feeds')
         .then(user => {
 
-            Feed.find({ _id: { $in: user.feeds } }).countDocuments()
+            Feed.find({user:user.share }).countDocuments()
                 .then(nFeeds => {
                     totalFeeds = nFeeds
                     last = (Math.ceil((totalFeeds) / 10))
                     if ((Math.ceil((totalFeeds) / 10) >= last)) {
-                        return Feed.find({ user: req.session.user.share })
+                        return Feed.find({ user: user.share })
                             .sort({ $natural: -1 }).skip((page - 1) * 10).limit(10)
                     }
                 })
@@ -123,11 +123,9 @@ module.exports.loadChats = (req, res, next) => {
                                             _id: a.anonyString,
                                             img: a.images.anonymous.thumbnail,
                                             anStatus: a.anonymousStatus,
-                                            message: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1]._doc.body : 'anonymous chat',
-                                            isNew: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1]._doc.isMsgNew : false,
-                                            time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1]._doc.time : '',
-                                            stamp: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1]._doc.stamp : ''
-
+                                            message: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0]._doc.body : 'anonymous chat',
+                                            isNew: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0]._doc.isMsgNew : false,
+                                            time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0]._doc.time : '',
                                         }
                                     }
                                 })
@@ -152,9 +150,9 @@ module.exports.loadChats = (req, res, next) => {
                                         _id: aUser._id,
                                         img: aUser.images.open.thumbnail,
                                         status: aUser.status,
-                                        isNew: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].isMsgNew : false,
-                                        message: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].body : 'say hi',
-                                        time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].time : '',
+                                        isNew: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0].isMsgNew : false,
+                                        message: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0].body : 'say hi',
+                                        time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0].time : '',
                                     }
                                 }
                             })
@@ -218,9 +216,9 @@ module.exports.loadChatsForAnonymousUser = (req, res, next) => {
                     _id: aUser._id,
                     status: aUser.status,
                     img: aUser.images.open.thumbnail,
-                    isNew: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].isMsgNew : false,
-                    message: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].body : 'say hi',
-                    time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[myChatsWithUser.messages.length - 1].time : ''
+                    isNew: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0].isMsgNew : false,
+                    message: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0].body : 'say hi',
+                    time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0].time : ''
                 }
             })
             res.json({

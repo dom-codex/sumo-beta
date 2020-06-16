@@ -64,12 +64,6 @@ const UserSchema = new schema ({
            img:String
         }
       ],
-      feeds:[
-        {
-        message: String,
-        time: String
-      }
-    ],
       status: String,
       anonymousStatus: String,
       chats: [
