@@ -22,18 +22,29 @@
   min-height:70px;
 }
 .emoji p{
-  padding-left:56px
+ display:flex;
+ justify-content: center;
+ width:1fr
 }
 #search{
   overflow-y: scroll
 }
 .emoji{
-  display: none;
+  display: none!important;
   width: 100%;
+  height:120px;
+  overflow-y: scroll
+
 }
 :target{
   overflow-y:scroll;
   height:120px;
+}
+.isActive{
+  display:grid!important
+}
+.hide{
+  display: none!important;
 }
 :target, .tabs, #search, .isActive{
   display: grid;
@@ -48,10 +59,10 @@
   font-size:1.5rem;
   color:gold;
 }
-#face{
+/*#face{
   height:120px;
   overflow-y: scroll;
-}
+}*/
 .emoji-footer{
   background-color:rgb(118, 69, 167);
   padding:12px;
@@ -100,4 +111,9 @@ a[href="#food"] i{
   height:100% !important;
   display:flex;
   padding:10px
+}
+@media all and (max-width:350px){
+  body{
+    overflow:scroll
+  }
 }

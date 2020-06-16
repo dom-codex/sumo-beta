@@ -57,7 +57,9 @@
     <script>
       const showSmiley = document.querySelector('.smiley button');
       showSmiley.addEventListener('click',()=>{
-        document.querySelector('.emoticons').style.display = 'block'
+        reRenderList()
+        document.querySelector('.emoticons').style.display = 'block';
+        document.querySelector('#face').classList.add('isActive')
       })
       const inputArea = document.querySelector('textarea')
       inputArea.addEventListener('focus',()=>{

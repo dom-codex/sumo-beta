@@ -1,7 +1,33 @@
-
+@-webkit-keyframes showbody{
+    from{
+      opacity:0
+    }
+    to{
+      opacity:1
+    }
+  }
+  @keyframes showbody{
+    from{
+      opacity:0
+    }
+    to{
+      opacity:1
+    }
+  }
+  .showBody{
+    -webkit-animation-name: showbody;
+            animation-name: showbody;
+    -webkit-animation-duration: 2s;
+            animation-duration: 2s;
+    -webkit-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+  }
+body{
+    opacity:0;
+}
 section.about{
     text-align: center;
-    padding:0 15px
+    padding:0 18px
   }
 .description{
     margin-top: 12px;
@@ -9,6 +35,7 @@ section.about{
 }
 section.theHow{
     margin-top:30px;
+    padding:0 10px!important
 }
 .how-cont{
     text-align: center;
@@ -29,7 +56,9 @@ ol div:nth-child(1) p{
     font-size: 1.5em;
     color:rosybrown
 }
-
+li{
+  margin-left:12px
+}
 ul li::before{
     content: ' ';
 }
