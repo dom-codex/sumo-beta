@@ -9,6 +9,7 @@ const Feed = require("../models/feed");
 const modes = require("../utils/mode");
 const detectors = require('../utils/detectors');
 const mailer = require('../utils/mailer');
+var jwt = require('jsonwebtoken');
 
 const io = require("../socket").getIO;
 
@@ -142,7 +143,9 @@ module.exports.createUserChannel = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.pwd;
   const phone = req.body.phone;
-
+ //generate refreshToken
+ crypto.randomBytes(24,(err,buffer)=>{
+  const userToken = buffer.toString("hex");
   //generate chat hash
   crypto.randomBytes(10, (err, buffer) => {
     const chatString = buffer.toString("hex");
@@ -163,6 +166,7 @@ module.exports.createUserChannel = (req, res, next) => {
               password: hash,
               phone: phone,
               share: token,
+              userToken:userToken,
               desc: `# iam ${name}`,
               chatShare: chatString,
               anonyString: mongoose.Types.ObjectId(anonyString),
@@ -175,7 +179,8 @@ module.exports.createUserChannel = (req, res, next) => {
           .then((user) => {
             //create and store success message then redirect
             // req.flash('success', true)
-            mailer.confirmationMailer(user.email, user.name, user._id)
+            const toks = jwt.sign({ toks:userToken },process.env.signMeToken);
+            mailer.confirmationMailer(user.email, user.name, user._id,toks)
             return res.redirect("/confirmation");
           })
           .catch((err) => {
@@ -185,6 +190,7 @@ module.exports.createUserChannel = (req, res, next) => {
       });
     });
   });// end of chat crypto
+})
 };
 module.exports.confirmationPage = (req, res, next) => {
   res.render("confirmation")
@@ -225,6 +231,9 @@ module.exports.loginUser = (req, res, next) => {
         .then(result => {
           if (result) {
             //initialize a session for them if successful
+            const userToks = jwt.sign({ ref:user.userToken },process.env.signMeToken);
+            res.clearCookie('sumo.toks');
+            res.cookie('sumo.toks', userToks, { maxAge:1000*60*60, httpOnly: true });
             req.session.isauth = true;
             req.session.user = user;
             req.session.isVerified = user.isVerified
@@ -1339,6 +1348,8 @@ module.exports.deleteAccount = (req, res, next) => {
     })
     .then(_ => {
       req.session.destroy(() => {
+        res.clearCookie('sumo.toks');
+        res.clearCookie('_csrf');
         res.redirect('/getstarted')
       })
     }).catch(err => {
@@ -1347,7 +1358,9 @@ module.exports.deleteAccount = (req, res, next) => {
 }
 module.exports.logout = (req, res, next) => {
   //destroy users session
+  res.clearCookie('_csrf');
   req.session.destroy((err) => {
+    res.clearCookie('sumo.toks');
     res.redirect('/getstarted')
   })
 }

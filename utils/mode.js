@@ -149,7 +149,7 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
           res.render("chatPage", {
             fid: id,
             csrfToken: req.csrfToken(),
-            uid: req.session.user.anonyString,
+            uid: req.session.user._id,
             img: img,
             friend: friend,
             status: status,
@@ -254,7 +254,7 @@ module.exports.normalChatMode = (req, res, next, io) => {
     .then((me) => {
       user = me;
       return Message.updateMany(
-        { receiver: me._id },
+        {$and:[{sender:id},{receiver:req.session.user._id}] },
         { $set: { isMsgNew: false } }
       ).then((_) => {
         return;
@@ -312,7 +312,7 @@ module.exports.normalChatMode = (req, res, next, io) => {
               //set all isNew field in the mesage
               //to false if user reads message immediately
               Message.updateMany(
-                { receiver: user._id },
+                {$and:[{sender:id},{receiver:req.session.user._id}]},
                 { $set: { isMsgNew: false } }
               ).then((_) => {});
             });

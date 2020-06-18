@@ -1,8 +1,19 @@
 //helper middleware to take the user to their feed screen
 //using  /userchannel route
+var jwt = require('jsonwebtoken');
 const User = require("../models/user");
 module.exports = (req, res, next) => {
   const id = req.query.myid;
+  const toks = req.query.ref;
+  let decoded;
+  try{
+   decoded = jwt.verify(toks,process.env.signMeToken);
+  }catch(err){
+    console.log(err)
+    if(err.name === 'JsonWebTokenError'){
+       return res.redirect('/getstarted')
+    }
+  }
   if (
     req.session.user !== null &&
     req.session.user !== undefined &&
@@ -14,7 +25,7 @@ module.exports = (req, res, next) => {
     //validate id
     User.findById(id)
       .then((user) => {
-        if (user) {
+        if (user && decoded.toks == user.userToken) {
           user.isVerified = true;
           return user.save();
         } else {
@@ -23,6 +34,8 @@ module.exports = (req, res, next) => {
       })
       .then((user) => {
         if (!user) {throw new Error()};
+        const userToks = jwt.sign({ ref:decoded.toks },process.env.signMeToken);
+        res.cookie('sumo.toks', userToks, { maxAge: 60*60*1000, httpOnly: true });
         req.session.isauth = true;
         req.session.user = user;
         req.session.isVerified = true;

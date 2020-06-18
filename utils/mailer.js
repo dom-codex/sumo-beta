@@ -105,21 +105,21 @@ module.exports.mailer = (req,res,email,name,link)=>{
       }
     });
 }
-module.exports.confirmationMailer = (email,name,id)=>{
+module.exports.confirmationMailer = (email,name,id,toks)=>{
   const headUrl = process.env.urlHead || `http://localhost:3000`
     const transporter = nodemailer.createTransport({
-    /*  host: "smtp.mailtrap.io",
+      host: "smtp.mailtrap.io",
       port: 2525,
       auth: {
-        user: "746d242333b2a4",
-        pass: "93663e3aafe21d"
-      }*/
+        user: "8cbc5292cd962a",
+        pass: "4a93371bd1c5c5"
+      }
   
-      service: "gmail",
+      /*service: "gmail",
         auth: {
           user: "sumomessenger.beta@gmail.com",
           pass: process.env.mailer_pass
-        } 
+        } */
       
     });
   const mailOptions = {
@@ -142,10 +142,16 @@ module.exports.confirmationMailer = (email,name,id)=>{
       <p class="name">HI ${name},</p>
       <p>Your are one step away from activating your account,
        click the link below to activate your account</p>
-      <a class="link" href="${headUrl}/channel?myid=${id}">Activate</a>
-      <div class="notice"><small> *use the link below if you can't 
-          see the 'activate' button </small>
-      <div class="notice"> ${headUrl}/channel?myid=${id} </div> 
+      <a class="link" href="${headUrl}/channel?myid=${id}&ref=${toks}>Activate</a>
+      
+      <div class="notice">
+      <small> 
+
+      *use the link below if you can't see the 'activate' button 
+      </small>
+      <div class="notice"> 
+      ${headUrl}/channel?myid=${id}&ref=${toks} 
+      </div> 
       </body>
       </html>
       ` 

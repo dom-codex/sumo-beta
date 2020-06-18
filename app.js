@@ -12,9 +12,12 @@ const moongoose = require("mongoose");
 const MongoStore = require('connect-mongo')(session);
 const flash = require('connect-flash');
 const csrf = require('csurf');
-const csrfProtection = csrf();
+const csrfProtection = csrf({cookie:true});
 const morgan = require('morgan');
-const helmet = require('helmet')
+const helmet = require('helmet');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+
 //controller imports
 const anonyrouter = require("./routes/anonyroutes");
 const adminrouter = require("./routes/adminRoutes");
@@ -30,7 +33,7 @@ app.set("views", "public/views");
 
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
-
+app.use(cookieParser());
 app.use((req,res,next)=>{
 //this will allow no caching of our rendered files
 res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
@@ -48,7 +51,7 @@ app.use(
     store:new MongoStore({ 
       url: process.env.session_store }) , 
       cookie:{
-        maxAge:1000 * 60 * 60 * 24 * 7//session will last for a week
+        maxAge:1000 * 60  //session will last for 3mins
       }, 
     })
 );
@@ -56,8 +59,9 @@ app.use(
 /*const logStream = fs.createWriteStream(path.join(__dirname,'access.log'),{
   flags:'a'
 }) */
+
 app.use(flash());
-app.use(csrfProtection) 
+app.use(csrfProtection);
 app.use(helmet())
 //app.use(morgan('combined',{stream:logStream}))
 
@@ -65,6 +69,36 @@ app.use(helmet())
 app.use(express.static(path.join(__dirname, "/", "public")));
 app.use(express.static(path.join(__dirname, "/", "assets")));
 //routers for user and admin
+app.use((req,res,next)=>{
+  const tokID = req.cookies['sumo.toks'];
+  try{
+  if(tokID && tokID.length > 1 && !req.session.user){
+  let decoded;
+     decoded = jwt.verify(tokID,process.env.signMeToken);
+    const userToken = decoded.ref
+    User.findOne({userToken:userToken})
+    .then(user=>{
+      req.session.isauth = true;
+      req.session.isVerfied = true;
+      req.session.user = user;
+      res.clearCookie('sumo.toks');
+      res.cookie('sumo.toks', tokID, { maxAge:1000*60*60, httpOnly: true });
+      req.session.save(()=>{
+        next()
+      })
+    })
+    }
+  else{
+    next()
+  }
+}catch(err){
+  if(err.name === 'JsonWebTokenError'){
+    res.clearCookie('sumo.toks');
+    return res.redirect('/getstarted');
+  }
+  next()
+}
+})
 app.post('/upload',isAuth,(req, res) => {
 require('./controllers/upload').uploader(req,res)
 });
@@ -81,8 +115,7 @@ app.get('/500',(req,res,next)=>{
 app.use((err,req,res,next)=>{
  console.log(err)
  if(err.message === 'invalid csrf token'){
-   res.redirect('/500')
-
+   return res.redirect('/500')
  }
    res.redirect('/500')
 }) 

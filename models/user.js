@@ -51,12 +51,10 @@ const UserSchema = new schema ({
       share: String,
       chatShare: String,
       anonymousName: String,
-      anonyString: {
-        type:schema.Types.ObjectId,
-        refs:'User'
-      },
+      anonyString: schema.Types.ObjectId,
       isAnonymous: Boolean,
       resetToken: String,
+      userToken: String,
       tokenMaxAge: Number,
       requests:[
         {
