@@ -214,7 +214,6 @@ module.exports.loginUser = (req, res, next) => {
   }
   //find associated user
   User.findOne({ email: email })
-    .select()
     .then((user) => {
       if (!user) {
         throw new Error('not found')
@@ -372,14 +371,16 @@ module.exports.postToFeed = (req, res, next) => {
 };
 module.exports.getProfilePage = (req, res, next) => {
   //validate the user id
+  const myId = req.params.id.toString()
   if (req.params.id === undefined) {
     return res.redirect('/getstarted')
   }
   //find the associated user either via their id
   //or via their anonymous token
   let me
-  User.findOne({ $or: [{ _id: req.params.id }, 
-    { anonyString: req.params.id }] })
+  /*User.findOne({ $or: [{ _id: myId }, 
+    { anonyString: myId }] })*/
+    User.findById(req.session.user._id)
     .then(user => {
       if (!user) {
         //throw error if no user is found
@@ -509,7 +510,7 @@ module.exports.getProfilePage = (req, res, next) => {
             img: img,
             chats: [],
             current: page,
-            anonymous: req.session.user.isAnonymous ? true : false,
+            anonymous: user.isAnonymous ? true : false,
             errors: errors ? errors : { field: '', message: '' },
             success: success ? success : { message: '' },
           })
@@ -730,7 +731,7 @@ module.exports.goAnonymous = (req, res, next) => {
       //update anonymous mode property in  session
       req.session.user.isAnonymous = user.isAnonymous;
       return req.session.save((err) => {
-        res.redirect(`profile/${req.session.user._id}`)
+        res.redirect(`profile/${user._id}`)
         //function to notify switching user that switching process is done
       });
     }).catch(err => {
@@ -933,12 +934,13 @@ module.exports.addChat = (req, res, next) => {
 module.exports.chatRequest = (req, res, next) => {
   const id = req.body.id
   const state = req.body.state
-  let chatAccepter
+  const {anonyString, _id} = req.session.user
+  let chatAccepter;
   //check if id  affiliated to user
-  if (id.toString() === req.session.user._id.toString()) {
+  if (id.toString() == _id.toString()) {
     return
   }
-  else if (id.toString() === req.session.user.anonyString.toString()) {
+  else if (id.toString() === anonyString.toString()) {
     return
   }
   else if (state === 'grant') {
@@ -984,6 +986,7 @@ module.exports.chatRequest = (req, res, next) => {
         return user.save()
       })
       .then(user => {
+        console.log(req.session.user.name)
         const name = req.session.user.name;
         io().to(id).emit("online", {
           name: name.length > 9 ? name.substring(0,6)+'...':name,
@@ -992,7 +995,7 @@ module.exports.chatRequest = (req, res, next) => {
           img: chatAccepter.images.open.link,
         })
         if (user.isAnonymous) {
-          const name = user.anonymousName
+          const name = req.session.user.anonymousName
           res.json({
             code: 200,
             newchat: {
@@ -1075,7 +1078,15 @@ module.exports.sendChat = (req, res, next) => {
   let userId
   let msgID
   User.findById(req.session.user._id)
-    .then((user) => {
+    .then(async(user) => {
+      let chat
+      for await(let pally of User.findOne({$or:[{_id:receiver},{anonyString:receiver}]}).select('chats anonyChats isAnonymous')){
+      if(pally.isAnonymous){
+        chat = pally.anonyChats
+      }else{
+        chat = pally.chats
+      }
+      }
       //check if user is valid
       if (user.isAnonymous) {
         userId = user.anonyString
@@ -1091,6 +1102,14 @@ module.exports.sendChat = (req, res, next) => {
       } else {
         friends = user.chats
       }
+      //check if user is no longer friends with chat
+    const stillPals = chat.some(f=>f.chatId.toString() === userId.toString());
+    if(!stillPals){
+      return res.json({
+        code:300,
+        message:'message not sent because you are no longer pals with this user'
+      })
+    }
       const messages = new Message({
         sender: userId,
         receiver: receiver,
@@ -1106,9 +1125,9 @@ module.exports.sendChat = (req, res, next) => {
             if (chats.chatId.toString() === receiver.toString()) {
               //add message to chat messages array in user chats
               chats.lastUpdate = new Date()
-              let msgs = chats.messages;
+             /* let msgs = chats.messages;
               msgs[0] = message._id
-              chats.messages = msgs;
+              chats.messages = msgs;*/
               return chats;
             } else {
               return chats; //to keep all other chats
@@ -1145,9 +1164,9 @@ module.exports.sendChat = (req, res, next) => {
                 chats.chatId.toString() === userId.toString()
               ) {
                 chats.lastUpdate = new Date()
-                let msgs = chats.messages;
+               /* let msgs = chats.messages;
                 msgs[0]= msgID
-                chats.messages = msgs;
+                chats.messages = msgs;*/
                 return chats;
               }
               else {
@@ -1165,9 +1184,9 @@ module.exports.sendChat = (req, res, next) => {
               ) {
                 //add message to messages array
                 chats.lastUpdate = new Date()
-                let msgs = chats.messages;
+               /* let msgs = chats.messages;
                 msgs[0] = msgID
-                chats.messages = msgs;
+                chats.messages = msgs;*/
                 return chats;
               }
               else {
@@ -1209,33 +1228,59 @@ module.exports.removeAChat = (req, res, next) => {
   let myChats
   const uid = req.body.uid;
   let userId
-  User.findById(req.session.user._id).select(' isAnonymous chats anonyChats _id')
-    .then(user => {
+  User.findById(req.session.user._id)
+  .select(' isAnonymous chats anonyChats _id anonyString')
+    .then(async user => {
       if (user.isAnonymous) {
         myChats = user.anonyChats
-        userId = req.session.user.anonyString
+        userId = user.anonyString
       } else {
         myChats = user.chats;
-        userId = req.session.user._id
+        userId = user._id
       }
       //filter out unwanted user from chat list
       const filteredList = myChats.filter(chat => chat.chatId.toString() !== uid.toString())
       if (user.isAnonymous) {
         user.anonyChats = filteredList
         return Message.deleteMany({ $or: [{ $and: [{ sender: uid }, 
-          { receiver: userId }] }, 
+          { receiver: userId },{count:{$gt:0}}] }, 
           { $and: [{ sender: userId }, 
-          { receiver: uid }] }] }).then(_=>{
-            return user.save()
+          { receiver: uid },{count:{$gt:0}}] }] })
+          .then(result=>{
+            if(result.n > 0){
+              return user.save()
+          }else{
+            return Message.updateMany({ $or: [{ $and: [{ sender: uid }, 
+              { receiver: userId }] }, 
+              { $and: [{ sender: userId }, 
+              { receiver: uid }] }] }, 
+            {"$set":{count: 1}}).then(_=>{
+              return user.save()
+            })
+          }
           })
-
       } else {
         user.chats = filteredList
         return Message.deleteMany({ $or: [{ $and: [{ sender: uid }, 
-          { receiver: userId }] }, 
+          { receiver: userId },{count:{$gt:0}}] }, 
           { $and: [{ sender: userId }, 
-          { receiver: uid }] }] }).then(_=>{
-            return user.save()
+          { receiver: uid },{count:{$gt:0}}] }] })
+          .then(async result=>{
+            if(result.n > 0){
+              return user.save()
+            }else{
+              const _ = await Message.updateMany({
+              $or: [{
+              $and: [{ sender: uid },
+              { receiver: userId }]
+              },
+              {
+              $and: [{ sender: userId },
+              { receiver: uid }]
+              }]
+              }, { "$set": { count: 1 } });
+              return user.save();
+            }
           })
       }
     }).catch(err => {
@@ -1462,23 +1507,34 @@ module.exports.retrieveFeed = (req, res, next) => {
   feedLoader(req, res, next)
 };
 module.exports.retrieveChats = (req, res, next) => {
-  if (req.session.user.isAnonymous) {
+  User.findById(req.session.user._id).select('isAnonymous')
+  .then(user=>{
+  if (user.isAnonymous) {
     const chatLoader = require('../helpers/paginators').loadChatsForAnonymousUser
     return chatLoader(req, res, next)
   } const chatLoader = require('../helpers/paginators').loadChats
   chatLoader(req, res, next)
+})
 };
 module.exports.retrieveProfileChats = (req, res, next) => {
-  if (req.session.user.isAnonymous) {
+  User.findById(req.session.user._id)
+  .select('isAnonymous')
+  .then(user=>{
+  if (user.isAnonymous) {
     const chatsLoader = require('../helpers/paginators').loadChatsForAnonymousProfile
     return chatsLoader(req, res, next)
   }
   const chatsLoader = require('../helpers/paginators').loadChatsInProfile
   chatsLoader(req, res, next)
+})
 };
 module.exports.searchUser = (req, res, next) => {
+  User.findById(req.session.user._id)
+  .select('isAnonymous anonyString _id')
+  .then(user=>{
+    if(!user) return res.json('');
   const searchName = req.body.searchKey.toLowerCase().trim()
-  const userId = req.session.user._id
+  const userId = user.isAnonymous ? user.anonyString : user._id;
   const regex = new RegExp(searchName, 'i')
   User.find({ "name": { $regex: regex } })
     .select('_id name chats chatShare desc images')
@@ -1488,7 +1544,7 @@ module.exports.searchUser = (req, res, next) => {
       }
       const result = users.map(user => {
         const isFriend = user.chats.some(chat => chat.chatId.toString() === userId.toString())
-        const isMe = user._id.toString() === userId.toString()
+        const isMe = user._id.toString() === userId.toString();
         if (isFriend) {
           return {
             name: user.name,
@@ -1524,4 +1580,5 @@ module.exports.searchUser = (req, res, next) => {
         })
       }
     })
+  })
 }

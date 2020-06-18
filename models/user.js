@@ -51,7 +51,10 @@ const UserSchema = new schema ({
       share: String,
       chatShare: String,
       anonymousName: String,
-      anonyString: schema.Types.ObjectId,
+      anonyString: {
+        type:schema.Types.ObjectId,
+        refs:'User'
+      },
       isAnonymous: Boolean,
       resetToken: String,
       tokenMaxAge: Number,
@@ -70,7 +73,7 @@ const UserSchema = new schema ({
         {
           chatId:{
             type: schema.Types.ObjectId,
-            ref: 'User'
+            refs: 'User'
           },
           lastUpdate:Number,
           messages:[

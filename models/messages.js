@@ -14,6 +14,10 @@ const messageSchema = new schema ({
         isMsgNewSender: Boolean,
         isMsgNew: Boolean,
         time: String,
+        count:{
+            type:Number,
+            default:0
+        }
     
 })
 module.exports = mongoose.model('Message', messageSchema);

@@ -23,7 +23,7 @@
 </head>
 
 <body>
-  <section onscroll="Scroll()">
+  <section>
     <input type="hidden" value="<%= fid%>" id="friendId">
     <input type="hidden" value="<%= uid%>" id="uid">
     <header>
@@ -84,7 +84,8 @@
     let page = 1
     let height = 0
     document.addEventListener("DOMContentLoaded",()=> {
-    loadLatestChats()
+    loadLatestChats();
+    $('section').on('scroll',()=>{Scroll()})
   });
   </script>
   <%- include('chatScript.ejs') %>

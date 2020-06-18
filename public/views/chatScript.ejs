@@ -69,7 +69,14 @@ socket.on('connect', (error) => {
         })
         .then(res=>res.json())
         .then(res=>{
-          if(res.code!==200){
+           if(res.code === 300){
+              const chatboxchildren = document.querySelector('.chats').children;
+             const lastchild = chatboxchildren[chatboxchildren.length - 1]
+             const icon =  lastchild.children[0].children[0].children[0];
+             icon.textContent = 'error';
+             return icon.style.color = 'red'
+            }
+          else if(res.code!==200){
             return
           }
           const spans = $('.u2.chat');

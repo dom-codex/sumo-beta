@@ -3,8 +3,10 @@ module.exports.profileAnonymous = (req,res,next,img)=>{
 const page = +req.query.page || 1
 let ntotalOpenUsers
 let chatids
+let me
     User.findById(req.session.user._id)
         .then((user) => {
+          me = user
           //filter out open chats id
           const chatid = user.anonyChats.map((id) => {
             return id.chatId;
@@ -40,15 +42,6 @@ let chatids
             .then(openchats => {
               /*retrive users that chatted with user anonymously
               limiting the records returned by a chosen preference */
-                  let filteredUsersList = [];
-                  //format list so that online users appear at the start of the list
-                  [...openchats].forEach(user => {
-                    if (user.anonymousStatus === 'online') {
-                      filteredUsersList.unshift(user)
-                    } else {
-                      filteredUsersList.push(user)
-                    }
-                  })
                   //render profile view with data to aid the display of users
                   //and actual pagination
                   //retrieve flash message
@@ -64,18 +57,18 @@ let chatids
                   }
                   res.render("profile", {
                     csrfToken: req.csrfToken(),
-                    user: req.session.user,
+                    user: me,
                     img:img,
-                    chats: [...filteredUsersList],
+                    chats: [],
                     current: page,
                     hasNext: 2 * page < ntotalOpenUsers,
                     hasPrev: page > 1,
                     next: page + 1,
                     prev: page - 1,              
-                     anonymous:req.session.user.isAnonymous?true:false,
+                     anonymous:me.isAnonymous?true:false,
                     errors: errors ? errors : { field: '', message: '' },
                     success: success ? success : { message: '' },
-                    total:ntotalOpenUsers,
+                    total: 0//ntotalOpenUsers,
                   })
                 })
                 .catch(err => {

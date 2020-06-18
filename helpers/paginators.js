@@ -60,7 +60,7 @@ module.exports.loadFeeds = (req, res, next) => {
         })
 
 }
-module.exports.loadChats = (req, res, next) => {
+module.exports.loadChats =  async(req, res, next) => {
     const page = +req.query.page || 1
     let anonymous = []
     let me;
@@ -69,7 +69,6 @@ module.exports.loadChats = (req, res, next) => {
     let nTotalAnonyChats;
     User.findOne({ _id: req.session.user._id })
         .select('name email chats _id images')
-        .populate('chats.messages')
         .then((user) => {
             me = user
             //extract all chat ids in user chats array
@@ -103,8 +102,28 @@ module.exports.loadChats = (req, res, next) => {
                         .sort({ $natural: -1, 'chats.lastUpdate': -1 })
                         .skip((page - 1) * 1)
                         .limit(1)
-                        .then(anonyusers => {
+                        .then(async(anonyusers) => {
                             //reform the anonymous user docs
+                            let messages = []
+                            const chatid = [...onlineUser].map((chat) => {
+                                return chat._id;
+                            });                    
+                            const Achatid = [...anonyusers].map((chat) => {
+                                return chat.anonyString;
+                            });
+                            const ids = [...chatid,...Achatid]
+                            let i = 0;
+                            while(i < ids.length){
+                            for await (const doc of Message.findOne({ $or: [{ $and: 
+                                [{ sender: ids[i] }, 
+                                { receiver: me._id }] }, 
+                                { $and: [{ sender: me._id }, 
+                                { receiver: ids[i] }] }]})
+                                .sort({$natural:-1}).limit(1)) {
+                                messages.push(doc)
+                              }
+                              i++
+                            }
                             if (anonyusers.length > 0) {
                                 anonymous = anonyusers.map((a, i) => {
                                     const onList = a.anonyChats.some(chat => chat.chatId.toString() === req.session.user._id.toString())
@@ -113,20 +132,31 @@ module.exports.loadChats = (req, res, next) => {
                                             name: a.anonymousName,
                                             _id: a.anonyString,
                                             img: a.images.anonymous.thumbnail,
-                                            message: 'user removed you'
+                                            message: 'user removed you',
+                                            time:''
 
                                         }
                                     } else {
-                                        const myChatsWithUser = me.chats.find(chat => chat.chatId.toString() === a.anonyString.toString())
+                                       // const myChatsWithUser = me.chats.find(chat => chat.chatId.toString() === a.anonyString.toString())
+                                        const ourMessages = messages.find(m=>m.sender.toString()=== a.anonyString.toString() || m.receiver.toString() === a.anonyString.toString() )
                                         return {
                                             name: a.anonymousName,
                                             _id: a.anonyString,
                                             img: a.images.anonymous.thumbnail,
                                             anStatus: a.anonymousStatus,
-                                            message: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0]._doc.body : 'anonymous chat',
-                                            isNew: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0]._doc.isMsgNew : false,
-                                            time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0]._doc.time : '',
-                                        }
+                                            message: ourMessages && ourMessages.body.length > 0 ? ourMessages.body : 'anonymous chat',
+                                            isNew: ourMessages && ourMessages.isMsgNew ? ourMessages.isMsgNew : false,
+                                            time: ourMessages && ourMessages.time.length > 0 ? ourMessages.time : '',
+                                        } 
+                                        /*return {
+                                            name: a.anonymousName,
+                                            _id: a.anonyString,
+                                            img: a.images.anonymous.thumbnail,
+                                            anStatus: a.anonymousStatus,
+                                            message: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0].body : 'anonymous chat',
+                                            isNew: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0].isMsgNew : false,
+                                            time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0].time : '',
+                                        }*/
                                     }
                                 })
                             }
@@ -140,12 +170,23 @@ module.exports.loadChats = (req, res, next) => {
                                         name: aUser.name,
                                         _id: aUser._id,
                                         img: aUser.images.open.thumbnail,
-                                        message: 'user removed you'
+                                        message: 'user removed you',
+                                        time:''
 
                                     }
                                 } else {
-                                    const myChatsWithUser = me.chats.find(chat => chat.chatId.toString() === aUser._id.toString())
+                                  //  const myChatsWithUser = me.chats.find(chat => chat.chatId.toString() === aUser._id.toString())
+                                    const ourMessages = messages.find(m=>m.sender.toString()=== aUser._id.toString() || m.receiver.toString() === aUser._id.toString() )
                                     return {
+                                        name: aUser.name,
+                                        _id: aUser._id,
+                                        img: aUser.images.open.thumbnail,
+                                        status: aUser.status,
+                                        isNew: ourMessages && ourMessages.isMsgNew ? ourMessages.isMsgNew : false,
+                                        message: ourMessages && ourMessages.body.length > 0 ? ourMessages.body : 'say hi',
+                                        time: ourMessages && ourMessages.time.length > 0 ? ourMessages.time : '',
+                                    }
+                                    /*return {
                                         name: aUser.name,
                                         _id: aUser._id,
                                         img: aUser.images.open.thumbnail,
@@ -153,7 +194,7 @@ module.exports.loadChats = (req, res, next) => {
                                         isNew: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0].isMsgNew : false,
                                         message: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0].body : 'say hi',
                                         time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0].time : '',
-                                    }
+                                    }*/
                                 }
                             })
                             res.json({
@@ -174,7 +215,6 @@ module.exports.loadChatsForAnonymousUser = (req, res, next) => {
     let chatids = []
     User.findOne({ _id: req.session.user._id })
         .select('name email anonyChats anonyString images')
-        .populate('anonyChats.messages')
         //find associated user with the session
         .then((user) => {
             me = user;
@@ -194,8 +234,23 @@ module.exports.loadChatsForAnonymousUser = (req, res, next) => {
                 .sort({ $natural: -1, 'chats.lastUpdate': -1 })
                 .skip((page - 1) * 5)
                 .limit(5)
-        }).then((onlineUser) => {
+        }).then(async(onlineUser) => {
             //iterate through the chat list of the resulting users we are chatting with anonymously
+            let messages = []
+            const chatid = [...onlineUser].map((chat) => {
+                return chat._id ;
+            });
+            let i = 0;
+            while(i<chatid.length){
+            for await (const doc of Message.find({ $or:
+                 [{ $and: [{ sender: chatid[i] }, 
+                { receiver: me.anonyString }] }, 
+                { $and: [{ sender: me.anonyString }, 
+                { receiver: chatid[i] }] }]}).sort({$natural:-1}).limit(1)) {
+                messages.push(doc)
+              }
+              i++
+            }
             const reformedChatList = onlineUser.map(aUser => {
                 const onList = aUser.chats.some(chat => chat.chatId.toString() === req.session.user.anonyString.toString())
                 if (!onList) {
@@ -203,15 +258,26 @@ module.exports.loadChatsForAnonymousUser = (req, res, next) => {
                         name: aUser.name,
                         _id: aUser._id,
                         img: aUser.images.open.link,
-                        message: 'user removed you'
+                        message: 'user removed you',
+                        time:''
 
                     }
                 }
                 //retrieve particular element from user chats where the chatid in user chats matches with their id
-                const myChatsWithUser = me.anonyChats.find(chat => chat.chatId.toString() === aUser._id.toString())
+               // const myChatsWithUser = me.anonyChats.find(chat => chat.chatId.toString() === aUser._id.toString())
                 // const myChatsWithUser = aUser.chats.find(chat => chat.chatId.toString() === req.session.user.anonyString.toString())
                 //format the result of this queries
+                const ourMessages = messages.find(m=>m.sender.toString()=== aUser._id.toString() || m.receiver.toString() === aUser._id.toString() )
                 return {
+                    name: aUser.name,
+                    _id: aUser._id,
+                    img: aUser.images.open.thumbnail,
+                    status: aUser.status,
+                    isNew: ourMessages && ourMessages.isMsgNew ? ourMessages.isMsgNew : false,
+                    message: ourMessages && ourMessages.body.length > 0 ? ourMessages.body : 'say hi',
+                    time: ourMessages && ourMessages.time.length > 0 ? ourMessages.time : '',
+                }
+                /*return {
                     name: aUser.name,
                     _id: aUser._id,
                     status: aUser.status,
@@ -219,7 +285,7 @@ module.exports.loadChatsForAnonymousUser = (req, res, next) => {
                     isNew: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0].isMsgNew : false,
                     message: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0].body : 'say hi',
                     time: myChatsWithUser && myChatsWithUser.messages.length > 0 ? myChatsWithUser.messages[0].time : ''
-                }
+                }*/
             })
             res.json({
                 chats: [...reformedChatList],
@@ -336,9 +402,9 @@ module.exports.loadChatsForAnonymousProfile = (req, res, next) => {
         .catch(err => {
             throw err
         })
-        .then(_ => {
+        .then(ids => {
             //get a of users the user  openly chat with
-            return User.find({ _id: { $in: chatids } }).countDocuments()
+            return User.find({ _id: { $in: ids } }).countDocuments()
         }).catch(err => {
             throw err
         })
@@ -361,8 +427,17 @@ module.exports.loadChatsForAnonymousProfile = (req, res, next) => {
                     /*retrive users that chatted with user anonymously
                     limiting the records returned by a chosen preference */
                     //retrieve flash message
+                    const myChats = [...openchats].map(chats => {
+                        return {
+                            name: chats.name,
+                            _id: chats._id,
+                            desc: chats.desc,
+                            img: chats.images.open.thumbnail,
+                            status: chats.status
+                        }
+                    })
                     res.json({
-                        chats: [...openchats]
+                        chats: myChats
                     })
                 })
                 .catch(err => {

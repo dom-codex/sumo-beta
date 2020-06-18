@@ -65,12 +65,6 @@ app.use(helmet())
 app.use(express.static(path.join(__dirname, "/", "public")));
 app.use(express.static(path.join(__dirname, "/", "assets")));
 //routers for user and admin
-app.use((req,res,next)=>{
-req.session.cookie.maxAge += 60 * 60 * 1000 * 3;
-req.session.save(()=>{
-  next()
-})
-})
 app.post('/upload',isAuth,(req, res) => {
 require('./controllers/upload').uploader(req,res)
 });
