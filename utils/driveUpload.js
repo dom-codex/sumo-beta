@@ -237,4 +237,42 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory,mime) =>{
     });
     }
     AUTHENTICATION(listFiles)
+   }
+   module.exports.uploadMMS = (req,res,filename,directory,mime) =>{
+    function listFiles(auth) {
+      const drive = google.drive({version: 'v3', auth});
+    var folderId = '1w4K937veC-noqc1Z3O0sYaO1kCnSwupM';
+    var fileMetadata = {
+      'name': filename,
+      parents: [folderId]
+    };
+    var media = {
+      mimeType: mime,
+      body: fs.createReadStream(directory)
+    };
+    drive.files.create({
+      resource: fileMetadata,
+      media: media,
+      fields: '*'
+    }, function (err, file) {
+      if (err) {
+        // Handle error
+        console.error(err);
+      } else {
+        console.log('uploaded')
+      //console.log('File is : ', file);
+                const imgID =  file.data.id;
+                const downloadLink = file.data.webContentLink;
+                const link = `https://drive.google.com/uc?export=view&sz=w10h10&id=${file.data.id}`;
+                fs.unlink(directory, (err) => {
+                if (err) {
+                  console.error(err)
+                  return
+                }
+                require('../helpers/uploadMms').uploadMMS(req,res,imgID,link,downloadLink)
+              })
+      }
+    });
     }
+    AUTHENTICATION(listFiles)
+  } 

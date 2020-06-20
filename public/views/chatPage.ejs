@@ -57,13 +57,22 @@
     </div>
 
     <div class="input">
+      <div class="preview"></div>
       <div class="ctrl">
-        <button class="openEmoji" type="button"><i class="material-icons">insert_emoticon</i></button>
+        <div class="fileCont">
+          <button id="file-open">
+            <i class="material-icons">collections</i>
+          </button>
+        </div>
+        <button class="openEmoji" type="button">
+          <i class="material-icons">insert_emoticon</i>
+        </button>
         <input type="hidden" value="<%=csrfToken%>" name="_csrf">
         <input name="receiver" type="hidden" value="<%= fid %>">
         <textarea id="msg" class="materialize-textarea" name="message" placeholder="Enter message"></textarea>
         <!-- replace with a vector icon later -->
         <button type="submit" class="send"><i class="material-icons">send</i></button>
+        <input type="file" id="file-input"/>
       </div>
       <div class="emoji-container">
         <%- include('emoji.ejs')%>
@@ -72,7 +81,13 @@
   </section>
   <script>
     const chatWindow = document.querySelector('section')
-    chatWindow.scrollTop = chatWindow.scrollHeight
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    const showSmiley = document.querySelector('.openEmoji');
+      showSmiley.addEventListener('click',()=>{
+        reRenderList()
+        document.querySelector('.emoticons').style.display = 'block';
+        document.querySelector('#face').classList.add('isActive')
+      })
   </script>
   <script src="/js/materialize.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
@@ -85,11 +100,37 @@
     let height = 0
     document.addEventListener("DOMContentLoaded",()=> {
     loadLatestChats();
+
     $('section').on('scroll',()=>{Scroll()})
   });
   </script>
   <%- include('chatScript.ejs') %>
   <script src="/effect.js" type="text/javascript"></script>
+  <script>
+    const sendImage = (file) =>{
+      const url = URL.createObjectURL(file)
+      $('.preview').append(
+      `<div class="preview-cont">
+        <button class="preview-close"> 
+          <i class="material-icons">clear</i> </button>
+      <img src="${url}" class="img-preview" />
+      </div>`
+    )
+    $('.preview-close').on('click',()=>{
+  $('.preview-cont').remove();
+})
+    }
+    $('#file-open ').on('click',()=>{
+      $('.preview').html(' ')
+      $('input[type="file"]').trigger("click")
+    })
+    $('input[type="file"]').on('change',(e)=>{
+  const input = document.querySelector('input[type="file"]')
+  sendImage(input.files[0]);
+  chatWindow.scrollTop = chatWindow.scrollHeight
+});
+
+  </script>
 </body>
 
 </html>

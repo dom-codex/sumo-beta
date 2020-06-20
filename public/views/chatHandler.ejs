@@ -304,7 +304,14 @@ const loadFeed = () => {
     </div>
     <p>
     <small class="brief">
-      ${user.message.length > 24 ? user.message.substring(0,25)+' ...': user.message}
+      ${user.withImage ?
+        `<span class="withImage" style="display:flex;
+        align-items:center;">
+          <i class="material-icons thumbnail">insert_photos</i>
+          ${user.message.length > 25 ? 
+            user.message.substring(0, 12) + '...' : user.message}
+            </span>` : user.message.length > 24 ? 
+        user.message.substring(0,25)+' ...': user.message}
     </small>
     </p></div>
     <div class=" secondary-content">
@@ -325,7 +332,14 @@ const loadFeed = () => {
     </div>
     <p>
     <small class="brief">
-      ${user.message.length > 24 ? user.message.substring(0,25)+' ...': user.message}
+      ${user.withImage ?
+        `<span class="withImage" style="display:flex;
+        align-items:center;">
+          <i class="material-icons thumbnail">insert_photos</i>
+          ${user.message.length > 25 ? 
+            user.message.substring(0, 12) + '...' : user.message}
+            </span>` : user.message.length > 24 ? 
+        user.message.substring(0,25)+' ...': user.message}
     </small>
     </p></div>
     <div class=" secondary-content">

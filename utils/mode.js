@@ -149,7 +149,7 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
           res.render("chatPage", {
             fid: id,
             csrfToken: req.csrfToken(),
-            uid: req.session.user._id,
+            uid: req.session.user.anonyString,
             img: img,
             friend: friend,
             status: status,

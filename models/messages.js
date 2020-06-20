@@ -1,7 +1,18 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 const messageSchema = new schema ({
-    
+        imageId:{
+            type:String,
+            default:''
+        },
+        imageUrl:{
+            type:String,
+            default:''
+        },
+        downloadLink:{
+            type:String,
+            default:''
+        },
         sender:{
             type:schema.Types.ObjectId,
             refs:'User'

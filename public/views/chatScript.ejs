@@ -1,4 +1,51 @@
 <script>
+  const retrieveImage = () =>{
+  const userFile = document.querySelector('#file-input').files;
+  if(!userFile.length > 0)return false
+  const file = document.querySelector('#file-input').files[0];
+  const isValidType = ['image/jpeg', 'image/gif', 'image/png', 'image/svg+xml'].includes(file.type)
+  const isSizeAllowed = file.size < (5 * 1024 * 1024)
+  if(file && isValidType && isSizeAllowed ){
+    return file
+  }
+  return false;
+}
+const sendImageApi = (data,tg) =>{
+  const token = document.querySelector('input[name="_csrf"]').value;
+
+  fetch(`/sendmms`,{
+          method:'POST',
+          credentials:'include',
+          headers:{
+            "csrf-token":token,
+          },
+          body: data 
+        })
+        .then(res=>res.json())
+        .then(res=>{
+        console.log(res)
+          if(res.code === 300){
+          $(`.mms-loading.${tg}`).css('display','none');
+          $(`.reload.${tg}`).css('display','flex');
+          $(`.material-icons.${tg}`).text('error');
+          $(`.material-icons.${tg}`).css('color','red')
+         }else if(res.code !==300){
+         $(`.mms-loading.${res.class}`).remove();
+         $(`.material-icons.${res.class}`).text('done_all');
+         $('.mms-img img').css('opacity','1');
+         $(`.reload.${res.class}`).remove();
+        
+        }
+
+        })
+}
+const sendMms = (data,tg) =>{
+  $(`.mms-loading.${tg}`).css('display','block');
+ $(`.reload.${tg}`).css('display','none');
+ $(`.material-icons.${tg}`).text('access_time');
+ $(`.material-icons.${tg}`).css('color','#fff')
+sendImageApi(data,tg);
+}
     const socket = io();
          let timer;
     socket.on('disconnect', (reason) => {
@@ -14,7 +61,50 @@ socket.on('connect', (error) => {
 });
       socket.on('chatMsg',(data)=>{
         const msgWindow = $('.chats');
+        if(data.img && data.img.length > 0){
+          const tag = Date.now();
+          msgWindow.append(`
+        <span class="u1 chat mms-box">
+          <div class="mms">
+            <div class="mms-img blob mms-notify sumo${tag}">
+
+              <div class="sumo${tag} msg-loader preloader-wrapper small active msg-loader">
+    <div class="spinner-layer spinner-green-only">
+      <div class="circle-clipper left">
+        <div class="circle"></div>
+      </div><div class="gap-patch">
+        <div class="circle"></div>
+      </div><div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+
+              <img src="${data.img}" class="download-img"/>
+              <a href="${data.download}" download>
+                <i class="material-icons">file_download</i></a>
+              </div> 
+              </div>
+              ${data.message}
+            </div>
+                <div class="time">
+                  ${data.time} &nbsp; 
+                </div>
+              </span>
+      `);
+      
+      const parent = document.querySelector(`.sumo${tag}`);
+      const img = parent.children[1];
+      const a = parent.children[2];
+      return img.addEventListener('load',()=>{
+        img.style.display = 'block';
+        a.style.display = 'flex';
+        $(`.msg-loader.sumo${tag}`).remove();
+      })
+
+        }
         $('#typingIndicator').remove()
+        
         msgWindow.append( `
         <span class="u1 chat">${data.message}
           <div class="time">${data.time}</div>
@@ -32,18 +122,72 @@ socket.on('connect', (error) => {
       const btn = document.querySelector('button[type="submit"]');
       btn.addEventListener('click',(e)=>{
         //get necessary data
+        let fb;
+        let body;
+        const file = retrieveImage()
         const message = document.querySelector('#msg').value;
         const cid = document.querySelector('#friendId').value;
         const token = document.querySelector('input[name="_csrf"]').value;
         const msgWindow = $('.chats');
         msgWindow.scrollTop = msgWindow.scrollHeight
         const input = document.querySelector('textarea')
-        if(!input.value || input.value == " ") {
-          return }
           //add time stamp
         const time = moment().format('LT');
         //append message to sender window
-        msgWindow.append(`
+
+        /*socket.emit('chat',{message:message,fid:cid,time:time},()=>{
+        });*/
+        //use fetch api to send message
+        if(file){
+          $('input[type="file"]').val('')
+          const tag = Date.now()
+           let fd = new FormData();
+           fd.append('image', file);
+           fd.append('tag', tag);
+           fd.append('receiver',cid);
+           fd.append('message',message);
+           fd.append('time',time);
+
+           $('.preview-cont').remove();
+           msgWindow.append(`
+        <span class="u2 chat mms-box">
+          <div class="mms">
+            <div class="mms-img blob">
+              <img src="${URL.createObjectURL(file)}" />
+              <button
+              class="reload ${tag}"> try again 
+              <i class="material-icons">cached</i> </button>
+              <div class="preloader-wrapper small active mms-loading ${tag}">
+           <div class="spinner-layer spinner-green-only">
+      <div class="circle-clipper left">
+        <div class="circle"></div>
+      </div><div class="gap-patch">
+        <div class="circle"></div>
+      </div><div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+              </div>
+              ${message}
+            </div>
+                <div class="time">
+                  ${time} &nbsp; 
+                  <div class="time"><i class="material-icons ${tag}">access_time</i></div> 
+                </div>
+              </span>
+      `);
+      $(`button.${tag}`).on('click',()=>{
+        sendMms(fd,tag);
+      })
+      input.value = "";
+      sendImageApi(fd,tag);
+        }else{
+          if(!input.value || input.value == " ") {
+            return;
+        }
+        input.value =''
+          msgWindow.append(`
         <span class="u2 chat">${message}
                 <div class="time">
                   ${time} &nbsp; 
@@ -51,17 +195,14 @@ socket.on('connect', (error) => {
                 </div>
               </span>
       `);
-      input.value =''
-        /*socket.emit('chat',{message:message,fid:cid,time:time},()=>{
-        });*/
-        //use fetch api to send message
-        fetch('/chatme',{
+        fetch(`/chatme`,{
           method:'POST',
+          credentials:'include',
           headers:{
             "csrf-token":token,
             "Content-Type":'application/json'
           },
-          body:JSON.stringify({
+          body: JSON.stringify({
             receiver: cid,
             message:message,
             time: time,
@@ -82,6 +223,7 @@ socket.on('connect', (error) => {
           const spans = $('.u2.chat');
         spans[spans.length - 1].childNodes[1].childNodes[1].childNodes[0].textContent = 'done_all'
         })
+      }
         chatWindow.scrollTop = chatWindow.scrollHeight
       })
      const emojiBtn = $('.openEmoji');
@@ -143,7 +285,37 @@ socket.on('connect', (error) => {
             }
             else if (res.messages.length > 0) {
               res.messages.forEach((msg, i) => {
-                if (msg.receiver.toString() === $('#friendId').val().toString()) {
+               if (msg.receiver.toString() === $('#friendId').val().toString()) {
+                 if(msg.imageId.length > 0){
+                   $('.chats').prepend(`
+        <span class="u2 chat mms-box">
+          <div class="mms">
+            <div class="mms-img">
+
+              <div class="preloader-wrapper small active msg-loader">
+    <div class="spinner-layer spinner-green-only">
+      <div class="circle-clipper left">
+        <div class="circle"></div>
+      </div><div class="gap-patch">
+        <div class="circle"></div>
+      </div><div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+
+              <img src="${msg.imageUrl}" class="download-img sumo${res.next}"/>
+              </div> 
+              </div>
+              ${msg.body}
+            </div>
+                <div class="time">
+                  ${msg.time} &nbsp; 
+                  <div class="time"><i class="material-icons">done_all</i></div> 
+                </div>
+              </span>
+      `);
+                 }else{
                   $('.chats').prepend(`
               <span class="u2 chat">${msg.body}
                 <div class="time">
@@ -151,16 +323,64 @@ socket.on('connect', (error) => {
                   <div class="time"><i class="material-icons">done_all</i></div> 
                 </div>
               </span>
-              `)
-                } else {
+              `)}
+                }else{
+                  if(msg.imageId.length > 0){
+                  $('.chats').append(`
+        <span class="u1 chat mms-box">
+          <div class="mms">
+            <div class="mms-img">
+
+              <div class="preloader-wrapper small active msg-loader">
+    <div class="spinner-layer spinner-green-only">
+      <div class="circle-clipper left">
+        <div class="circle"></div>
+      </div><div class="gap-patch">
+        <div class="circle"></div>
+      </div><div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+
+              <img src="${msg.imageUrl}" class="download-img sumo${res.next}"/>
+              <a href="${msg.downloadLink}" download>
+                <i class="material-icons">file_download</i>
+                </a>
+              </div> 
+              </div>
+              ${msg.body}
+            </div>
+                <div class="time">
+                  ${msg.time} &nbsp; 
+                  <div class="time">
+                    </div> 
+                </div>
+              </span>
+      `);
+                } 
+                else {
                   $('.chats').prepend(`               
                 <span class="u1 chat">${msg.body}
                   <div class="time">${msg.time}</div>
                 </span>`)
 
                 }
+              }
               })
             }
+            const images = document.querySelectorAll(`.sumo${res.next}`);
+    images.forEach(img=>{
+      img.addEventListener('load',()=>{
+        img.style.display = 'block';
+        const a = img.parentNode.children[2];
+        const loader = img.parentNode.children[0];
+        if(a){
+          a.style.display = 'flex';
+        }
+        loader.remove()
+      })
+    })
             chatWindow.scrollTop = chatWindow.scrollHeight - height
           }).catch(err=>{
             $('.loader').css('display','none')
@@ -193,24 +413,101 @@ socket.on('connect', (error) => {
             }
             else if (res.messages.length > 0) {
               res.messages.forEach((msg, i) => {
-                if (msg.receiver.toString() === $('#friendId').val().toString()) {
-                  $('.chats').prepend(`
+               if (msg.receiver.toString() === $('#friendId').val().toString()) {
+                 if(msg.imageId.length > 0){
+                   $('.chats').append(`
+        <span class="u2 chat mms-box">
+          <div class="mms">
+            <div class="mms-img">
+
+              <div class="preloader-wrapper small active msg-loader">
+    <div class="spinner-layer spinner-green-only">
+      <div class="circle-clipper left">
+        <div class="circle"></div>
+      </div><div class="gap-patch">
+        <div class="circle"></div>
+      </div><div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+
+              <img src="${msg.imageUrl}" class="download-img"/>
+              </div> 
+              </div>
+              ${msg.body}
+            </div>
+                <div class="time">
+                  ${msg.time} &nbsp; 
+                  <div class="time"><i class="material-icons">done_all</i></div> 
+                </div>
+              </span>
+      `);
+                 }else{
+                  $('.chats').append(`
               <span class="u2 chat">${msg.body}
                 <div class="time">
                   ${msg.time} &nbsp; 
                   <div class="time"><i class="material-icons">done_all</i></div> 
                 </div>
               </span>
-              `)
-                } else {
-                  $('.chats').prepend(`               
+              `)}
+                }else{
+                  if(msg.imageId.length > 0){
+                  $('.chats').append(`
+        <span class="u1 chat mms-box">
+          <div class="mms">
+            <div class="mms-img">
+
+              <div class="preloader-wrapper small active msg-loader">
+    <div class="spinner-layer spinner-green-only">
+      <div class="circle-clipper left">
+        <div class="circle"></div>
+      </div><div class="gap-patch">
+        <div class="circle"></div>
+      </div><div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+
+              <img src="${msg.imageUrl}" class="download-img"/>
+              <a href="${msg.downloadLink}" download>
+                <i class="material-icons">file_download</i>
+                </a>
+              </div> 
+              </div>
+              ${msg.body}
+            </div>
+                <div class="time">
+                  ${msg.time} &nbsp; 
+                  <div class="time">
+                    </div> 
+                </div>
+              </span>
+      `);
+                } 
+                else {
+                  $('.chats').append(`               
                 <span class="u1 chat">${msg.body}
                   <div class="time">${msg.time}</div>
                 </span>`)
 
                 }
+              }
               })
             }
+            const images = document.querySelectorAll('img');
+    images.forEach(img=>{
+      img.addEventListener('load',()=>{
+        img.style.display = 'block';
+        const loader = img.parentNode.children[0].style.display = 'none';
+        const a = img.parentNode.children[2];
+        if(a){
+          a.style.display = 'flex';
+        }
+      })
+    })
             chatWindow.scrollTop = chatWindow.scrollHeight - height
           }).catch(err=>{
             $('.loader').css('display','none')

@@ -254,8 +254,8 @@
       if (cid.value.toString() === data.id.toString()) {
         const time = cid.parentNode.children[4].children[0];
         const messageIdicator = cid.parentNode.children[3].children[1].children[0]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
-        messageIdicator.textContent = "";
-        messageIdicator.textContent = data.msg.length > 25 ? data.msg.substring(0, 25) + '...' : data.msg;
+        messageIdicator.textContent = ""; 
+        data.withImage?messageIdicator.innerHTML =`<span class="withImage" style="display:flex;align-items:center;"><i class="material-icons thumbnail">insert_photos</i>${messageIdicator.textContent = data.msg.length > 25 ? data.msg.substring(0, 12) + '...' : data.msg}</span>` : messageIdicator.textContent = data.msg.length > 25 ? data.msg.substring(0, 25) + '...' : data.msg;
         time.textContent = " ";
         time.textContent = data.time;
         //move the notification to the top
@@ -278,7 +278,9 @@
         const time = cid.parentNode.children[4].children[0];
         const messageIdicator = cid.parentNode.children[3].children[1].children[0]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
         messageIdicator.textContent = "";
-        messageIdicator.textContent = data.msg.length > 25 ? data.msg.substring(0, 25) + '...' : data.msg;
+        messageIdicator.innerHTML = "";
+        data.withImage?messageIdicator.innerHTML =`<span class="withImage" style="display:flex;align-items:center;"><i class="material-icons thumbnail">insert_photos</i>${messageIdicator.textContent = data.msg.length > 25 ? data.msg.substring(0, 12) + '...' : data.msg}</span>` : messageIdicator.textContent = data.msg.length > 25 ? data.msg.substring(0, 25) + '...' : data.msg;
+        //messageIdicator.textContent = data.msg.length > 25 ? data.msg.substring(0, 25) + '...' : data.msg;
         time.textContent = " ";
         time.textContent = data.time;
         //move the notification to the top
@@ -306,7 +308,14 @@
     </span>
     <p>
     <small class="brief">
-      ${data.msg.length > 25 ? data.msg.substring(0, 25) + '...': data.msg}
+      ${data.withImage ?
+        `<span class="withImage" style="display:flex;
+        align-items:center;">
+          <i class="material-icons thumbnail">insert_photos</i>
+          ${data.msg.length > 25 ? 
+            data.msg.substring(0, 15) + '...' : data.msg}
+            </span>` : data.msg.length > 24 ? 
+        data.msg.substring(0,25)+' ...': data.msg}
       </small>
     </p></div>
     <div class=" secondary-content">
@@ -329,7 +338,14 @@
     </span>
     <p>
     <small class="brief">
-      ${data.msg.length > 25 ? data.msg.substring(0, 25) + '...': data.msg}
+      ${data.withImage ?
+        `<span class="withImage" style="display:flex;
+        align-items:center;">
+          <i class="material-icons thumbnail">insert_photos</i>
+          ${data.msg.length > 25 ? 
+            data.msg.substring(0, 15) + '...' : data.msg}
+            </span>` : data.msg.length > 24 ? 
+        data.msg.substring(0,25)+' ...': data.msg}
       </small>
     </p></div>
     <div class=" secondary-content">

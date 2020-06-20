@@ -435,3 +435,6 @@ section.desktop {
   border:thin solid #ccc;
   border-radius: 5px;
 }
+.thumbnail{
+  width:24px
+}

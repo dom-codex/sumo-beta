@@ -41,6 +41,7 @@ res.setHeader("Pragma", "no-cache"); // HTTP 1.0.
 res.setHeader("Expires", "0");
 next()
 })
+
 //session store initialization
 
 app.use(
@@ -102,6 +103,9 @@ app.use((req,res,next)=>{
 app.post('/upload',isAuth,(req, res) => {
 require('./controllers/upload').uploader(req,res)
 });
+app.post('/sendmms',(req,res,next)=>{
+  require('./controllers/mms').sendMMS(req,res,next)
+})
 app.post('/report',require('./utils/auth'),errorController.reportError)
 app.post('/suggest',errorController.suggest)
 app.use("/admin", adminrouter);

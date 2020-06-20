@@ -14,7 +14,7 @@ module.exports.chatPaginator = (req, res, next) => {
             last = (Math.ceil((totalMessages) / 10))
             if ((Math.ceil((totalMessages) / 10) >= last)) {
                 return Message.find({ $or: [{ $and: [{ sender: uid }, { receiver: fid }] }, { $and: [{ sender: fid }, { receiver: uid }] }] })
-                    .sort({ $natural: -1 }).skip((page - 1) * 10).limit(10)
+                    .sort({ $natural: 1 }).skip((page - 1) * 10).limit(10)
             }
         })
         .then(messages => {
@@ -139,11 +139,13 @@ module.exports.loadChats =  async(req, res, next) => {
                                     } else {
                                        // const myChatsWithUser = me.chats.find(chat => chat.chatId.toString() === a.anonyString.toString())
                                         const ourMessages = messages.find(m=>m.sender.toString()=== a.anonyString.toString() || m.receiver.toString() === a.anonyString.toString() )
+                                        const withImage = ourMessages && ourMessages.imageId.length>0;
                                         return {
                                             name: a.anonymousName,
                                             _id: a.anonyString,
                                             img: a.images.anonymous.thumbnail,
                                             anStatus: a.anonymousStatus,
+                                            withImage:withImage,
                                             message: ourMessages && ourMessages.body.length > 0 ? ourMessages.body : 'anonymous chat',
                                             isNew: ourMessages && ourMessages.isMsgNew ? ourMessages.isMsgNew : false,
                                             time: ourMessages && ourMessages.time.length > 0 ? ourMessages.time : '',
@@ -177,13 +179,15 @@ module.exports.loadChats =  async(req, res, next) => {
                                 } else {
                                   //  const myChatsWithUser = me.chats.find(chat => chat.chatId.toString() === aUser._id.toString())
                                     const ourMessages = messages.find(m=>m.sender.toString()=== aUser._id.toString() || m.receiver.toString() === aUser._id.toString() )
+                                    const withImage = ourMessages && ourMessages.imageId.length>0;
                                     return {
                                         name: aUser.name,
                                         _id: aUser._id,
                                         img: aUser.images.open.thumbnail,
                                         status: aUser.status,
+                                        withImage: withImage,
                                         isNew: ourMessages && ourMessages.isMsgNew ? ourMessages.isMsgNew : false,
-                                        message: ourMessages && ourMessages.body.length > 0 ? ourMessages.body : 'say hi',
+                                        message: ourMessages && ourMessages.body.length > 0 ? ourMessages.body : withImage?'' :'say hi',
                                         time: ourMessages && ourMessages.time.length > 0 ? ourMessages.time : '',
                                     }
                                     /*return {
@@ -268,10 +272,12 @@ module.exports.loadChatsForAnonymousUser = (req, res, next) => {
                 // const myChatsWithUser = aUser.chats.find(chat => chat.chatId.toString() === req.session.user.anonyString.toString())
                 //format the result of this queries
                 const ourMessages = messages.find(m=>m.sender.toString()=== aUser._id.toString() || m.receiver.toString() === aUser._id.toString() )
+                const withImage = ourMessages && ourMessages.imageId.length>0;
                 return {
                     name: aUser.name,
                     _id: aUser._id,
                     img: aUser.images.open.thumbnail,
+                    withImage: withImage,
                     status: aUser.status,
                     isNew: ourMessages && ourMessages.isMsgNew ? ourMessages.isMsgNew : false,
                     message: ourMessages && ourMessages.body.length > 0 ? ourMessages.body : 'say hi',
