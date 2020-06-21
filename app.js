@@ -50,7 +50,10 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store:new MongoStore({ 
-      url: process.env.session_store }) , 
+      url: process.env.session_store,
+      autoRemove: 'interval',
+      autoRemoveInterval: 3
+     }) , 
       cookie:{
         maxAge:1000 * 60  //session will last for 3mins
       }, 
@@ -80,7 +83,7 @@ app.use((req,res,next)=>{
     User.findOne({userToken:userToken})
     .then(user=>{
       req.session.isauth = true;
-      req.session.isVerfied = true;
+      req.session.isVerified = true;
       req.session.user = user;
       res.clearCookie('sumo.toks');
       res.cookie('sumo.toks', tokID, { maxAge:1000*60*60, httpOnly: true });
@@ -103,7 +106,7 @@ app.use((req,res,next)=>{
 app.post('/upload',isAuth,(req, res) => {
 require('./controllers/upload').uploader(req,res)
 });
-app.post('/sendmms',(req,res,next)=>{
+app.post('/sendmms',isAuth,(req,res,next)=>{
   require('./controllers/mms').sendMMS(req,res,next)
 })
 app.post('/report',require('./utils/auth'),errorController.reportError)
