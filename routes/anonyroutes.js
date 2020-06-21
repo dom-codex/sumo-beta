@@ -59,7 +59,7 @@ router.get('/userchannel/:id',
 isAuth,
 controller.userChannel);
 
-router.get('/sendmsg/:fid', controller.getPostToFeed);
+router.get('/sendmsg/:fid',isAuth ,controller.getPostToFeed);
 router.post('/feed/:feed', controller.postToFeed);
 router.get('/chat/:chatId',isAuth, controller.getChatPage);
 router.post('/chatme',isAuth,controller.sendChat)
@@ -103,14 +103,14 @@ check('new').isLength({min:5}).withMessage('password too short').trim(),
 isAuth, 
 controller.changePassword);
 router.get('/confirmation',controller.confirmationPage)
-router.post('/addchat',controller.addChat)
+router.post('/addchat',isAuth,controller.addChat)
 
-router.post('/retrievechat',controller.retrieveMoreChats)
-router.get('/retrievefeeds',controller.retrieveFeed)
-router.get('/loadchats',controller.retrieveChats)
+router.post('/retrievechat',isAuth,controller.retrieveMoreChats)
+router.get('/retrievefeeds',isAuth,controller.retrieveFeed)
+router.get('/loadchats',isAuth,controller.retrieveChats)
 router.get('/getprofilechats',isAuth,controller.retrieveProfileChats)
-router.post('/chatrequest',controller.chatRequest)
-router.post('/searchuser',controller.searchUser)
+router.post('/chatrequest',isAuth,controller.chatRequest)
+router.post('/searchuser',isAuth,controller.searchUser)
 router.get('/retrieverequest',isAuth,controller.retrieveRequests)
 
 router.post('/removeachat',isAuth, controller.removeAChat);

@@ -38,7 +38,7 @@ module.exports = (req, res, next) => {
         res.cookie('sumo.toks', userToks, { maxAge: 60*60*1000, httpOnly: true });
         req.session.isauth = true;
         req.session.user = user;
-        req.session.isVerified = true;
+        req.session.isVerified = user.isVerified;
         req.session.save(() => {
           return res.redirect(`/userchannel/${user._id}`);
         });

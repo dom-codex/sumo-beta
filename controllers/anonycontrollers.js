@@ -1747,6 +1747,11 @@ module.exports.searchUser = (req, res, next) => {
       const searchName = req.body.searchKey.toLowerCase().trim();
       const userId = user.isAnonymous ? user.anonyString : user._id;
       const regex = new RegExp(searchName, "i");
+      if(searchName.length <= 0 ){
+        return res.json({
+          message:'input is empty',
+        })
+      }
       User.find({ name: { $regex: regex } })
         .select("_id name chats chatShare desc images")
         .then((users) => {
