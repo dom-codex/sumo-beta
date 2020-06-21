@@ -116,6 +116,12 @@ section{
   height:100vh;
   overflow-y:scroll;
   overflow-x: hidden;
+  min-width:340px;
+}
+@media all and (max-width:340px){
+  section,body{
+    overflow-x: scroll;
+  }
 }
 .input{
   padding:15px;
@@ -145,6 +151,7 @@ section{
   padding:5px;
   background: none;
   border:none;
+  margin-right: 5px;
 }
 .openEmoji i{
   font-size:2.5em;
@@ -300,6 +307,8 @@ display: flex;
 button.dropdown-trigger{
   -webkit-box-shadow: none;
           box-shadow: none;
+          height:100%;
+          margin-right:8px
 }
 .dropdown-content{
   min-width: 150px;
@@ -349,7 +358,7 @@ display:none
   border:none
 }
 #file-open i{
-  color:indigo;
+  color:#fff;
   font-size:28px
 }
 .img-preview{
@@ -457,4 +466,7 @@ display:none
 }
 .mms-notify img, .mms-notify a{
 display:'none'
+}
+.img-cont img{
+  display:block!important
 }

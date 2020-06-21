@@ -30,8 +30,7 @@ body {
   height: 100vh;
   width: 100vw;
   font-family: Rubik;
-  min-width: 312px;
-  overflow-x: hidden;
+  min-width: 360px;
   overflow: hidden;
 }
 .spinner-cont {
@@ -252,6 +251,20 @@ section.desktop {
 #showdd {
   display: none;
 }
+ul li a {
+  color: rebeccapurple !important;
+}
+ul li {
+  margin: 0;
+}
+ul li i {
+  color: indigo !important;
+}
+@media all and (max-width:360px){
+body.feedBody,section{
+  overflow: scroll;
+}
+}
 @media all and (max-width: 920px) {
   #showdd {
     display: block;
@@ -292,15 +305,6 @@ section.desktop {
   .dropdown-content {
     min-width: 200px;
     overflow: hidden;
-  }
-  ul li a {
-    color: rebeccapurple !important;
-  }
-  ul li {
-    margin: 0;
-  }
-  ul li i {
-    color: indigo !important;
   }
   .sidenav-trigger {
     width: 100%;
@@ -437,4 +441,7 @@ section.desktop {
 }
 .thumbnail{
   width:24px
+}
+.secondary-content small{
+  color:indigo!important
 }

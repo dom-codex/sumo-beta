@@ -5,9 +5,51 @@ nav{
     width:100%;
     overflow:hidden
 }
-.feedcard,.user-view,.profile-view{
-    background-color: rgba(0,0,0,.85);
-    background-image: linear-gradient(45deg,rgba(0,0,0,.55),rgba(0,0,0,.89));
+input:focus, textarea:focus,.input-field input.valid {
+    border-bottom: 1px solid rgba(0,0,0,.89)!important;
+    box-shadow: 0 1px 0 0 rgba(0,0,0,.89)!important;
+  }
+  input:focus + label,  .input-field .prefix.active{
+    color: rgba(0,0,0,.89)!important;
+  }
+div.feedcard.Cards,.user-view,.background,.profile-view{
+    background-color: rgba(0,0,0,.89)!important;
+    background-image: none;
+}
+.feedBody ul li a {
+    color:darkgray!important
+  }
+.sidenav,.mychats{
+    background-color: rgba(0,0,0,.89)!important;
+}
+.sidenav h2,.mychats h2{
+    color:#fff;
+}
+img.circle{
+    border:3px solid #ccc;
+
+}
+.circle-badge{
+    background-color: rgba(0,0,0,.89);
+}
+.controls button:hover,
+ .join-btn button,
+ .controls button:focus,
+ .join-btn button:focus{
+    color:#fff;
+    background-color: rgba(255,255,2555,.5)!important;
+}
+.join-btn button:hover{
+    background-color: rgba(255,255,2555,.7)!important;   
+}
+.secondary-content small, .notfound.chat,.notfound.req{
+    color:#fff!important
+}
+.notfound.feed small{
+    color:#000
+}
+.spinner-layer{
+    border-color:rgba(0,0,0,.89)
 }
 .mychats{
     border-left: thin solid rgba(0,0,0,.1);
@@ -33,7 +75,11 @@ nav{
       background-color: rgba(0,0,0,.89)!important;
   }
   .chat.u2{
-      background-color: rgba(0,0,0,.69);
+      background-color: rgba(0,0,0,.69)!important;
+      box-shadow: none;
+  }
+  .material-icons.thumbnail{
+      color:#fff!important
   }
   /*for profile */
   .body{
@@ -42,6 +88,37 @@ nav{
   button.open-upload-modal{
       border: 2px solid #fff;
   }
+  #dropdown1 li {
+      background-color:rgba(0,0,0,.69)!important;
+      border-bottom:thin solid rgba(0,0,0,.2)!important;
+  }
+  #dropdown1 li a, #dropdown1 li a i{
+      color:rgba(255,255,255,.85)!important;
+  }
+  .collapsible-header{
+      background-color: rgba(0,0,0,.68)!important;
+      color:rgba(255,255,255,.9)!important;
+  }
+  span#badge{
+      background-color: rgba(0,0,0,.7);
+  }
+  #test1,#test2,#test3,#test4{
+      background-color: rgba(0,0,0,.25);
+  }
+  label,label.active,input,textarea,.row i,.anonymous p{
+    color:rgba(255,255,255,.95)!important
+}
+.password.open button, #copy1,#copy2{
+    background-color: rgba(0,0,0,.85);
+}
+#copy1,#copy2{
+    border-color: rgba(255,255,255,.95);
+    color:rgba(255,255,255,.9);
+}
+#copy1:hover,#copy2:hover{
+    color:#000;
+    background-color: rgba(255,255,255,.5)!important;
+}
 /*for toggle */
 .checkbox:checked + .toggle { 
     background-color:black;

@@ -21,7 +21,7 @@
 
 </head>
 
-<body>
+<body class="feedBody">
   <input type="hidden" id="uid" value="<%= uid %>">
   <input type="hidden" value="<%=csrfToken%>" name="_csrf">
   <!--side nav codes-->
@@ -96,9 +96,10 @@
       </div>
         <div class="input-field join">
           <div class="controls">
-            <button>Chats</button>
+            <button class="s">Chats</button>
             <button>Requests <span class="circle-badge smally">0</span></button>
-            <button>Search</button></div>
+            <button class="s">Search</button>
+          </div>
           <div class="addById current">
           <input type="text" id="chatStringLarge" placeholder="enter chat id" class="chatString"/>
           <div class="join-btn"><button id="startchatlarge">add</button>

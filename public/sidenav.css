@@ -9,6 +9,7 @@
 }
 .user-view, .background, .profile-view{
 background-color: indigo;
+margin-bottom: 0;
 }
 .name::first-letter{
   text-transform: capitalize;
@@ -16,11 +17,15 @@ background-color: indigo;
 .email{
   padding-left:5px
 }
+.controls{
+  width:100%;
+}
 .controls button{
-  width:48%;
+  width:49%;
   padding:5px;
+  height:30px;
   border:none;
-  border-radius: 5px;
+  border-bottom: thin solid #ccc;
 }
 .requests{
   display:none!important;
@@ -38,8 +43,12 @@ background-color: indigo;
   color:#fff;
   font-size:.68em;
 }
-.controls button:nth-child(2){
-  margin-left:3px
+.s{
+  height:37px
+}
+.sidenav,.user-view,.input-field{
+  margin-top:0;
+  margin-bottom: 0!important;
 }
 .controls button:hover{
   background-color: rgb(120, 72, 149);
@@ -49,8 +58,7 @@ background-color: indigo;
   background-color: #ccc;
 }
 .join{
-  width:80%;
-  margin:auto
+  width:100%;
 }
 .join-btn{
   display: flex;
@@ -179,4 +187,7 @@ display:none;
 .requests,.search{
   position: relative;
   min-height: 100px;
+}
+.searchcontrols, .addById{
+  padding:0 15px
 }
