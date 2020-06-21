@@ -108,18 +108,18 @@ module.exports.mailer = (req,res,email,name,link)=>{
 module.exports.confirmationMailer = (email,name,id,toks)=>{
   const headUrl = process.env.urlHead || `http://localhost:3000`
     const transporter = nodemailer.createTransport({
-      host: "smtp.mailtrap.io",
+     /* host: "smtp.mailtrap.io",
       port: 2525,
       auth: {
         user: "8cbc5292cd962a",
         pass: "4a93371bd1c5c5"
-      }
+      } */
   
-      /*service: "gmail",
+      service: "gmail",
         auth: {
           user: "sumomessenger.beta@gmail.com",
           pass: process.env.mailer_pass
-        } */
+        } 
       
     });
   const mailOptions = {
