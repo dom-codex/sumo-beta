@@ -15,18 +15,19 @@
 const showIndicator = ()=>{
   const bodyHeight = document.querySelector('body').scrollHeight;
   $('#bg').css('height',`${bodyHeight}px`);
-  $('#bg').css('display','block')
+  $('#bg').css('display','block');
 $('.upload-modal').css('display','flex');
-$('.file-cont').css('display','none');
+$('.modal-upload').css('display','flex');
 $('.preloader-wrapper').css('display','block');
-$('.btn-close').css('display','none')
+$('input[type="file"]').val('')
 }
 const hideIndicator = () =>{
 $('.upload-modal').css('display','none');
-$('.file-cont').css('display','block');
+$('.modal-upload').css('display','none');
+$('.upload-error').css('display','none');
 $('.preloader-wrapper').css('display','none');
-$('.btn-close').css('display','flex')
-  $('#bg').css('display',`none`);
+$('#bg').css('display',`none`);
+$('input[type="file"]').val('')
 }
 const LoadChats = () =>{
   const token =  $('input[name="_csrf"]').val();
@@ -63,16 +64,20 @@ const LoadChats = () =>{
     <input type="hidden" value="${token}" name="_csrf">   
     <input type="hidden" value="${user._id}" name="uid">
     <li class="collection-item avatar">
-    <img src="${user.img}" alt="" class="circle">
+    <img src="${user.img}" alt="${user.name}" class="circle">
     <span class="title">${user.name}</span>
     <p>${user.desc} <br>
     </p>
     <div class="btncont secondary-content">
         <a href="/chat/${user._id}" class="z-depth-1">
           <i class="material-icons">near_me</i>
+          <div class="ui">chat</div>
           </a>
-        <button onclick="removeHandler(this,'dom')" 
-        data-target="modal1" class="btn modal-trigger"><i class="material-icons">delete</i></button>
+        <a href="#" onclick="removeHandler(this,'dom')" 
+        data-target="modal1" class="z-depth-1 btn modal-trigger">
+        <i class="material-icons">delete</i>
+        <div class="ui">del</div>
+        </a>
       </div>
   </li></form>
     `)
@@ -314,20 +319,13 @@ $('.logout.delete button').on('click',()=>{
   })
 })
 //image upload script
-$('.btn-close').on('click',()=>{
-  $('.upload-modal').css('display','none');
-  $('#bg').css('display','none');
-})
 $('.okay').on('click',()=>{
-  $('.file-cont').css('display','block')
-  $('.upload-error').css('display','none');
-  $('.btn-close').css('display','flex')
+  hideIndicator();
 })
 $('.open-upload-modal').on('click',()=>{
   const bodyHeight = document.querySelector('body').scrollHeight;
-  $('.upload-modal').css('display','flex');
+  $('input[type="file"]').trigger('click');
   $('#bg').css('height',`${bodyHeight}px`);
-  $('#bg').css('display',`block`);
 })
 const uploadFile = (file) => {
   showIndicator()
@@ -343,7 +341,6 @@ if(!['image/jpeg', 'image/gif', 'image/png', 'image/svg+xml'].includes(file.type
         $('.upload-error small').text('File must be less than 5MB.')
         $('.preloader-wrapper').css('display','none')
         $('.upload-error').css('display','block')
-        $('.btn-close').css('display','flex')
         return;
     }
 const token = $('input[name="_csrf"]').val()
@@ -362,14 +359,17 @@ fetch('/upload', {
 .then(res => res.json())
 .then(data =>{ 
 if(data.img){
-   $('.profilePic').attr('src',data.img);
-  return window.location.reload()
+   $('.profilePic').empty();
+   const img = new Image();
+   img.src = data.img;
+   img.classList.add('profilePic');
+   hideIndicator() ;
+  window.location.reload();
+  return
 }
 $('.preloader-wrapper').css('display','none');
 $('.upload-error small').text(data);
 $('.upload-error').css('display','block');
-$('.btn-close').css('display','flex');
-
 })
 .catch(err => console.error(err));
 }

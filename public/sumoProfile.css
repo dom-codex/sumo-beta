@@ -187,6 +187,9 @@ img{
 span.title{
   overflow-y: hidden!important;
 }
+input[type="file"]{
+  display:none
+}
 .upload-modal, .myModal, #bg{
   position: absolute;
   display:-webkit-box;
@@ -661,4 +664,21 @@ label{
   padding-top:10px;
   font-weight: bold;
 }
-div.info{width:95%;margin:auto;padding-top:38px}
+div.info{
+  width:95%;
+  margin:auto;
+  padding-top:38px
+}
+.secondary-content a, .secondary-content button, .btn i{
+  line-height: 1em;
+  padding:0;
+}
+.secondary-content i{
+  height:24px;
+  width:24px;
+  font-size:24px;
+}
+.ui{
+  text-transform: lowercase;
+  color:rosybrown
+}
