@@ -61,6 +61,7 @@ socket.on('connect', (error) => {
 });
       socket.on('chatMsg',(data)=>{
         const msgWindow = $('.chats');
+        $('#typingIndicator').remove()
         if(data.img && data.img.length > 0){
           const tag = Date.now();
           msgWindow.append(`
@@ -92,7 +93,7 @@ socket.on('connect', (error) => {
                 </div>
               </span>
       `);
-      
+      chatWindow.scrollTop = chatWindow.scrollHeight;
       const parent = document.querySelector(`.sumo${tag}`);
       const img = parent.children[1];
       const a = parent.children[2];
@@ -101,10 +102,7 @@ socket.on('connect', (error) => {
         a.style.display = 'flex';
         $(`.msg-loader.sumo${tag}`).remove();
       })
-
-        }
-        $('#typingIndicator').remove()
-        
+        }        
         msgWindow.append( `
         <span class="u1 chat">${data.message}
           <div class="time">${data.time}</div>

@@ -445,3 +445,15 @@ body.feedBody,section{
 .secondary-content small{
   color:indigo!important
 }
+.search-vector{
+  height:150px;
+  width:100%;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.search-vector i{
+  color:#ccc;
+  font-size:7em;
+}

@@ -371,8 +371,9 @@
     $('.requests').addClass('current')
     $('.addById').addClass('current')
     requestBtn.css('display', 'none')
-    chatsBtn.css('display', 'inline-block')
-
+    chatsBtn.css('display', 'inline-block');
+    $('.searchResult').html('');
+    $('.searchResult.large').html('');
   })
   chatsBtn.on('click', () => {
     $(".errdisplay").css("display", "none");
@@ -384,6 +385,8 @@
     $('.addById').addClass('current')
     requestBtn.css('display', 'inline-block')
     chatsBtn.css('display', 'none')
+    $('.searchResult').html('');
+    $('.searchResult.large').html('');
   })
   searchBtn.on('click', () => {
     $(".errdisplay").css("display", "none");
@@ -394,11 +397,29 @@
       $('.searchcontrols').addClass('current')
       $('.chats').removeClass('current')
       $('.addById').removeClass('current')
+      $('.searchResult').html('');
+      $('.searchResult.large').html('');
+      $('.searchResult').append(`
+            <div class="search-vector">
+              <i class="material-icons">gps_fixed</i>
+              <br>
+              <p>Enter a name in the form above</p>
+            </div>
+          `)    
+            $('.searchResult.large').append(`
+            <div class="search-vector">
+              <i class="material-icons">gps_fixed</i>
+              <br>
+              <p>Enter a name in the form above</p>
+            </div>
+          `)
     }else {
       $('.chats').addClass('current')
       $('.search').removeClass('current')
       $('.addById').addClass('current')
       $('.searchcontrols').removeClass('current')
+      $('.searchResult').html('');
+      $('.searchResult.large').html('');
     }
     $('.requests').removeClass('current')
     searchBtn.text(`${currentText === 'Search' ? 'Add Chat' : 'Search'}`)
