@@ -170,7 +170,7 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory,mime) =>{
        console.log('updated')
         // console.log('File is : ', file);
         let img;
-        User.findById(req.session.user._id).select('images')
+        User.findById(req.session.user._id).select('images isAnonymous')
         .then(user=>{
             if(!user) throw new Error('no user')
             else if(user.isAnonymous){
