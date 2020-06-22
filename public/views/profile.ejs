@@ -122,14 +122,17 @@
           <ul class="collapsible">
             <li class="firstli">
             <div class="user-image-cont firstdiv">
-              <a id="showdd" class='dropdown-trigger btn' href='#' data-target='dropdown1'><i class="material-icons">dehaze</i></a>
+              <img src="/ms-icon-144x144.png" alt="app-logo-small"/>
+              <a id="showdd" class='dropdown-trigger btn' href='#' data-target='dropdown1'>
+                <i class="material-icons">dehaze</i>
+              </a>
               <div class="pp user-image-cont">
                 <img class="profilePic" src=" <%=img%>"/>
               </div>
               <div class="text-small">
               <div id="mydetails">
                 <p class="myname">
-                  <%=user.name%>
+                  <%= !anonymous ? user.name : user.anonymousName%>
                 </p>
                 <div  style="display: flex;">
                   <small class="small-desc">

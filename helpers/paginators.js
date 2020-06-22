@@ -14,7 +14,7 @@ module.exports.chatPaginator = (req, res, next) => {
             last = (Math.ceil((totalMessages) / 10))
             if ((Math.ceil((totalMessages) / 10) >= last)) {
                 return Message.find({ $or: [{ $and: [{ sender: uid }, { receiver: fid }] }, { $and: [{ sender: fid }, { receiver: uid }] }] })
-                    .sort({ $natural: 1 }).skip((page - 1) * 10).limit(10)
+                    .sort({ $natural: -1 }).skip((page - 1) * 10).limit(10)
             }
         })
         .then(messages => {

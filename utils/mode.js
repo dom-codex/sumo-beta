@@ -5,7 +5,7 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
   let page = +req.query.page || 1;
   //reformat this line later
   User.findOne({ _id: req.session.user._id })
-    .select("name _id email anonyChats anonyString images isAnonymous")
+    .select("anonymousName _id email anonyChats anonyString images isAnonymous")
     .then((me) => {
       //retrieve all user id the current user has discussed with anonymously
       const chatids = me.anonyChats.map((id) => {
@@ -43,14 +43,14 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
         });
       });
       //render view with necesary data
+      req.toks ? res.cookie('sumo.toks', req.toks, { maxAge:1000*60*60, httpOnly: true }) :''
       const inform = req.flash("inform");
       res.render("feed", {
-        name: me.name,
+        name: me.anonymousName,
         email: me.email,
         img: me.images.anonymous.link,
         uid: me._id,
         inform: inform.length > 0 ? inform[0] : { status: false, msg: "" },
-        csrfToken: req.csrfToken(),
         hasNext: false, //5 * page < nAnonyChats,
         hasPrev: false,
         next: 1,
@@ -146,9 +146,9 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
               ).then((_) => {});
             });
           });
+          req.toks ? res.cookie('sumo.toks', req.toks, { maxAge:1000*60*60, httpOnly: true }) :''
           res.render("chatPage", {
             fid: id,
-            csrfToken: req.csrfToken(),
             uid: req.session.user.anonyString,
             img: img,
             friend: friend,
@@ -226,7 +226,9 @@ module.exports.normalUserMode = (req, res, next, io) => {
           socket.disconnect(true);
         });
       });
+      req.toks ? res.cookie('sumo.toks', req.toks, { maxAge:1000*60*60, httpOnly: true }) :''
       const inform = req.flash("inform");
+
       res.render("feed", {
         name: me.name,
         email: me.email,
@@ -236,7 +238,6 @@ module.exports.normalUserMode = (req, res, next, io) => {
         uid: me._id,
         chat: me.chatShare,
         inform: inform.length > 0 ? inform[0] : { status: false, msg: "" },
-        csrfToken: req.csrfToken(),
         onlineUsers: [], //filteredUsersList,//onlineUser.concat(anonymous)
         anonymous: me.isAnonymous ? true : false,
       });
@@ -317,9 +318,10 @@ module.exports.normalChatMode = (req, res, next, io) => {
               ).then((_) => {});
             });
           });
+          req.toks ? res.cookie('sumo.toks', req.toks, { maxAge:1000*60*60, httpOnly: true }) :''
+ 
           res.render("chatPage", {
             fid: id,
-            csrfToken: req.csrfToken(),
             uid: req.session.user._id,
             friend: friend,
             status: status,

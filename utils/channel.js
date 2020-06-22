@@ -6,14 +6,6 @@ module.exports = (req, res, next) => {
   const id = req.query.myid;
   const toks = req.query.ref;
   let decoded;
-  try{
-   decoded = jwt.verify(toks,process.env.signMeToken);
-  }catch(err){
-    console.log(err)
-    if(err.name === 'JsonWebTokenError'){
-       return res.redirect('/getstarted')
-    }
-  }
   if (
     req.session.user !== null &&
     req.session.user !== undefined &&
@@ -23,6 +15,14 @@ module.exports = (req, res, next) => {
     return res.redirect(`/userchannel/${req.session.user._id}`);
   } else if (id !== undefined && id.length > 0) {
     //validate id
+    try{
+      decoded = jwt.verify(toks,process.env.signMeToken);
+     }catch(err){
+       console.log(err)
+       if(err.name === 'JsonWebTokenError'){
+          return res.redirect('/getstarted')
+       }
+     }
     User.findById(id)
       .then((user) => {
         if (user && decoded.toks == user.userToken) {

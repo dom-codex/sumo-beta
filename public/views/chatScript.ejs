@@ -263,6 +263,7 @@ socket.on('connect', (error) => {
         $('.loader').css('display','flex')
         fetch(`/retrievechat?page=${page}`, {
           method: 'POST',
+          credentials:'include',
           headers: {
             "csrf-token": document.querySelector('input[name="_csrf"]').value,
             "Content-Type": 'application/json'
@@ -324,7 +325,7 @@ socket.on('connect', (error) => {
               `)}
                 }else{
                   if(msg.imageId.length > 0){
-                  $('.chats').append(`
+                  $('.chats').prepend(`
         <span class="u1 chat mms-box">
           <div class="mms">
             <div class="mms-img">
@@ -389,8 +390,9 @@ socket.on('connect', (error) => {
     //load top 10 latest chats with user
     const loadLatestChats = () =>{
       $('.loader').css('display','flex')
-        fetch(`/retrievechat?page=1`, {
+        fetch(`/retrievechat?page=${1}`, {
           method: 'POST',
+          credentials:'include',
           headers: {
             "csrf-token": document.querySelector('input[name="_csrf"]').value,
             "Content-Type": 'application/json'
@@ -413,7 +415,7 @@ socket.on('connect', (error) => {
               res.messages.forEach((msg, i) => {
                if (msg.receiver.toString() === $('#friendId').val().toString()) {
                  if(msg.imageId.length > 0){
-                   $('.chats').append(`
+                   $('.chats').prepend(`
         <span class="u2 chat mms-box">
           <div class="mms">
             <div class="mms-img">
@@ -442,7 +444,7 @@ socket.on('connect', (error) => {
               </span>
       `);
                  }else{
-                  $('.chats').append(`
+                  $('.chats').prepend(`
               <span class="u2 chat">${msg.body}
                 <div class="time">
                   ${msg.time} &nbsp; 
@@ -452,7 +454,7 @@ socket.on('connect', (error) => {
               `)}
                 }else{
                   if(msg.imageId.length > 0){
-                  $('.chats').append(`
+                  $('.chats').prepend(`
         <span class="u1 chat mms-box">
           <div class="mms">
             <div class="mms-img">
@@ -486,7 +488,7 @@ socket.on('connect', (error) => {
       `);
                 } 
                 else {
-                  $('.chats').append(`               
+                  $('.chats').prepend(`               
                 <span class="u1 chat">${msg.body}
                   <div class="time">${msg.time}</div>
                 </span>`)

@@ -9,7 +9,7 @@ const Feed = require("../models/feed");
 const modes = require("../utils/mode");
 const detectors = require("../utils/detectors");
 const mailer = require("../utils/mailer");
-var jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 const io = require("../socket").getIO;
 
@@ -17,9 +17,9 @@ module.exports.gethome = (req, res, next) => {
   //display success message if suggestion was sent sucessfully
   const didSave = req.flash("saved");
   //render home view
+
   res.render("home", {
     save: didSave,
-    csrfToken: req.csrfToken(),
   });
 };
 module.exports.about = (req, res, next) => {
@@ -78,8 +78,8 @@ module.exports.createChannel = (req, res, next) => {
     };
   }
   //const success = req.flash('success')
+
   res.render("auth", {
-    csrfToken: req.csrfToken(),
     other:
       other.length > 0
         ? other[0]
@@ -305,8 +305,8 @@ module.exports.getPostToFeed = (req, res, next) => {
     .then((result) => {
       if (result !== null) {
         //render view for  user to  send message
+
         return res.render("replyfeed", {
-          csrfToken: req.csrfToken(),
           fid: fid,
           name: result.name,
         });
@@ -560,8 +560,8 @@ module.exports.getProfilePage = (req, res, next) => {
           if (succes.length > 0) {
             success = succes[0];
           }
+          req.toks ? res.cookie('sumo.toks', req.toks, { maxAge:1000*60*60, httpOnly: true }) :''
           res.render("profile", {
-            csrfToken: req.csrfToken(),
             user: me,
             img: img,
             chats: [],
@@ -1560,7 +1560,6 @@ module.exports.getResetPassword = (req, res, next) => {
   const noUserFound = req.flash("noUser");
   const success = req.flash("success");
   res.render("reset", {
-    csrfToken: req.csrfToken(),
     noUser: noUserFound,
     success: success,
     message: noUserFound.length > 0 ? noUserFound[0].message : "",
@@ -1628,7 +1627,6 @@ module.exports.getSetNewPassword = (req, res, next) => {
       const noUserFound = req.flash("noUser");
       const message = noUserFound.length > 0 ? noUserFound[0].message : "";
       res.render("setNew.ejs", {
-        csrfToken: req.csrfToken(),
         noUser: noUserFound,
         success: [],
         message: message,

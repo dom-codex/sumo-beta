@@ -50,9 +50,9 @@
   .pp,
   .profilePic {
     display: block;
-    height: 150px;
-    width: 150px;
-    border-radius: 75px;
+    height: 120px;
+    width: 120px;
+    border-radius:50%;
   }
   .pp {
     margin-left: 20px;
@@ -77,6 +77,9 @@
 }
 @media all and (min-width: 781px) {
   #showdd {
+    display: none;
+  }
+  img[alt="app-logo-small"]{
     display: none;
   }
   .row {
@@ -104,10 +107,10 @@
     margin-left: 10px;
   }
   .upload {
-    left: 56px;
-    bottom: 17px;
+    left: 42px;
+    bottom: 21px;
     background-color: rgba(0, 0, 0, 0.75);
-  }
+}
 }
 
 @media all and (max-width:350px){
@@ -118,8 +121,8 @@
     }
     .upload{
       z-index:20;
-      bottom:22px;
-      left:95px
+      bottom:31px;
+      left:90px
     } 
      .text-small{
       font-size:.9em;

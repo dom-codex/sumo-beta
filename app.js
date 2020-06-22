@@ -33,7 +33,6 @@ app.set("views", "public/views");
 
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
-app.use(cookieParser());
 app.use((req,res,next)=>{
 //this will allow no caching of our rendered files
 res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
@@ -63,7 +62,7 @@ app.use(
 /*const logStream = fs.createWriteStream(path.join(__dirname,'access.log'),{
   flags:'a'
 }) */
-
+app.use(cookieParser());
 app.use(flash());
 app.use(csrfProtection);
 app.use(helmet())
@@ -74,7 +73,12 @@ app.use(express.static(path.join(__dirname, "/", "public")));
 app.use(express.static(path.join(__dirname, "/", "assets")));
 //routers for user and admin
 app.use((req,res,next)=>{
+  res.locals.csrfToken = req.csrfToken();
+  next();
+})
+app.use((req,res,next)=>{
   const tokID = req.cookies['sumo.toks'];
+  req.toks = tokID;
   try{
   if(tokID && tokID.length > 1 && !req.session.user){
   let decoded;

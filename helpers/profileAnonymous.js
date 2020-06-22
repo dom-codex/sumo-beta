@@ -55,8 +55,9 @@ let me
                   if (succes.length > 0) {
                     success = succes[0]
                   }
+                  req.toks ? res.cookie('sumo.toks', req.toks, { maxAge:1000*60*60, httpOnly: true }) :''
+        
                   res.render("profile", {
-                    csrfToken: req.csrfToken(),
                     user: me,
                     img:img,
                     chats: [],
