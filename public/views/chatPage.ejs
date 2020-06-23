@@ -19,10 +19,9 @@
   <% if(anonymous) {%>
     <link href="/dark.css" rel="stylesheet" type="text/css" />
      <%}%>
-
 </head>
-
 <body>
+  <%- include('viewPic.ejs',{img:img}) %>
   <section>
     <input type="hidden" value="<%= fid%>" id="friendId">
     <input type="hidden" value="<%= uid%>" id="uid">
@@ -32,7 +31,7 @@
         <div id="info">
           <div class="img-title-cont">
           <div class="img-cont">
-          <img src="<%=img%>"/>
+          <img onclick="viewImage()" src="<%=img%>"/>
           </div>
           <div id="name">
           <p><%=friend.split(' ')[0]%>

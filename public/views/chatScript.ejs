@@ -1,4 +1,24 @@
 <script>
+    const viewImage = () =>{
+    $('.viewImage-cont').css('display','block');
+  };
+   const viewUserImage = (img) =>{
+    $('.viewImage-cont').css('display','block');
+    $('img.user').css('display','none');
+    $('img.pal').css('display','block');
+    $('.view-image').append(`
+    <img class="pal" src="${img}" alt="a user"/>
+    `)
+  };
+   $('button.pal-close').on('click',()=>{
+    $('.viewImage-cont').css('display','none');
+    $('img.user').css('display','block');
+    $('img.pal').remove();
+   })
+
+  $('.view-contents button').on('click',()=>{
+    $('.viewImage-cont').css('display','none');
+  });
   const retrieveImage = () =>{
   const userFile = document.querySelector('#file-input').files;
   if(!userFile.length > 0)return false
@@ -303,7 +323,7 @@ socket.on('connect', (error) => {
     </div>
   </div>
 
-              <img src="${msg.imageUrl}" class="download-img sumo${res.next}"/>
+              <img onclick="viewUserImage('${msg.imageUrl}')" src="${msg.imageUrl}" class="download-img sumo${res.next}"/>
               </div> 
               </div>
               ${msg.body}
@@ -342,7 +362,7 @@ socket.on('connect', (error) => {
     </div>
   </div>
 
-              <img src="${msg.imageUrl}" class="download-img sumo${res.next}"/>
+              <img onclick="viewUserImage('${msg.imageUrl}')" src="${msg.imageUrl}" class="download-img sumo${res.next}"/>
               <a href="${msg.downloadLink}" download>
                 <i class="material-icons">file_download</i>
                 </a>
@@ -432,7 +452,7 @@ socket.on('connect', (error) => {
     </div>
   </div>
 
-              <img src="${msg.imageUrl}" class="download-img"/>
+              <img src="${msg.imageUrl}" onclick="viewUserImage('${msg.imageUrl}')" class="download-img"/>
               </div> 
               </div>
               ${msg.body}
@@ -471,7 +491,7 @@ socket.on('connect', (error) => {
     </div>
   </div>
 
-              <img src="${msg.imageUrl}" class="download-img"/>
+              <img src="${msg.imageUrl}" onclick="viewUserImage('${msg.imageUrl}')" class="download-img"/>
               <a href="${msg.downloadLink}" download>
                 <i class="material-icons">file_download</i>
                 </a>

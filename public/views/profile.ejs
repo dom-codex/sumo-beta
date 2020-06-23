@@ -25,6 +25,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <%- include('upload-loader.ejs')%>
+    <%- include('viewPic.ejs',{img:img}) %>
     <div id="fb-root"></div>
 <div id="fb-root"></div>
     <script>(function(d, s, id) {
@@ -127,7 +128,7 @@
                 <i class="material-icons">dehaze</i>
               </a>
               <div class="pp user-image-cont">
-                <img class="profilePic" src=" <%=img%>"/>
+                <img onclick="viewImage()" class="profilePic" src=" <%=img%>"/>
               </div>
               <div class="text-small">
               <div id="mydetails">

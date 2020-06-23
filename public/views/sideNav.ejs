@@ -13,7 +13,7 @@
     <button class="s">Chats</button>
     <button>Requests <span class="circle-badge smally">0</span></button>
     <button class="s">Search</button></div>
-  <div class="addById current">
+  <div class="addById">
   <input type="text" placeholder="enter chat id" id="chatString"/>
   <div class="join-btn"><button id="startchat">add</button>
     <small class="errdisplay"></small>
@@ -34,12 +34,7 @@
   <div class="search-loader">
   <%- include('loader.ejs') %> 
 </div>
-  <div class="searchResult">
-    <div class="search-vector">
-      <i class="material-icons">gps_fixed</i>
-      <br>
-      <p>Enter a name in the form above</p>
-    </div>
+  <div class="searchResult small">
   </div>
 </ul>
 <ul class="requests collection">

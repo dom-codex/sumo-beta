@@ -1,5 +1,3 @@
-body{
-}
 nav{
     background-color: rgba(0,0,0,.89);
     width:100%;
@@ -49,10 +47,16 @@ img.circle{
     color:#000
 }
 .spinner-layer{
-    border-color:rgba(0,0,0,.89)
+    border-color:rgba(255,255,255,.9);
 }
 .mychats{
     border-left: thin solid rgba(0,0,0,.1);
+}
+.search-vector p {
+    color:#fff
+}
+span.title{
+    color:darkgray
 }
 /* for side nav*/
 /*.user-view,.profile-view{

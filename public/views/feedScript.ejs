@@ -367,9 +367,9 @@
     $("#largeErr").css("display", "none");
     $('.chats').removeClass('current')
     $('.search').removeClass('current')
+    $('.addById').removeClass('current')
     $('.searchcontrols').removeClass('current')
     $('.requests').addClass('current')
-    $('.addById').addClass('current')
     requestBtn.css('display', 'none')
     chatsBtn.css('display', 'inline-block');
     $('.searchResult').html('');
@@ -380,9 +380,9 @@
     $("#largeErr").css("display", "none");
     $('.requests').removeClass('current')
     $('.search').removeClass('current')
+    $('.addById').removeClass('current')
     $('.searchcontrols').removeClass('current')
     $('.chats').addClass('current')
-    $('.addById').addClass('current')
     requestBtn.css('display', 'inline-block')
     chatsBtn.css('display', 'none')
     $('.searchResult').html('');
@@ -401,18 +401,12 @@
       $('.searchResult.large').html('');
       $('.searchResult').append(`
             <div class="search-vector">
-              <i class="material-icons">gps_fixed</i>
+              <i class="material-icons">search</i>
               <br>
               <p>Enter a name in the form above</p>
             </div>
           `)    
-            $('.searchResult.large').append(`
-            <div class="search-vector">
-              <i class="material-icons">gps_fixed</i>
-              <br>
-              <p>Enter a name in the form above</p>
-            </div>
-          `)
+    
     }else {
       $('.chats').addClass('current')
       $('.search').removeClass('current')

@@ -1,0 +1,56 @@
+    <style type="text/css" rel="stylesheet">
+    .viewImage-cont{
+        position: absolute;
+        display:none;
+        top:0;
+        left:0;
+        width:100%;
+        height:100vh;
+        z-index:2000000;
+        background-color: rgba(0,0,0,.9);
+    }
+    .view-contents{
+        position:relative;
+        height: 100vh;
+        width:100%;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .view-contents button{
+        position: absolute;
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        top:10px;
+        right:10px;
+        z-index:100000;
+        padding:5px;
+        height:45px;
+        width:45px;
+        border-radius: 50%;
+        border: none;
+        color:#fff;
+        background-color: rgba(255,255,255,.4);
+    }
+    .view-image{
+        width:90%;
+        margin:auto;
+        height:200px;
+        max-width:300px;
+    }
+    .view-image img{
+        height: 100%;
+        width:100%
+    }
+    </style>
+    <div class="viewImage-cont">
+        <div class="view-contents">
+            <button class="pal-close">
+                <i class="material-icons">highlight_off</i>
+            </button>
+            <div class="view-image">
+                <img class="user" src="<%=img%>" alt="a user"/>
+            </div>
+        </div>
+    </div>

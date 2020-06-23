@@ -12,7 +12,6 @@ const mailer = require("../utils/mailer");
 const jwt = require("jsonwebtoken");
 
 const io = require("../socket").getIO;
-
 module.exports.gethome = (req, res, next) => {
   //display success message if suggestion was sent sucessfully
   const didSave = req.flash("saved");

@@ -177,6 +177,9 @@ const loadFeed = () => {
         .then(res=>res.json())
         .then(res=>{
           $('.search-loader').css('display','none');
+          if(!res.result){
+            return $('.search-vector p').text('oops no user found!!!')
+          }
           $('.searchResult').html('');
           $('.searchResult.large').html('');
           if(res.result.length > 0){
