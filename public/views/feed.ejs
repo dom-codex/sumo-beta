@@ -34,6 +34,7 @@
   <!--end of side nav import-->
   <!--loader-->
   <div class="spinner-cont">
+    <div id="spinner">
     <div class="preloader-wrapper small active">
       <div class="spinner-layer spinner-green-only">
         <div class="circle-clipper left">
@@ -48,6 +49,7 @@
       </div>
     </div>
   </div>
+</div>
 
   <!--code for header-->
   <header>
@@ -101,14 +103,14 @@
             <button class="s">Search</button>
           </div>
           <div class="addById">
-          <input type="text" id="chatStringLarge" placeholder="enter chat id" class="chatString"/>
+          <input autocomplete="off" type="text" id="chatStringLarge" placeholder="enter chat id" class="chatString"/>
           <div class="join-btn"><button id="startchatlarge">add</button>
             <small class="errdisplay"></small>
           </div>
         </div>
         
         <div class="searchcontrols">
-          <input type="text" placeholder="enter name" id="searchStringLarge"/>
+          <input autocomplete="off" type="text" placeholder="enter name" id="searchStringLarge"/>
           <div class="join-btn">
             <button id="startsearch">search</button>
             <small class="errdisplay"></small>

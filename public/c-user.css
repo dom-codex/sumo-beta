@@ -34,7 +34,7 @@ body {
   overflow: hidden;
 }
 .spinner-cont {
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   width: 100%;
@@ -46,8 +46,15 @@ body {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 5000000;
+}
+#spinner{
+  background-color: #fff;
+  padding:10px;
+  height:55px;
+  width:55px;
+  border-radius:5px
 }
 section {
   height: 100%;

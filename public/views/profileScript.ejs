@@ -33,9 +33,7 @@
   const instances = M.Modal.init(elemss);
 
 const showIndicator = ()=>{
-  const bodyHeight = document.querySelector('body').scrollHeight;
-  $('#bg').css('height',`${bodyHeight}px`);
-  $('#bg').css('display','block');
+$('#bg').css('display','block');
 $('.upload-modal').css('display','flex');
 $('.modal-upload').css('display','flex');
 $('.preloader-wrapper').css('display','block');
@@ -343,9 +341,7 @@ $('.okay').on('click',()=>{
   hideIndicator();
 })
 $('.open-upload-modal').on('click',()=>{
-  const bodyHeight = document.querySelector('body').scrollHeight;
   $('input[type="file"]').trigger('click');
-  $('#bg').css('height',`${bodyHeight}px`);
 })
 const uploadFile = (file) => {
   showIndicator()
@@ -368,6 +364,7 @@ const token = $('input[name="_csrf"]').val()
 const fd = new FormData();
 fd.append('image', file);
 // send `POST` request
+return
 fetch('/upload', {
     method: 'POST',
     credentials:'include',

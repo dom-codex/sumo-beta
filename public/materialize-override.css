@@ -28,11 +28,11 @@
   .collapsible-body span{
     display:block;
     height:auto;
-    overflow-y:scroll;
     padding-top:0
   }
   div.collapsible-body{
-    padding:5px!important
+    padding:0px!important;
+    border-bottom: none;
   }
   .collapsible-header{
     position:relative;
@@ -45,7 +45,7 @@
     background-color: rebeccapurple!important;
     color:#fff!important;
     border-radius: 5px;
-    margin-bottom:7px;
+    margin:10px 0!important;
     display:flex;
     flex-direction: column;
     justify-content: center;
@@ -58,6 +58,7 @@
     text-overflow: ellipsis;
   }
   /*style for modal*/
+
 .modal, .modal-content{
     padding:0!important;
   }

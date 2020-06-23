@@ -11,7 +11,8 @@ const report = req.body.report
 }
 module.exports.suggest = (req,res,next)=>{
     const suggestion = req.body.suggestion;
-    mailer.suggestionMailer(suggestion)
+    const subject = req.body.subject;
+    mailer.suggestionMailer(subject,suggestion)
     req.flash('saved', true)
     req.session.save(()=>{
         res.redirect('/')

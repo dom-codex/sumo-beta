@@ -169,7 +169,7 @@ module.exports.confirmationMailer = (email,name,id,toks)=>{
       }
     });
 };
-module.exports.suggestionMailer = (suggestion)=>{
+module.exports.suggestionMailer = (subject,suggestion)=>{
     const transporter = nodemailer.createTransport({
     /*  host: "smtp.mailtrap.io",
       port: 2525,
@@ -188,7 +188,7 @@ module.exports.suggestionMailer = (suggestion)=>{
   const mailOptions = {
       from: 'sumomessenger.beta@gmail.com',
       to: 'sumomessenger.beta@gmail.com' ,
-      subject: 'Suggestion',
+      subject: `${subject}`,
       html:`
       <!DOCTYPE html>
       <html>

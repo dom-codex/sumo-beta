@@ -1050,7 +1050,6 @@ module.exports.chatRequest = (req, res, next) => {
         return user.save();
       })
       .then((user) => {
-        console.log(req.session.user.name);
         const name = req.session.user.name;
         io()
           .to(id)

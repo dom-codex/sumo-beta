@@ -78,10 +78,11 @@ margin-bottom: 0;
   display:none
 }
 .search, .addById, .searchcontrols{
-  display:none!important
+  display:none!important;
 }
 .current{
   display: block!important;
+  position: relative;
 }
 small.errdisplay{
 color: red;
@@ -182,7 +183,9 @@ display:none;
 }
 .search-loader, .chats-loader, .requests-loader{
   display:none;
-  position: relative;
+  position: absolute;
+  left: 45%;
+  top: 40%;
 }
 .requests,.search{
   position: relative;

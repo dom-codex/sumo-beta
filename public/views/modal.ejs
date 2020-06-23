@@ -5,9 +5,11 @@
       <form method="POST" action="<%=link%>">
           <input type="hidden" value="<%=csrf%>" name="_csrf"/>
         <% if(type === 'suggestion'){ %> 
-            <p>Suggestion body</p>
+          <p>Subject</p>
+          <textarea id="suggestion" name="subject" class="materialize-textarea" placeholder="E.g suggestion, feedback ..."></textarea>                 
+            <p>Body</p>
             <div class="input-field col s12">
-              <textarea id="suggestion" name="suggestion" class="materialize-textarea" placeholder="suggestion..."></textarea>                 
+              <textarea id="suggestion" name="suggestion" class="materialize-textarea" placeholder="body"></textarea>                 
              </div>  
             <%}else if(type === 'report'){%> 
             <div class="form-cont">

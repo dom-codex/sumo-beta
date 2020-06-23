@@ -16,9 +16,7 @@
     <link href="./newhome.css" type="text/css" rel="stylesheet"/>
 </head>
 <body id="body">
-  <div id="notifier" class="<%=save.length>0?'save':''%>" >
-    <p class="<%=save.length>0?'save':''%>">Sent successfully</p>
-  </div>
+    <p id="notifier" class="<%=save.length>0?'save':''%>">Sent successfully</p>
   <div class="fixed-action-btn click-to-toggle">
     <a class="btn-floating btn-large red">
       <i class="large material-icons">brightness_1</i>
@@ -36,7 +34,7 @@
 <main>
     <div class="background">
       <%- include('modal.ejs',{
-        title:'SUGGESTION BOX',
+        title:'Contact Form',
         link:'/suggest',
         type:'suggestion',
         csrf:csrfToken
