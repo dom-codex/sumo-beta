@@ -43,7 +43,7 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
         });
       });
       //render view with necesary data
-      req.toks ? res.cookie('sumo.toks', req.toks, { maxAge:1000*60*60, httpOnly: true }) :''
+      req.toks ? res.cookie('sumo.toks', req.toks, { maxAge:1000*60*60, httpOnly: true }) :'';
       const inform = req.flash("inform");
       res.render("feed", {
         name: me.anonymousName,
@@ -77,10 +77,10 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
         { $set: { isMsgNew: false }})
     })
     .catch(err=>{
-        console.log(err)
+        console.log(err);
     })
     .then(_=>{
-        return
+        return;
     })
     .then((_) => {
       //find the user we want to chat with from db if the users mode is not anonymous
@@ -100,7 +100,7 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
           } else {
             //redundant remember to remove
             return User.findOne({ anonyString: id }); //search for the user if they are actually anonymous
-          }
+          };
         })
         .then((myf) => {
           if (myf) {
@@ -210,7 +210,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
               return active._id;
             } else if (inClosedChat) {
               return active.anonyString;
-            }
+            };
           });
           /*chatids*/ stillInChat.forEach((element) => {
             socket.broadcast.to(element).emit("online", {
@@ -226,7 +226,7 @@ module.exports.normalUserMode = (req, res, next, io) => {
           socket.disconnect(true);
         });
       });
-      req.toks ? res.cookie('sumo.toks', req.toks, { maxAge:1000*60*60, httpOnly: true }) :''
+      req.toks ? res.cookie('sumo.toks', req.toks, { maxAge:1000*60*60, httpOnly: true }) :'';
       const inform = req.flash("inform");
 
       res.render("feed", {
@@ -281,7 +281,7 @@ module.exports.normalChatMode = (req, res, next, io) => {
             return null;
           } else {
             return User.findOne({ anonyString: id });
-          }
+          };
         })
         .then((myf) => {
           if (myf) {
@@ -290,7 +290,7 @@ module.exports.normalChatMode = (req, res, next, io) => {
             friend = myf.anonymousName;
             status = onList ? myf.anonymousStatus : "removed you";
             img = myf.images.anonymous.link;
-          }
+          };
           io().once("connect", (socket) => {
             //online trigger
             detectors.goOnline(req.session.user._id, socket);
@@ -318,7 +318,7 @@ module.exports.normalChatMode = (req, res, next, io) => {
               ).then((_) => {});
             });
           });
-          req.toks ? res.cookie('sumo.toks', req.toks, { maxAge:1000*60*60, httpOnly: true }) :''
+          req.toks ? res.cookie('sumo.toks', req.toks, { maxAge:1000*60*60, httpOnly: true }) :'';
  
           res.render("chatPage", {
             fid: id,

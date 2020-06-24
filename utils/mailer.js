@@ -31,7 +31,7 @@ a.link{
 `;
 const nodemailer = require('nodemailer');
 module.exports.mailer = (req,res,email,name,link)=>{
-  const headUrl = process.env.urlHead || `http://localhost:3000`
+  const headUrl = process.env.urlHead || `http://localhost:3000`;
     const transporter = nodemailer.createTransport({
       /*host: "smtp.mailtrap.io",
       port: 2525,
@@ -44,7 +44,7 @@ module.exports.mailer = (req,res,email,name,link)=>{
         auth: {
           user: "sumomessenger.beta@gmail.com",
           pass: process.env.mailer_pass
-        } 
+        }
       
     });
   const mailOptions = {
@@ -90,23 +90,23 @@ module.exports.mailer = (req,res,email,name,link)=>{
     transporter.sendMail(mailOptions,(error, info)=>{
       if (error) {
         console.log(error);
-        req.flash('noUser', { message:'something went wrong try again!' })
+        req.flash('noUser', { message:'something went wrong try again!' });
         req.session.save(()=>{
-         return res.redirect('/resetpassword')
-        })
+         return res.redirect('/resetpassword');
+        });
       } else {
         console.log('Email sent: ' + info.response);
      //tell user to go to their in box and activate
      //the link
-       req.flash('success',true)
+       req.flash('success',true);
        req.session.save(()=>{
-        return res.redirect('/resetpassword')
-       })
-      }
+        return res.redirect('/resetpassword');
+       });
+      };
     });
-}
+};
 module.exports.confirmationMailer = (email,name,id,toks)=>{
-  const headUrl = process.env.urlHead || `http://localhost:3000`
+  const headUrl = process.env.urlHead || `http://localhost:3000`;
     const transporter = nodemailer.createTransport({
      /* host: "smtp.mailtrap.io",
       port: 2525,
@@ -166,7 +166,7 @@ module.exports.confirmationMailer = (email,name,id,toks)=>{
         console.log('Email sent: ' + info.response);
      //tell user to go to their in box and activate
      //the link
-      }
+      };
     });
 };
 module.exports.suggestionMailer = (subject,suggestion)=>{
@@ -216,7 +216,7 @@ module.exports.suggestionMailer = (subject,suggestion)=>{
         console.log('Email sent: ' + info.response);
      //tell user to go to their in box and activate
      //the link
-      }
+      };
     });
 };
 module.exports.reportMailer = (email,report,link)=>{
@@ -269,6 +269,6 @@ module.exports.reportMailer = (email,report,link)=>{
         console.log('Email sent: ' + info.response);
      //tell user to go to their in box and activate
      //the link
-      }
+      };
     });
-}
+};

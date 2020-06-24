@@ -18,11 +18,10 @@ module.exports = (req, res, next) => {
     try{
       decoded = jwt.verify(toks,process.env.signMeToken);
      }catch(err){
-       console.log(err)
        if(err.name === 'JsonWebTokenError'){
-          return res.redirect('/getstarted')
-       }
-     }
+          return res.redirect('/getstarted');
+       };
+     };
     User.findById(id)
       .then((user) => {
         if (user && decoded.toks == user.userToken) {
@@ -30,10 +29,10 @@ module.exports = (req, res, next) => {
           return user.save();
         } else {
           return res.redirect("/getstarted");
-        }
+        };
       })
       .then((user) => {
-        if (!user) {throw new Error()};
+        if (!user) {throw new Error();};
         const userToks = jwt.sign({ ref:decoded.toks },process.env.signMeToken);
         res.cookie('sumo.toks', userToks, { maxAge: 60*60*1000, httpOnly: true });
         req.session.isauth = true;
@@ -46,5 +45,5 @@ module.exports = (req, res, next) => {
       .catch((e) => {});
   } else {
     return res.redirect("/getstarted");
-  }
+  };
 };

@@ -7,12 +7,12 @@ let timer;
          .then(user=>{
         
             if(!user.isAnonymous){
-             user.status = "offline"
-             return user.save()
+             user.status = "offline";
+             return user.save();
             }
             else{
-                user.anonymousStatus = 'offline'
-                return user.save()
+                user.anonymousStatus = 'offline';
+                return user.save();
             }
          })
          .then(user=>{
@@ -22,61 +22,60 @@ let timer;
           const myChats = [...user.chats];
           myChats.forEach(chats=>{
               socket.broadcast.to(chats.chatId)
-              .emit('offline',{chat:user._id})
+              .emit('offline',{chat:user._id});
               socket.broadcast.to(`${chats.chatId}${id}`)
-              .emit('offline',{status:'offline'})
+              .emit('offline',{status:'offline'});
           })
          }else{
             const myChats = [...user.anonyChats];
             myChats.forEach(chats=>{
                 socket.broadcast.to(chats.chatId)
-                .emit('offline',{chat:user.anonyString})
+                .emit('offline',{chat:user.anonyString});
                 socket.broadcast.to(`${chats.chatId}${id}`)
-                .emit('offline',{status:'offline'})
+                .emit('offline',{status:'offline'});
                 //tell client the open user is offline
             }) 
          }
          }).catch(err=>{
-console.log(err)
-         })
-        },2000) 
- }
+console.log(err);
+         });
+        },2000); 
+ };
  module.exports.goOnline = (id,socket)=>{
      clearTimeout(timer);
      User.findOne({ $or:[{anonyString:id},{_id:id},]})
      .then(user=>{
          if(user.status !== 'online' && !user.isAnonymous){
-         user.status = 'online'
-         return user.save()
+         user.status = 'online';
+         return user.save();
         }else if(user.isAnonymous && user.status !== 'online'){
             user.anonymousStatus = 'online';
-            return user.save()
+            return user.save();
 
         }
-        return user
+        return user;
      })
      .then(user=>{
          if(user !== null){
             if(!user.isAnonymous){
                 const myChats = [...user.chats];
                 myChats.forEach(chats=>{
-                    socket.broadcast.to(chats.chatId).emit('active',{chat:user._id})
+                    socket.broadcast.to(chats.chatId).emit('active',{chat:user._id});
                     socket.broadcast.to(`${chats.chatId}${id}`)
-                    .emit('active',{status:'online'})
-                })
+                    .emit('active',{status:'online'});
+                });
                 
                }else{
                   const myChats = [...user.anonyChats];
                   myChats.forEach(chats=>{
                       socket.broadcast.to(chats.chatId)
-                      .emit('active',{chat:user.anonyString})
+                      .emit('active',{chat:user.anonyString});
                       socket.broadcast.to(`${chats.chatId}${id}`)
-                      .emit('active',{status:'online'})
-                    }) 
+                      .emit('active',{status:'online'});
+                    }); 
                }
          }
      }).catch(err=>{
-      console.log('error')
-     })
-
- }
+      console.log('error');
+     });
+ };

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
-const User = require('../models/user')
+const User = require('../models/user');
 const AUTHENTICATION = (listFiles) =>{
     // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/drive'];
@@ -34,7 +34,7 @@ function authorize(credentials, callback) {
     oAuth2Client.setCredentials(JSON.parse(token));
     callback(oAuth2Client);
   });
-}
+};
 
 /**
  * Get and store new token after prompting for user authorization, and then
@@ -65,7 +65,7 @@ function getAccessToken(oAuth2Client, callback) {
       callback(oAuth2Client);
     });
   });
-}
+};
 /**
  * Lists the names and IDs of up to 10 files.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
@@ -93,7 +93,7 @@ drive.files.create({
     console.error(err);
   } else {
     let img;
-    console.log('uploaded')
+    console.log('uploaded');
     //console.log('File is : ', file);
     User.findById(req.session.user._id)
     .select('images isAnonymous')
@@ -102,7 +102,7 @@ drive.files.create({
         else if(user.isAnonymous){
             //user.images.anonymous.link = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`;
            // user.images.anonymous.thumbnail = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
-            user.images.anonymous.id = file.data.id,
+            user.images.anonymous.id = file.data.id;
             //https://lh3.googleusercontent.com/d/1_T1H42q6u3LosvPLYCRdMElLQgoSigxA=s220?authuser=0
             //https://drive.google.com/file/d/1SV2m3pejgUSr0xcMnfiWY2e9LxNa9af1/view?usp=sharing
             user.images.anonymous.link = `https://drive.google.com/uc?export=view&sz=w10h10&id=${file.data.id}`;
@@ -112,38 +112,38 @@ drive.files.create({
             //img = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`;
            // user.images.anonymous.thumbnail = `https://drive.google.com/thumbnail?authuser=0&sz=w50h50&id=${file.data.id}`
            //img = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
-            return user.save()
+            return user.save();
         }else{
           //user.images.open.link = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`;
           //user.images.open.thumbnail = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`;
-          user.images.open.id = file.data.id,
-            user.images.open.link = ` https://drive.google.com/uc?export=view&id=${file.data.id}`
-            user.images.open.thumbnail = ` https://drive.google.com/uc?export=view&id=${file.data.id}`
-             img = ` https://drive.google.com/uc?export=view&id=${file.data.id}`
+          user.images.open.id = file.data.id;
+            user.images.open.link = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
+            user.images.open.thumbnail = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
+             img = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
            //user.images.open.thumbnail = file.data.thumbnailLink 
            //user.images.open.link = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`
            //img = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`;
           // user.images.open.thumbnail = `https://drive.google.com/thumbnail?authuser=0&sz=w50h50&id=${file.data.id}`
-          img = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
-            return user.save() 
+          //img = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`;
+            return user.save(); 
         }
     })
     .then(user=>{
         fs.unlink(directory, (err) => {
             if (err) {
-              console.error(err)
-              return
+              console.error(err);
+              return;
             }
           res.json({
             img:img
-          })
+          });
             //file removed
-          })
-    })
-  }
+          });
+    });
+  };
 });
-}
-AUTHENTICATION(listFiles)
+};
+AUTHENTICATION(listFiles);
 }
 module.exports.driveUploadUpdate = (req,res,id,filename,directory,mime) =>{
     function listFiles(auth) {
@@ -167,12 +167,12 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory,mime) =>{
         // Handle error
         console.error(err);
       } else {
-       console.log('updated')
+       console.log('updated');
         // console.log('File is : ', file);
         let img;
         User.findById(req.session.user._id).select('images isAnonymous')
         .then(user=>{
-            if(!user) throw new Error('no user')
+            if(!user) throw new Error('no user');
             else if(user.isAnonymous){
               user.images.anonymous.id = file.data.id,
               //https://drive.google.com/file/d/1SV2m3pejgUSr0xcMnfiWY2e9LxNa9af1/view?usp=sharing
@@ -185,12 +185,12 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory,mime) =>{
              // user.images.anonymous.link = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
              // user.images.anonymous.thumbnail = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
              // img =`https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
-              return user.save()
+              return user.save();
           }else{
-              user.images.open.id = file.data.id,
-              user.images.open.link = ` https://drive.google.com/uc?export=view&id=${file.data.id}`
-              user.images.open.thumbnail = ` https://drive.google.com/uc?export=view&id=${file.data.id}`
-               img = ` https://drive.google.com/uc?export=view&id=${file.data.id}`
+              user.images.open.id = file.data.id;
+              user.images.open.link = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
+              user.images.open.thumbnail = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
+               img = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
              //user.images.open.thumbnail = file.data.thumbnailLink 
              //user.images.open.link = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`
              //img = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`
@@ -198,26 +198,26 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory,mime) =>{
              //user.images.open.link = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
              //user.images.open.thumbnail =`https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
              //img = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0` 
-             return user.save() 
-          }
+             return user.save(); 
+          };
         })
         .then(user=>{
             fs.unlink(directory, (err) => {
                 if (err) {
-                  console.error(err)
-                  return
+                  console.error(err);
+                  return;
                 }
               res.json({
                 img:img
-              })
+              });
                 //file removed
-              })
-        })
-      }
+              });
+        });
+      };
     });
-    }
-    AUTHENTICATION(listFiles)
-    }
+    };
+    AUTHENTICATION(listFiles);
+    };
     module.exports.driveUploadDelete = (id) =>{
     function listFiles(auth) {
       const drive = google.drive({version: 'v3', auth});
@@ -230,13 +230,13 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory,mime) =>{
         // Handle error
         console.error(err);
       } else {
-       console.log('removed')
+       console.log('removed');
         // console.log('File is : ', file);
 
-      }
+      };
     });
     }
-    AUTHENTICATION(listFiles)
+    AUTHENTICATION(listFiles);
    }
    module.exports.uploadMMS = (req,res,filename,directory,mime) =>{
     function listFiles(auth) {
@@ -259,20 +259,20 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory,mime) =>{
         // Handle error
         console.error(err);
       } else {
-        console.log('uploaded')
+        console.log('uploaded');
       //console.log('File is : ', file);
                 const imgID =  file.data.id;
                 const downloadLink = file.data.webContentLink;
                 const link = `https://drive.google.com/uc?export=view&sz=w10h10&id=${file.data.id}`;
                 fs.unlink(directory, (err) => {
                 if (err) {
-                  console.error(err)
+                  console.error(err);
                   return
                 }
-                require('../helpers/uploadMms').uploadMMS(req,res,imgID,link,downloadLink)
-              })
-      }
+                require('../helpers/uploadMms').uploadMMS(req,res,imgID,link,downloadLink);
+              });
+      };
     });
-    }
-    AUTHENTICATION(listFiles)
-  } 
+    };
+    AUTHENTICATION(listFiles);
+  }; 

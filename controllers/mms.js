@@ -1,5 +1,5 @@
-const multer = require('multer')
-const fs = require('fs')
+const multer = require('multer');
+const fs = require('fs');
 const User = require('../models/user');
 const path = require('path');
 module.exports.sendMMS = (req,res,next)=>{
@@ -15,7 +15,7 @@ module.exports.sendMMS = (req,res,next)=>{
         }
       });
       // const regex = new RegExp('/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/')
-        const regex = /\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/
+        const regex = /\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/;
         let upload = multer({ 
             storage: storage,
             fileFilter:function(req, file, cb) {
@@ -39,14 +39,14 @@ module.exports.sendMMS = (req,res,next)=>{
           }else if (req.file.size > 5 * 1024 * 1024){
             fs.unlink(req.file.path, (err) => {
                 if (err) {
-                  console.error(err)
-                  return
+                  console.error(err);
+                  return;
                 }
                 return res.json({
                   code:300,
                   class:req.body.tag,
-                  err:'image too large'})
-            })
+                  err:'image too large'});
+            });
         }   
           else if (err) {
               return res.json({
@@ -56,9 +56,9 @@ module.exports.sendMMS = (req,res,next)=>{
               }
                 );
           }else{
-            console.log('here')
-              require('../utils/driveUpload').uploadMMS(req,res,req.file.filename,req.file.path,req.file.mimeType)
+            console.log('here');
+              require('../utils/driveUpload').uploadMMS(req,res,req.file.filename,req.file.path,req.file.mimeType);
           }
-          console.log('almost there')
-      })
-}
+          console.log('almost there');
+      });
+};

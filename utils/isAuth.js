@@ -6,12 +6,12 @@ module.exports = (req,res,next) => {
         return res.json({
             code:300,
             error:'user is not yet authorized'
-        })
-    }
+        });
+    };
     }else{
         return res.json({
             code:300,
             error:'user is not authenticated'
-        })
-    }
-}
+        });
+    };
+};

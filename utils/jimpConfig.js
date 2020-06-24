@@ -9,4 +9,4 @@ return Jimp.read(directory)
   .catch(err => {
     console.error(err);
   });
-}
+};

@@ -10,6 +10,8 @@ const modes = require("../utils/mode");
 const detectors = require("../utils/detectors");
 const mailer = require("../utils/mailer");
 const jwt = require("jsonwebtoken");
+var validator = require('validator');
+const { chat_v1 } = require("googleapis");
 
 const io = require("../socket").getIO;
 module.exports.gethome = (req, res, next) => {
@@ -443,15 +445,16 @@ module.exports.getProfilePage = (req, res, next) => {
         //listener for user who wants to change
         //their display name
         socket.on("newname", (data, fn) => {
+          const name = validator.escape(data)
           if (!data) return;
           User.updateOne(
             { _id: req.session.user._id },
-            { $set: { name: data } }
+            { $set: { name: name } }
           )
             .then((u) => {
               //fn() is called to notifer them of the
               //update
-              req.session.user.name = data;
+              req.session.user.name = name;
               req.session.save(() => {
                 fn(); //notify user of the change
               });
@@ -468,13 +471,14 @@ module.exports.getProfilePage = (req, res, next) => {
 
         //listener to add a brief description of user
         socket.on("newdesc", (data, fn) => {
+          const desc = validator.escape(data)
           if (!data) return; //kill execution if no data
           User.updateOne(
             { _id: req.session.user._id },
-            { $set: { desc: data } }
+            { $set: { desc: desc } }
           )
             .then((u) => {
-              req.session.user.desc = data;
+              req.session.user.desc = desc;
               req.session.save(() => {
                 fn(); //notify user of the change
               });
@@ -491,15 +495,16 @@ module.exports.getProfilePage = (req, res, next) => {
           User.find({ chatShare: data })
             //if a user is returned then the id is already taken
             .then((users) => {
+              const chat = validator.escape(data)
               if (users.length > 0) {
                 fn(true);
               } else {
                 User.updateOne(
                   { _id: req.session.user._id },
-                  { $set: { chatShare: data } }
+                  { $set: { chatShare: chat_v1 } }
                 )
                   .then((u) => {
-                    req.session.user.chatShare = data;
+                    req.session.user.chatShare = chat;
                     req.session.save(() => {
                       fn(); //notify user of the change
                     });
@@ -516,12 +521,13 @@ module.exports.getProfilePage = (req, res, next) => {
         //listener to change anonymous name
         socket.on("newanonymous", (data, fn) => {
           if (!data) return; //kill execution
+          const a = validator.escape(data)
           User.updateOne(
             { _id: req.session.user._id },
             { $set: { anonymousName: data } }
           )
             .then((u) => {
-              req.session.user.anonymousName = data;
+              req.session.user.anonymousName = a;
               req.session.save(() => {
                 fn(); //notify user of the change
               });
@@ -673,7 +679,6 @@ module.exports.changePassword = (req, res, next) => {
     .then((user) => {
       //compare passwords
       bcrypt.compare(oldPassword, user.password).then((result) => {
-        console.log(result);
         if (!result) {
           req.flash("error", {
             field: "old",
@@ -1182,7 +1187,7 @@ module.exports.sendChat = (req, res, next) => {
           message:
             "message not sent because you are no longer pals with this user",
         });
-      }
+      };
       const messages = new Message({
         sender: userId,
         receiver: receiver,
@@ -1205,7 +1210,7 @@ module.exports.sendChat = (req, res, next) => {
               return chats;
             } else {
               return chats; //to keep all other chats
-            }
+            };
           });
           if (user.isAnonymous) {
             user.anonyChats = friends;
@@ -1247,7 +1252,7 @@ module.exports.sendChat = (req, res, next) => {
                 return chats;
               } else {
                 return chats; //to keep all other chats
-              }
+              };
             });
             return sendee.save();
           } else {
@@ -1313,7 +1318,7 @@ module.exports.removeAChat = (req, res, next) => {
       } else {
         myChats = user.chats;
         userId = user._id;
-      }
+      };
       //filter out unwanted user from chat list
       const filteredList = myChats.filter(
         (chat) => chat.chatId.toString() !== uid.toString()
@@ -1478,9 +1483,9 @@ module.exports.removeAChat = (req, res, next) => {
                 });
               });
               });
-            }
+            };
           });
-      }
+      };
     })
     .catch((err) => {
       next(err);
@@ -1521,7 +1526,7 @@ module.exports.deleteAccount = (req, res, next) => {
         );
         chats.save();
       });
-      return Feed.findOneAndDelete({ user: req.session.user.share });
+      return Feed.deleteMany({ user: req.session.user.share });
     })
     .then((_) => {
       Message.deleteMany({
@@ -1664,7 +1669,7 @@ module.exports.setNewPassword = (req, res, next) => {
         return req.session.save(() => {
           res.redirect("/resetpassword");
         });
-      }
+      };
       //check if token is expired
       if (user.tokenTime < Date.now()) {
         //tell user token has expired
@@ -1672,14 +1677,14 @@ module.exports.setNewPassword = (req, res, next) => {
         return req.session.save(() => {
           return res.redirect("/resetpassword");
         });
-      }
+      };
       if (password !== confirmPassword) {
         //tell user the password does not match
         req.flash("noUser", { message: "passwords do not match" });
         return req.session.save(() => {
           return res.redirect(`/setnewpassword/${token}`);
         });
-      }
+      };
       //hash the new pass word
       bcrypt
         .hash(password, 12)

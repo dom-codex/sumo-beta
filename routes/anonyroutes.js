@@ -48,21 +48,25 @@ check('pwd').isLength({min:5}).withMessage('password too short').custom((val,{re
 controller.createUserChannel);
 //validate login credentials
 router.post('/loginuser',[
-    check('email').isEmail().withMessage('invalid email').trim(),
+    check('email').isEmail().withMessage('invalid email').trim().normalizeEmail(),
     check('pwd').isLength({min:5}).withMessage('password too short').custom((val,{req})=>{
         return validators.assertLoginCredentials(val,req)
     }),
 ] ,controller.loginUser);
 
-router.get('/channel',channelRedirect)
+router.get('/channel',channelRedirect);
 router.get('/userchannel/:id', 
 isAuth,
 controller.userChannel);
 
 router.get('/sendmsg/:fid',isAuth ,controller.getPostToFeed);
-router.post('/feed/:feed', controller.postToFeed);
+router.post('/feed/:feed',[check('message').trim().escape()], controller.postToFeed);
 router.get('/chat/:chatId',isAuth, controller.getChatPage);
-router.post('/chatme',isAuth,controller.sendChat)
+router.post('/chatme',[check('message').trim().escape(),
+
+check('time').trim().escape(),
+check('receiver').trim().escape()],isAuth,controller.sendChat);
+
 router.get(
     '/profile/:id',
     isAuth, 
@@ -80,8 +84,8 @@ router.post('/updatephone',
                     return Promise.reject('phone number already taken')
                 }
              })
-        }).trim(),   
-isAuth,controller.modifyPhone)
+        }).trim().escape(),   
+isAuth,controller.modifyPhone);
 
 router.post('/updateemail',
        //validate email
@@ -94,36 +98,36 @@ router.post('/updateemail',
                    return Promise.reject('email already taken')
                }
             })
-       }).trim()
+       }).trim().normalizeEmail()
 ,isAuth,
-controller.modifyEmail)
+controller.modifyEmail);
 
 router.post('/changepassword',
 check('new').isLength({min:5}).withMessage('password too short').trim(), 
 isAuth, 
 controller.changePassword);
-router.get('/confirmation',controller.confirmationPage)
-router.post('/addchat',isAuth,controller.addChat)
+router.get('/confirmation',controller.confirmationPage);
+router.post('/addchat',check('chatString').trim().escape(),isAuth,controller.addChat);
 
-router.post('/retrievechat',isAuth,controller.retrieveMoreChats)
-router.get('/retrievefeeds',isAuth,controller.retrieveFeed)
-router.get('/loadchats',isAuth,controller.retrieveChats)
-router.get('/getprofilechats',isAuth,controller.retrieveProfileChats)
-router.post('/chatrequest',isAuth,controller.chatRequest)
-router.post('/searchuser',isAuth,controller.searchUser)
-router.get('/retrieverequest',isAuth,controller.retrieveRequests)
+router.post('/retrievechat',isAuth,controller.retrieveMoreChats);
+router.get('/retrievefeeds',isAuth,controller.retrieveFeed);
+router.get('/loadchats',isAuth,controller.retrieveChats);
+router.get('/getprofilechats',isAuth,controller.retrieveProfileChats);
+router.post('/chatrequest',[check('id').trim().escape(),check('state').trim().escape()],isAuth,controller.chatRequest);
+router.post('/searchuser',check('searchKey').trim().escape(),isAuth,controller.searchUser);
+router.get('/retrieverequest',isAuth,controller.retrieveRequests);
 
 router.post('/removeachat',isAuth, controller.removeAChat);
 router.post('/togglemode',isAuth, controller.goAnonymous);
-router.get('/deleteuseraccount/:id',isAuth,controller.deleteAccount)
+router.get('/deleteuseraccount/:id',isAuth,controller.deleteAccount);
 router.get('/logout',isAuth, controller.logout);
-router.get('/resetpassword',controller.getResetPassword)
-router.post('/resetpassword',controller.reset)
-router.get('/setnewpassword/:token',controller.getSetNewPassword)
+router.get('/resetpassword',controller.getResetPassword);
+router.post('/resetpassword',controller.reset);
+router.get('/setnewpassword/:token',controller.getSetNewPassword);
 router.post('/setnewpassword',[
     check('pwd').isLength({min:5})
     .withMessage('password too short').custom((val,{req})=>{
         return validators.comfirmNewUserPassword(val,req)
     }),
-],controller.setNewPassword)
+],controller.setNewPassword);
 module.exports = router;

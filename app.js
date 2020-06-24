@@ -17,6 +17,7 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const {check} = require('express-validator');
 
 //controller imports
 const anonyrouter = require("./routes/anonyroutes");
@@ -63,8 +64,8 @@ app.use(
   flags:'a'
 }) */
 app.use(cookieParser());
-app.use(flash());
 app.use(csrfProtection);
+app.use(flash());
 app.use(helmet())
 //app.use(morgan('combined',{stream:logStream}))
 
@@ -72,10 +73,6 @@ app.use(helmet())
 app.use(express.static(path.join(__dirname, "/", "public")));
 app.use(express.static(path.join(__dirname, "/", "assets")));
 //routers for user and admin
-app.use((req,res,next)=>{
-  res.locals.csrfToken = req.csrfToken();
-  next();
-})
 app.use((req,res,next)=>{
   const tokID = req.cookies['sumo.toks'];
   req.toks = tokID;
@@ -107,10 +104,17 @@ app.use((req,res,next)=>{
   next()
 }
 })
+app.use((req,res,next)=>{
+  const tok = req.csrfToken();
+  res.cookie('XSRF-TOKEN',tok,{httpOnly:true});
+
+  res.locals.csrfToken = tok;
+  next();
+})
 app.post('/upload',isAuth,(req, res) => {
 require('./controllers/upload').uploader(req,res)
 });
-app.post('/sendmms',isAuth,(req,res,next)=>{
+app.post('/sendmms',[check('message').trim().escape(),check('time').trim().escape(),check('tag').trim().escape(),check('receiver').trim().escape()],isAuth,(req,res,next)=>{
   require('./controllers/mms').sendMMS(req,res,next)
 })
 app.post('/report',require('./utils/auth'),errorController.reportError)
