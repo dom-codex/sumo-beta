@@ -10,8 +10,7 @@ const modes = require("../utils/mode");
 const detectors = require("../utils/detectors");
 const mailer = require("../utils/mailer");
 const jwt = require("jsonwebtoken");
-var validator = require('validator');
-const { chat_v1 } = require("googleapis");
+const validator = require('validator');
 
 const io = require("../socket").getIO;
 module.exports.gethome = (req, res, next) => {
@@ -165,7 +164,7 @@ module.exports.createUserChannel = (req, res, next) => {
           const anonyString = buffer.toString("hex");
           //hash password
           bcrypt
-            .hash(password, 12)
+            .hash(password, 32)
             .then((hash) => {
               //create new user
               const user = new User({

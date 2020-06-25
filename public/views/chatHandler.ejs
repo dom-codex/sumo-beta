@@ -7,7 +7,7 @@
       .then((data) => data.json())
       .then((data) => {
         const badge = $(".controls button:nth-child(2) span");
-        badge.text(data.requestLength);
+        badge.text(parseInt(data.requestLength));
         if(data.requests.length <=0){
           return $('.palsRequest').append(
             `<div class="notfound req"><small>
@@ -85,7 +85,7 @@
     </span>
     <p>
     <small class="brief">
-      say hi to ${res.newchat.name.split(' ')[0]}
+      say hi to ${ res.newchat.name.split(' ')[0]}
       </small>
     </p></div>
     <div class=" secondary-content">
@@ -137,12 +137,13 @@ const loadFeed = () => {
                     <p>Message:</p>
                   </div>
                   <div class="cardb">
-                    <p>${ msg.message}</p>
+                    <p>${msg.message}</p>
                   </div>
-                  <div class="cardf"><small>${ i+1}</small>
+                  <div class="cardf"><small>${i+1}</small>
                      <i>sent: ${msg.time}</i></div>
                 </div> `)
           })
+          feedWindow.scrollTop = feedWindow.scrollHeight;
         }else if(res.feeds.length <=0){
          return $('.feeds').append(`
           <div class="notfound feed">
@@ -151,7 +152,7 @@ const loadFeed = () => {
               the fun started <small></div>
           `)
         }
-        feedView.scrollTop = feedView.scrollHeight - height
+        feedWindow.scrollTop = feedWindow.scrollHeight;
       }).catch(err=>{
       })
 
@@ -215,12 +216,12 @@ const loadFeed = () => {
     <img src="${user.img}" alt="" class="circle">
     <div>
     <span class="title">
-        ${user.name.split(' ')[0]} 
+        ${( user.name.split(' ')[0])} 
 
     </span>
     <p>
     <small class="brief">
-      ${user.desc}</small>
+      ${( user.desc)}</small>
     </p></div>
     <div class=" secondary-content">
       <div>
@@ -303,7 +304,7 @@ const loadFeed = () => {
     <div>
     <div class="title">    
       <a href="/chat/${user._id}" >
-        ${user.name.split(' ')[0]} </a>  
+        ${( user.name.split(' ')[0])} </a>  
     </div>
     <p>
     <small class="brief">
@@ -312,14 +313,14 @@ const loadFeed = () => {
         align-items:center;">
           <i class="material-icons thumbnail">insert_photos</i>
           ${user.message.length > 25 ? 
-            user.message.substring(0, 12) + '...' : user.message}
+            ( user.message.substring(0, 12)) + '...' : ( user.message)}
             </span>` : user.message.length > 24 ? 
-        user.message.substring(0,25)+' ...': user.message}
+        ( user.message.substring(0,25))+' ...': ( user.message)}
     </small>
     </p></div>
     <div class=" secondary-content">
         <small>
-            ${user.time}
+            ${( user.time)}
         </small>
     </div>
   </li>`);          
@@ -331,7 +332,7 @@ const loadFeed = () => {
     <div>
     <div class="title">    
       <a href="/chat/${user._id}" >
-        ${user.name.split(' ')[0]} </a>  
+        ${( user.name.split(' ')[0])} </a>  
     </div>
     <p>
     <small class="brief">
@@ -340,14 +341,14 @@ const loadFeed = () => {
         align-items:center;">
           <i class="material-icons thumbnail">insert_photos</i>
           ${user.message.length > 25 ? 
-            user.message.substring(0, 12) + '...' : user.message}
+            ( user.message.substring(0, 12)) + '...' : ( user.message)}
             </span>` : user.message.length > 24 ? 
-        user.message.substring(0,25)+' ...': user.message}
+        ( user.message.substring(0,25))+' ...': ( user.message)}
     </small>
     </p></div>
     <div class=" secondary-content">
         <small>
-            ${user.time}
+            ${( user.time)}
         </small>
     </div>
   </li>`)

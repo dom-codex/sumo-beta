@@ -43,7 +43,6 @@ const sendImageApi = (data,tg) =>{
         })
         .then(res=>res.json())
         .then(res=>{
-        console.log(res)
           if(res.code === 300){
           $(`.mms-loading.${tg}`).css('display','none');
           $(`.reload.${tg}`).css('display','flex');
@@ -106,7 +105,7 @@ socket.on('connect', (error) => {
                 <i class="material-icons">file_download</i></a>
               </div> 
               </div>
-              ${data.message}
+              ${validator.unescape( data.message)}
             </div>
                 <div class="time">
                   ${data.time} &nbsp; 
@@ -150,7 +149,7 @@ socket.on('connect', (error) => {
         msgWindow.scrollTop = msgWindow.scrollHeight
         const input = document.querySelector('textarea')
           //add time stamp
-        const time = moment().format('LT');
+        const time = validator.escape( moment().format('LT'));
         //append message to sender window
 
         /*socket.emit('chat',{message:message,fid:cid,time:time},()=>{
@@ -158,7 +157,7 @@ socket.on('connect', (error) => {
         //use fetch api to send message
         if(file){
           $('input[type="file"]').val('')
-          const tag = Date.now()
+          const tag = Date.now();
            let fd = new FormData();
            fd.append('image', file);
            fd.append('tag', tag);
@@ -206,9 +205,9 @@ socket.on('connect', (error) => {
         }
         input.value =''
           msgWindow.append(`
-        <span class="u2 chat">${message}
+        <span class="u2 chat">${validator.escape(message)}
                 <div class="time">
-                  ${time} &nbsp; 
+                  ${validator.escape(time)} &nbsp; 
                   <div class="time"><i class="material-icons">done</i></div> 
                 </div>
               </span>
@@ -336,7 +335,7 @@ socket.on('connect', (error) => {
       `);
                  }else{
                   $('.chats').prepend(`
-              <span class="u2 chat">${msg.body}
+              <span class="u2 chat">${ msg.body}
                 <div class="time">
                   ${msg.time} &nbsp; 
                   <div class="time"><i class="material-icons">done_all</i></div> 
@@ -465,9 +464,9 @@ socket.on('connect', (error) => {
       `);
                  }else{
                   $('.chats').prepend(`
-              <span class="u2 chat">${msg.body}
+              <span class="u2 chat">${ msg.body}
                 <div class="time">
-                  ${msg.time} &nbsp; 
+                  ${ msg.time} &nbsp; 
                   <div class="time"><i class="material-icons">done_all</i></div> 
                 </div>
               </span>

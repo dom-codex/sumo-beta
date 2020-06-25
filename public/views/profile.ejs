@@ -36,7 +36,7 @@
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));</script>
   
-    <input type="hidden" id="uid" value="<%=user._id%>">
+    <input type="hidden" id="uid" value="<%-user._id%>">
       <input  type="file"/>
   <!--modal with footer-->
   <div id="modal2" class="modal modal-fixed-footer">
@@ -61,8 +61,8 @@
   </div>
   <!-- end of modal with footer-->
   
- <input type="hidden" id ="chatstring" value="<%=user.chatShare%>">
- <input type="hidden" id ="feedstring" value="<%=user.share%>"> 
+ <input type="hidden" id ="chatstring" value="<%-user.chatShare%>">
+ <input type="hidden" id ="feedstring" value="<%-user.share%>"> 
 
   <div id="modal1" class="modal">
     <div class="modal-content">
@@ -72,7 +72,7 @@
     <div class="modal-footer">
       <button  class="modal-close waves-effect waves-green btn-flat">No</button>
       <button id="yes" class="modal-close waves-effect waves-green btn-flat">Yes</button>
-      <a href="/deleteuseraccount/<%=user._id%>" id="delete" class="modal-close waves-effect waves-green btn-flat">Delete</a>
+      <a href="/deleteuseraccount/<%-user._id%>" id="delete" class="modal-close waves-effect waves-green btn-flat">Delete</a>
     </div>
   </div>
   <header>
@@ -86,7 +86,7 @@
               <li><a href="/"><i class="material-icons">home</i>home</a>
               </li>
               <li class="divider" tabindex="-1"></li>
-              <li><a href="/userchannel/<%=user._id%>"><i class="material-icons">rss_feed</i>feeds</a></li>
+              <li><a href="/userchannel/<%-user._id%>"><i class="material-icons">rss_feed</i>feeds</a></li>
               <li class="divider" tabindex="-1"></li>
               <li><a href="/logout"><i class="material-icons">keyboard_tabs</i>logout</a></li>
             </ul>
@@ -98,7 +98,7 @@
                 </div>
                 </a>
               </a>
-               <a href="/userchannel/<%=user._id%>">
+               <a href="/userchannel/<%-user._id%>">
                 <div>
                 <i class="material-icons">rss_feed</i>
                 <div class="icon-desc">feeds</div>
@@ -113,8 +113,8 @@
               </div>
           </nav>
   </header>
-  <div class="<%=success.message.length>0?'success':''%>" id="board">
-    <p><%=success.message%></p>
+  <div class="<%-success.message.length>0?'success':''%>" id="board">
+    <p><%-success.message%></p>
   </div>
   <section>
     <div class="window col s12">
@@ -128,16 +128,16 @@
                 <i class="material-icons">dehaze</i>
               </a>
               <div class="pp user-image-cont">
-                <img onclick="viewImage()" class="profilePic" src=" <%=img%>"/>
+                <img onclick="viewImage()" class="profilePic" src=" <%-img%>"/>
               </div>
               <div class="text-small">
               <div id="mydetails">
                 <p class="myname">
-                  <%= !anonymous ? user.name : user.anonymousName%>
+                  <%- !anonymous ? user.name : user.anonymousName%>
                 </p>
                 <div  style="display: flex;">
                   <small class="small-desc">
-                  <%=user.desc%></small></div>
+                  <%-user.desc%></small></div>
                 </div>
               </div>
               <div class="upload">
@@ -157,7 +157,7 @@
                     <div class="input-field">
                        <i class="material-icons prefix">account_circle</i>
                           <label for="name" class="active">Name</label>
-                      <input maxlength="25" id="name" type="text" name="name" value="<%=user.name%>" class="validate" data-length="15" disabled>
+                      <input maxlength="25" id="name" type="text" name="name" value="<%-user.name%>" class="validate" data-length="15" disabled>
                     </div>
                     <div class="ctrl"><button id="nameedit" onclick="Handler(this,'name')">edit</button>
                       <button class="temp" id="namecancel">cancel</button>
@@ -167,9 +167,9 @@
                       <form method="POST" action="/updatephone" id="phoneForm">
                     <i class="material-icons prefix">phone</i>
                     <label for="phone" class="active">phone</label>
-                    <input id="phone" name="phone" value="<%=user.phone%>" type="tel" class="validate" disabled>
-                    <small style="display:<%= errors.field === 'phone'? 'block': 'none' %>;margin-left:35px;color:red"><%=errors.message%></small>
-                    <input type="hidden" value="<%=csrfToken%>" name="_csrf">   
+                    <input id="phone" name="phone" value="<%-user.phone%>" type="tel" class="validate" disabled>
+                    <small style="display:<%- errors.field === 'phone'? 'block': 'none' %>;margin-left:35px;color:red"><%-errors.message%></small>
+                    <input type="hidden" value="<%-csrfToken%>" name="_csrf">   
                   </form>  
                     </div>
                     <div class="ctrl"><button id="phoneedit" onclick="Handler(this,'phone')">edit</button><button class="temp"
@@ -177,11 +177,11 @@
         
                     <div class="input-field">
                       <form action = "/updateemail" method="POST" id="emailForm">
-                        <input type="hidden" value="<%=csrfToken%>" name="_csrf">   
+                        <input type="hidden" value="<%-csrfToken%>" name="_csrf">   
                         <i class="material-icons prefix">mail</i>
                         <label for="email" class="active">email</label>
-                        <input id="email" name="email" type="email" value="<%=user.email%>" disabled>
-                        <small style="display:<%= errors.field === 'email'? 'block': 'none' %>;margin-left:35px;color:red"><%=errors.message%></small>
+                        <input id="email" name="email" type="email" value="<%-user.email%>" disabled>
+                        <small style="display:<%- errors.field === 'email'? 'block': 'none' %>;margin-left:35px;color:red"><%-errors.message%></small>
                     </form>
                     </div>
                     <div class="ctrl"><button onclick="Handler(this,'email')" id="emailedit">edit</button><button class="temp"
@@ -189,7 +189,7 @@
         
                     <div class="input-field">
                        <i class="material-icons prefix">account_circle</i>
-                      <textarea maxlength="200" id="desc" disabled class="materialize-textarea"><%= user.desc%></textarea>
+                      <textarea maxlength="200" id="desc" disabled class="materialize-textarea"><%- user.desc%></textarea>
                       <label for="desc" class="active">About</label>
                     </div>
                     <div class="ctrl"><button onclick="Handler(this,'desc')" id="descedit">edit</button><button class="temp"
@@ -232,7 +232,7 @@
         
                     <div class="input-field">
                     <i class="material-icons prefix">chat_outlined</i>
-                      <input value="<%=user.chatShare%>" id="chatlink">
+                      <input value="<%-user.chatShare%>" id="chatlink">
                       <label for="phone" class="active">Chat Link</label>
                       <div class="copy-btn"><button id="copy2">Copy</button></div>
                     </div>
@@ -246,7 +246,7 @@
                           <div class="icons-social fb">
                             <img src="/fb-logo.svg"/>
                           </div>
-                        <a id="fb-share" href="https://www.facebook.com/sharer/?u=https://sumo-beta.herokuapp.com/sendmsg/<%=user.share%>" target="_blank" class="">
+                        <a id="fb-share" href="https://www.facebook.com/sharer/?u=https://sumo-beta.herokuapp.com/sendmsg/<%-user.share%>" target="_blank" class="">
                           <i class="fa fa-facebook-official"></i>
                           Share on Facebook
                         </a> </div>
@@ -269,27 +269,27 @@
                     <div class="anonymous"><div >
                       <p>Go anonymous <i class="material-icons">airplanemode_inactive</i></p></div><%-include('switch.ejs',{isAnonymous:anonymous})%></div>
                       <form action="/togglemode" id="modetoggler" method="POST">
-                        <input type="hidden" value="<%=csrfToken%>" name="_csrf">   
+                        <input type="hidden" value="<%-csrfToken%>" name="_csrf">   
                       </form>        
                     <div class="password open">
                       <button>change password</button></div>
                     <div class="change password form" id="cpf">
                       <form class="form" method="POST" action="/changepassword">
-                        <input type="hidden" value="<%=csrfToken%>" name="_csrf">   
-                        <input name="uid" type="hidden" value="<%=user._id%>"/>
+                        <input type="hidden" value="<%-csrfToken%>" name="_csrf">   
+                        <input name="uid" type="hidden" value="<%-user._id%>"/>
                         <label>old password</label>
                       <input name="old" type="text"> <br />
-                      <small style="display:<%= errors.field === 'old'? 'block': 'none' %>;color:red"><%=errors.message%></small>
+                      <small style="display:<%- errors.field === 'old'? 'block': 'none' %>;color:red"><%-errors.message%></small>
                       <label>new password</label>
                       <input name="new" type="text">
-                      <small style="display:<%= errors.field === 'new'? 'block': 'none' %>;color:red"><%=errors.message%></small>
+                      <small style="display:<%- errors.field === 'new'? 'block': 'none' %>;color:red"><%-errors.message%></small>
                       <div class="changepassbtn"><button>submit</button></div>
                     </form>
                   </div>
                   <div class="divider" style="margin-bottom: 40px"></div>
                     <div class="input-field">
                       <i class="material-icons prefix">chat</i>
-                      <input id="chat" type="text" value="<%=user.chatShare
+                      <input id="chat" type="text" value="<%-user.chatShare
                       %>" disabled>
                       <small id="declined">chat id already taken try another</small>
                       <label for="chat" class="active">chatId</label>
@@ -300,7 +300,7 @@
                         <div class="input-field">
                           <i class="material-icons prefix">airplanemode_inactive</i>
         
-                          <input id="anonymous" value="<%=user.anonymousName%>" disabled>
+                          <input id="anonymous" value="<%-user.anonymousName%>" disabled>
                           <label for="anonymous" class="active">anonymousName</label>
                         </div>
                         <div class="ctrl"><button onclick="Handler(this,'anonymous')" id="anonymousedit">edit</button><button class="temp"
@@ -315,6 +315,7 @@
             </li>
           </ul>
   </section>
+  <script  src="https://cdnjs.cloudflare.com/ajax/libs/validator/13.1.0/validator.min.js"></script>
   <script src="/effect.js" type="text/javascript"></script>
   <!--<script src="/js/materialize.min.js"></script>-->
   <script src="/socket.io/socket.io.js"></script>

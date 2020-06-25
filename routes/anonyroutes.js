@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {check} = require('express-validator');
 const bcrypt = require('bcryptjs');
+const rateLimit = require('express-rate-limit');
 
 const isAuth = require('../utils/auth');
 const channelRedirect = require('../utils/channel');
@@ -9,7 +10,11 @@ const User = require('../models/user');
 
 const controller = require('../controllers/anonycontrollers');
 const validators = require('../utils/validators');
-
+const limit = rateLimit({
+    max:5,
+    windowMs:1000 * 60 * 5,
+    message: 'Too many requests pls try again in 5 mins'
+})
 router.get('/',controller.gethome);
 router.get('/about',controller.about);
 router.get('/getstarted',controller.createChannel)
@@ -52,7 +57,7 @@ router.post('/loginuser',[
     check('pwd').isLength({min:5}).withMessage('password too short').custom((val,{req})=>{
         return validators.assertLoginCredentials(val,req)
     }),
-] ,controller.loginUser);
+] ,limit,controller.loginUser);
 
 router.get('/channel',channelRedirect);
 router.get('/userchannel/:id', 
@@ -60,10 +65,9 @@ isAuth,
 controller.userChannel);
 
 router.get('/sendmsg/:fid',isAuth ,controller.getPostToFeed);
-router.post('/feed/:feed',[check('message').trim().escape()], controller.postToFeed);
+router.post('/feed/:feed',check('message').trim().escape(), controller.postToFeed);
 router.get('/chat/:chatId',isAuth, controller.getChatPage);
 router.post('/chatme',[check('message').trim().escape(),
-
 check('time').trim().escape(),
 check('receiver').trim().escape()],isAuth,controller.sendChat);
 
@@ -104,7 +108,7 @@ controller.modifyEmail);
 
 router.post('/changepassword',
 check('new').isLength({min:5}).withMessage('password too short').trim(), 
-isAuth, 
+isAuth,limit,
 controller.changePassword);
 router.get('/confirmation',controller.confirmationPage);
 router.post('/addchat',check('chatString').trim().escape(),isAuth,controller.addChat);
@@ -129,5 +133,5 @@ router.post('/setnewpassword',[
     .withMessage('password too short').custom((val,{req})=>{
         return validators.comfirmNewUserPassword(val,req)
     }),
-],controller.setNewPassword);
+],limit,controller.setNewPassword);
 module.exports = router;

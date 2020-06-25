@@ -73,7 +73,7 @@ const LoadChats = () =>{
      if(res.code === 404){
       $('.loading').css('display','none')
       $('.collection').append(`
-     <div class="new"><h3>${res.message}</h3></div>
+     <div class="new"><h3>${( res.message)}</h3></div>
 `) 
      }
     res.chats.forEach((user,i)=>{ 
@@ -84,7 +84,7 @@ const LoadChats = () =>{
     <li class="collection-item avatar">
     <img src="${user.img}" onclick="viewUserImage('${user.img}')"  alt="${user.name}" class="circle">
     <span class="title">${user.name}</span>
-    <p>${user.desc} <br>
+    <p>${( user.desc)} <br>
     </p>
     <div class="btncont secondary-content">
         <a href="/chat/${user._id}" class="z-depth-1">

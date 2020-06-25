@@ -19,7 +19,7 @@
   <% if(anonymous) {%>
     <link href="/dark.css" rel="stylesheet" type="text/css" />
      <%}%>
-</head>
+    </head>
 <body>
   <%- include('viewPic.ejs',{img:img}) %>
   <section>
@@ -34,7 +34,7 @@
           <img onclick="viewImage()" src="<%=img%>"/>
           </div>
           <div id="name">
-          <p><%=friend.split(' ')[0]%>
+          <p><%-friend.split(' ')[0]%>
             <div id="details">
               <small id="status"><%=status%></small>
               <small id="typing">typing...</small>
@@ -89,6 +89,7 @@
       })
   </script>
   <script src="/js/materialize.min.js"></script>
+  <script  src="https://cdnjs.cloudflare.com/ajax/libs/validator/13.1.0/validator.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
