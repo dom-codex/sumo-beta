@@ -18,6 +18,7 @@ const helmet = require('helmet');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const {check} = require('express-validator');
+const xss = require('xss-clean');
 
 //controller imports
 const anonyrouter = require("./routes/anonyroutes");
@@ -33,7 +34,8 @@ app.set("view engine", "ejs");
 app.set("views", "public/views");
 
 app.use(bodyparser.urlencoded({ extended: false }));
-app.use(bodyparser.json());
+app.use(bodyparser.json({limit:'7kb'}));
+//app.use(xss());
 app.use((req,res,next)=>{
 //this will allow no caching of our rendered files
 res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
