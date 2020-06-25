@@ -73,7 +73,7 @@ header {
  h2 {
   margin: 0;
   font-size: 2rem;
-  margin-top:15px;
+  margin-top:10px;
 }
 nav div {
   display: -webkit-box;
@@ -261,6 +261,15 @@ section.desktop {
 }
 ul li a {
   color: rebeccapurple !important;
+}
+.title a,.title span{
+  width: 60%;
+    min-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width:200px;
+    display:block;
 }
 ul li {
   margin: 0;

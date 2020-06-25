@@ -2,13 +2,13 @@
   const viewImage = () =>{
     $('.viewImage-cont').css('display','block');
   };
-   const viewUserImage = (img) =>{
+   const viewUserImage = (img,i) =>{
     $('.viewImage-cont').css('display','block');
     $('img.user').css('display','none');
     $('img.pal').css('display','block');
     $('.view-image').append(`
-    <img class="pal" src="${img}" alt="a user"/>
-    `)
+    <img class="pal s${i}" src="${img}" alt="a user"/>
+    `);
   };
    $('button.pal-close').on('click',()=>{
     $('.viewImage-cont').css('display','none');
@@ -82,7 +82,7 @@ const LoadChats = () =>{
     <input type="hidden" value="${token}" name="_csrf">   
     <input type="hidden" value="${user._id}" name="uid">
     <li class="collection-item avatar">
-    <img src="${user.img}" onclick="viewUserImage('${user.img}')"  alt="${user.name}" class="circle">
+    <img src="${user.img}" onclick="viewUserImage('${user.img}',${i})"  alt="${user.name}" class="circle">
     <span class="title">${user.name}</span>
     <p>${( user.desc)} <br>
     </p>

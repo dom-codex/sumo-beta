@@ -22,7 +22,7 @@
     <img src="${req.img}" alt="" class="circle" height="50px" width="50px">
     <div>
     <span class="title">   
-        ${req.name.split(' ')[0]}
+        ${req.name}
     </span>
     <p>
     <small class="brief">
@@ -80,12 +80,12 @@
     <div>
     <span class="title">   
        <a href="/chat/${res.newchat._id}" >
-        ${res.newchat.name.split(' ')[0]} </a>
+        ${res.newchat.name} </a>
 
     </span>
     <p>
     <small class="brief">
-      say hi to ${ res.newchat.name.split(' ')[0]}
+      say hi to ${ res.newchat.name}
       </small>
     </p></div>
     <div class=" secondary-content">
@@ -193,7 +193,7 @@ const loadFeed = () => {
     <img src="${user.img}" alt="" class="circle">
     <div>
     <span class="title">
-        ${user.name.split(' ')[0]} 
+        ${user.name} 
 
     </span>
     <p>
@@ -216,7 +216,7 @@ const loadFeed = () => {
     <img src="${user.img}" alt="" class="circle">
     <div>
     <span class="title">
-        ${( user.name.split(' ')[0])} 
+        ${( user.name)} 
 
     </span>
     <p>
@@ -304,7 +304,7 @@ const loadFeed = () => {
     <div>
     <div class="title">    
       <a href="/chat/${user._id}" >
-        ${( user.name.split(' ')[0])} </a>  
+        ${( user.name)} </a>  
     </div>
     <p>
     <small class="brief">
@@ -312,10 +312,8 @@ const loadFeed = () => {
         `<span class="withImage" style="display:flex;
         align-items:center;">
           <i class="material-icons thumbnail">insert_photos</i>
-          ${user.message.length > 25 ? 
-            ( user.message.substring(0, 12)) + '...' : ( user.message)}
-            </span>` : user.message.length > 24 ? 
-        ( user.message.substring(0,25))+' ...': ( user.message)}
+          ${( user.message)}
+            </span>` : ( user.message)}
     </small>
     </p></div>
     <div class=" secondary-content">
@@ -332,7 +330,7 @@ const loadFeed = () => {
     <div>
     <div class="title">    
       <a href="/chat/${user._id}" >
-        ${( user.name.split(' ')[0])} </a>  
+        ${( user.name)} </a>  
     </div>
     <p>
     <small class="brief">
@@ -340,10 +338,8 @@ const loadFeed = () => {
         `<span class="withImage" style="display:flex;
         align-items:center;">
           <i class="material-icons thumbnail">insert_photos</i>
-          ${user.message.length > 25 ? 
-            ( user.message.substring(0, 12)) + '...' : ( user.message)}
-            </span>` : user.message.length > 24 ? 
-        ( user.message.substring(0,25))+' ...': ( user.message)}
+          ${user.message}
+            </span>` :  user.message}
     </small>
     </p></div>
     <div class=" secondary-content">

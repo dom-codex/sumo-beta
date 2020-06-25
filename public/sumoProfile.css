@@ -193,7 +193,12 @@ img{
   color:#fff;
 }
 span.title{
-  overflow-y: hidden!important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 50%;
+  max-width: 250px;
+  min-width:104px;
+  white-space: nowrap;
 }
 input[type="file"]{
   display:none
@@ -520,7 +525,7 @@ label{
   color:hotpink;
 }
 .btncont a:hover, .btncont a:active{
-  background-color: rgb(250, 124, 124);
+  background-color: rgba(0, 0, 0,.3);
 }
 a.z-depth-1.btn.modal-trigger {
   margin-left: 17px;

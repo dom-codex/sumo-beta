@@ -101,11 +101,11 @@ socket.on('connect', (error) => {
   </div>
 
               <img src="${data.img}" class="download-img"/>
-              <a href="${data.download}" download>
+              <a href="${data.download}" download="${sumo + '-'+Date.now()}">
                 <i class="material-icons">file_download</i></a>
               </div> 
               </div>
-              ${validator.unescape( data.message)}
+              ${( data.message)}
             </div>
                 <div class="time">
                   ${data.time} &nbsp; 
@@ -362,7 +362,7 @@ socket.on('connect', (error) => {
   </div>
 
               <img onclick="viewUserImage('${msg.imageUrl}')" src="${msg.imageUrl}" class="download-img sumo${res.next}"/>
-              <a href="${msg.downloadLink}" download>
+              <a href="${msg.downloadLink}" download="${sumo + '-'+Date.now()}">
                 <i class="material-icons">file_download</i>
                 </a>
               </div> 
@@ -491,7 +491,7 @@ socket.on('connect', (error) => {
   </div>
 
               <img src="${msg.imageUrl}" onclick="viewUserImage('${msg.imageUrl}')" class="download-img"/>
-              <a href="${msg.downloadLink}" download>
+              <a href="${msg.downloadLink}" download="${sumo + '-'+Date.now()}">
                 <i class="material-icons">file_download</i>
                 </a>
               </div> 

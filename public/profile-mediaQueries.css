@@ -6,7 +6,6 @@
     #badge {
       right: 25px;
     }
-  }
   .text-small {
     width: 53%;
   }
@@ -17,7 +16,8 @@
     white-space: nowrap;
     overflow: hidden;
   }
-  
+}
+
 @media all and (max-width: 780px) {
   nav {
     display: none !important;
@@ -136,6 +136,12 @@
     }
     .myname{
       padding-right:0
+    }  .collection .collection-item.avatar:not(.circle-clipper)>.circle, 
+    .collection .collection-item.avatar :not(.circle-clipper)>.circle {
+  left:5px
     }
+    .collection .collection-item.avatar p,span.title {
+      margin-left: -15px;
+  }
   
   }

@@ -27,28 +27,24 @@
     <input type="hidden" value="<%= uid%>" id="uid">
     <header>
       <nav>
-        <div class="navs">
-        <div id="info">
-          <div class="img-title-cont">
+        <div class="img-title-cont">
           <div class="img-cont">
           <img onclick="viewImage()" src="<%=img%>"/>
           </div>
           <div id="name">
-          <p><%-friend.split(' ')[0]%>
+          <p><%-friend%>
             <div id="details">
               <small id="status"><%=status%></small>
               <small id="typing">typing...</small>
             </div>
           </p>
         </div></div>
-          <button class='dropdown-trigger btn'  data-target='dropdown1'><i class="material-icons">more_vert</i></button>
-          <ul id='dropdown1' class='dropdown-content'>
-            <li><a href="/"><i class="material-icons">home</i>home</a></li>
-            <li class="divider" tabindex="-1"></li>
-            <li><a href="/userchannel/<%=uid%>"><i class="material-icons">rss_feed</i>feed</a></li>
-          </ul>
-    </div>
-      </div>
+      <button class='dropdown-trigger btn'  data-target='dropdown1'><i class="material-icons">more_vert</i></button>
+      <ul id='dropdown1' class='dropdown-content'>
+        <li><a href="/"><i class="material-icons">home</i>home</a></li>
+        <li class="divider" tabindex="-1"></li>
+        <li><a href="/userchannel/<%=uid%>"><i class="material-icons">rss_feed</i>feed</a></li>
+      </ul>
       </nav>
     </header>
 <div class="loader">Loading...</div>
@@ -71,7 +67,7 @@
         <textarea id="msg" class="materialize-textarea" name="message" placeholder="Enter message"></textarea>
         <!-- replace with a vector icon later -->
         <button type="submit" class="send"><i class="material-icons">send</i></button>
-        <input type="file" id="file-input"/>
+        <input type="file" id="file-input" accept="image/*"/>
       </div>
       <div class="emoji-container">
         <%- include('emoji.ejs')%>
