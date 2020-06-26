@@ -286,7 +286,7 @@ if(note ==='change password'){
   $('.open button').text('change password')
 }
 })
-  
+ $('.changepassbtn button').on('click',()=>{showIndicator()}) 
 const feedString = $('#feedstring');
 const feedLink = `${window.location.origin}/sendmsg/${feedString.val()}`;
 const feedShareInput = $('#feeds');

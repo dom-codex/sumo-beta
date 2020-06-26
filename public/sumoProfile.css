@@ -596,24 +596,21 @@ a.btn.modal-trigger i{
 }
 .next,.prev{display:none;}
 #board{
-  display:none
+  display:block;
+  text-align:center;
+  background-color: rebeccapurple;
+  color:#fff;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  z-index:200000
 }
 .success{
-  display:-webkit-box!important;
-  display:-ms-flexbox!important;
-  display:flex!important;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  background-color: rebeccapurple;
   height:45px;
   width:250px;
   margin:auto;
   padding:0 8px;
-  margin-top:20px;
   border-radius: 5px;
   -webkit-animation-name: show;
           animation-name: show;
@@ -624,10 +621,6 @@ a.btn.modal-trigger i{
   -webkit-transition: all 5s;
   -o-transition: all 5s;
   transition: all 5s;
-}
-.success p{
-  color:#fff;
-  font-weight:bold
 }
 .icons-social{
   width:35px;
@@ -657,12 +650,11 @@ a.btn.modal-trigger i{
 }
 @-webkit-keyframes show{
   from{
-    opacity:1;
+
   }
   to{
-    opacity:0;
-    display: none;
     height:0px;
+    z-index:0
   }
 }
 @keyframes show{

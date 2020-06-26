@@ -56,7 +56,7 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
             <i class="material-icons prefix">account_circle</i>
               <label for="name">Name</label>
               <% const isNameError = errors.nameError.isAvailable %>
-              <input id="name" onfocus="changeColor(this)" value="<%= isNameError ? errors.nameError.value  : '' %>" maxlength="30" name="name" type="text"  style="border-bottom-color:<%= isNameError ? 'red' : '' %>;color:<%= isNameError  ? 'red' : '' %>" autocomplete="off" >
+              <input id="name" onfocus="changeColor(this)" value="<%= isNameError || isErr ? errors.nameError.value  : '' %>" maxlength="30" name="name" type="text"  style="border-bottom-color:<%= isNameError ? 'red' : '' %>;color:<%= isNameError  ? 'red' : '' %>" autocomplete="off" >
               <% if(errors.nameError.isAvailable) { %>
                 <div class="warn" style="display:<%= isNameError? 'block' : 'none' %>"><small style="color:<%= isNameError ? 'red' : '' %>"><%=errors.nameError.message%></small></div>
                 <%}%>
@@ -66,7 +66,7 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
                <i class="material-icons prefix">email</i>
                <label for="email">Email</label>
                <% const isEmailError = errors.emailError.isAvailable %>
-              <input id="email" autocomplete="off" onfocus="changeColor(this)" value="<%= isEmailError ? errors.emailError.value  : '' %>" name="email" type="email" style="border-bottom-color:<%= isEmailError ? 'red' : '' %>;color:<%= isEmailError  ? 'red' : '' %>"> 
+              <input id="email" autocomplete="off" onfocus="changeColor(this)" value="<%= isEmailError || isErr? errors.emailError.value  : '' %>" name="email" type="email" style="border-bottom-color:<%= isEmailError ? 'red' : '' %>;color:<%= isEmailError  ? 'red' : '' %>"> 
               <div class="warn" style="display:<%= isEmailError ? 'block' : 'none' %>"><small style="color:<%= isEmailError ? 'red' : '' %>"><%=errors.emailError.message%></small></div>
             </div>
 
@@ -81,7 +81,7 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
                <i class="material-icons prefix">lock</i>
               <label for="pwd">password</label> 
               <% const isPasswordError = errors.passwordError.isAvailable %>
-               <input id="pwd" autocomplete="off" value="<%= isPasswordError ? errors.passwordError.value  : '' %>" name="pwd" type="password" required style="border-bottom-color:<%= isPasswordError  ? 'red' : '' %>;color:<%= isPasswordError  ? 'red' : '' %>"> 
+               <input id="pwd" onfocus="changeColor(this)" autocomplete="off" value="<%= isPasswordError ? errors.passwordError.value  : '' %>" name="pwd" type="password" required style="border-bottom-color:<%= isPasswordError  ? 'red' : '' %>;color:<%= isPasswordError  ? 'red' : '' %>"> 
                <div class="warn" style="display:<%= isPasswordError ? 'block' : 'none' %>"><small style="color:<%= isPasswordError ? 'red' : '' %>"><%=errors.passwordError.message%></small></div>
               </div>
 

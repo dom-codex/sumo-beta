@@ -37,7 +37,7 @@
     }(document, 'script', 'facebook-jssdk'));</script>
   
     <input type="hidden" id="uid" value="<%-user._id%>">
-      <input  type="file"/>
+      <input  type="file" accept="image/*"/>
   <!--modal with footer-->
   <div id="modal2" class="modal modal-fixed-footer">
     <div class="modal-content">
@@ -114,7 +114,7 @@
           </nav>
   </header>
   <div class="<%-success.message.length>0?'success':''%>" id="board">
-    <p><%-success.message%></p>
+    <%-success.message%>
   </div>
   <section>
     <div class="window col s12">
@@ -276,12 +276,12 @@
                     <div class="change password form" id="cpf">
                       <form class="form" method="POST" action="/changepassword">
                         <input type="hidden" value="<%-csrfToken%>" name="_csrf">   
-                        <input name="uid" type="hidden" value="<%-user._id%>"/>
+                        <input autocomplete="off" name="uid" type="hidden" value="<%-user._id%>"/>
                         <label>old password</label>
-                      <input name="old" type="text"> <br />
+                      <input name="old" type="text" autocomplete="off"> <br />
                       <small style="display:<%- errors.field === 'old'? 'block': 'none' %>;color:red"><%-errors.message%></small>
                       <label>new password</label>
-                      <input name="new" type="text">
+                      <input name="new" type="text" autocomplete="off">
                       <small style="display:<%- errors.field === 'new'? 'block': 'none' %>;color:red"><%-errors.message%></small>
                       <div class="changepassbtn"><button>submit</button></div>
                     </form>

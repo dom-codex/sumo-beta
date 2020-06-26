@@ -34,6 +34,7 @@ module.exports.createChannel = (req, res, next) => {
   const error = req.flash("erros");
   const other = req.flash("otherErr");
   const success = req.flash("success");
+  const val = req.flash("val")[0];
   //reformat errors into chunks
   let errors;
   let loginErrors;
@@ -46,17 +47,17 @@ module.exports.createChannel = (req, res, next) => {
       nameError: {
         isAvailable: nameError ? true : false,
         message: nameError ? nameError.message : "",
-        value: nameError ? nameError.value : "",
+        value: nameError ? nameError.value : val.name,
       },
       emailError: {
         isAvailable: emailError ? true : false,
         message: emailError ? emailError.message : "",
-        value: emailError ? emailError.value : "",
+        value: emailError ? emailError.value : val.email,
       },
       phoneError: {
         isAvailable: phoneError ? true : false,
         message: phoneError ? phoneError.message : "",
-        value: phoneError ? phoneError.value : "",
+        value: phoneError ? phoneError.value : req.body.phone,
       },
       passwordError: {
         isAvailable: passwordError ? true : false,
@@ -80,6 +81,7 @@ module.exports.createChannel = (req, res, next) => {
   //const success = req.flash('success')
 
   res.render("auth", {
+    isErr:error.length > 0,
     other:
       other.length > 0
         ? other[0]
@@ -124,6 +126,10 @@ module.exports.createChannel = (req, res, next) => {
 };
 module.exports.createUserChannel = (req, res, next) => {
   //check if there's any error in the inputs supplied
+  const name = req.body.name;
+  const email = req.body.email;
+  const password = req.body.pwd;
+  const phone = req.body.phone;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     //reformat the errors if any
@@ -141,15 +147,14 @@ module.exports.createUserChannel = (req, res, next) => {
     //store error in flash which will be retrieved
     //in the get route
     req.flash("erros", err);
+    req.flash('val',{email:email,name:name});
     return req.session.save(() => {
+
       res.redirect("/getstarted");
     });
   }
   //extract user details if no errors
-  const name = req.body.name;
-  const email = req.body.email;
-  const password = req.body.pwd;
-  const phone = req.body.phone;
+
   //generate refreshToken
   crypto.randomBytes(24, (err, buffer) => {
     const userToken = buffer.toString("hex");
