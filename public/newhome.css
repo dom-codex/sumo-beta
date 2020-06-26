@@ -263,12 +263,12 @@ section.features h4{
   left:0;
   width:0%;
   height: 0px;
-  z-index: 1;
+  z-index: 0;
   background-color: rgb(155, 194, 155);
-  display:block;
+  display:none;
   text-align: center;
   color:green;
-  padding:15px;
+  padding:0;
   letter-spacing: 1px;
 }
 @keyframes save{
@@ -292,6 +292,7 @@ section.features h4{
   }
 }
 .save{
+  display:block;
   animation-name: save;
   animation-duration: 8s;
   animation-fill-mode: forwards;
