@@ -261,7 +261,7 @@ section.features h4{
   position:fixed;
   top:0;
   left:0;
-  width:100%;
+  width:0%;
   height: 0px;
   z-index: 1;
   background-color: rgb(155, 194, 155);
@@ -272,18 +272,29 @@ section.features h4{
   letter-spacing: 1px;
 }
 @keyframes save{
-  from{
+  0%{
     height:80px;
     z-index: 20000;
+    padding:15px;
+    width:100%
   }
-  to{
+  99%{
+    height:80px;
+    z-index: 20000;
+    padding:15px;
+    width:100%
+  }
+  100%{
     height:0px;
-    z-index:0
+    width:0%;
+    z-index:0;
+    padding:0
   }
 }
 .save{
   animation-name: save;
-  animation-duration: 7.5s;
+  animation-duration: 8s;
+  animation-fill-mode: forwards;
 }
 /* overriding default materializes styles */
 button.btn{
