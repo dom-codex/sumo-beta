@@ -8,6 +8,7 @@ module.exports.chatPaginator = (req, res, next) => {
     const fid = req.body.fid;
     let last;
     if (page <= 0) return;
+    if (page < 1) return res.json({ code: 404, message: 'page not found' });
     Message.find({ $or: [{ $and: [{ sender: uid }, { receiver: fid }] }, { $and: [{ sender: fid }, { receiver: uid }] }] }).countDocuments()
         .then(nMessages => {
             totalMessages = nMessages;
@@ -34,6 +35,7 @@ module.exports.loadFeeds = (req, res, next) => {
     let totalFeeds;
     let last;
     if (page <= 0) return;
+    if (page < 1) return res.json({ code: 404, message: 'page not found' });
     User.findById(req.session.user._id).select('share feeds')
         .then(user => {
 
@@ -43,7 +45,7 @@ module.exports.loadFeeds = (req, res, next) => {
                     last = (Math.ceil((totalFeeds) / 10));
                     if ((Math.ceil((totalFeeds) / 10) >= last)) {
                         return Feed.find({ user: user.share })
-                            .sort({ $natural: -1 }).skip((page - 1) * 10).limit(10);
+                            .sort({ $natural: -1 }).skip((page - 1) * 5).limit(5).select('message time');
                     };
                 })
                 .then(feeds => {
@@ -52,7 +54,9 @@ module.exports.loadFeeds = (req, res, next) => {
                             {
                                 feeds: feeds,
                                 next: page + 1,
-                                code: 200
+                                code: 200,
+                                hasNext: ( 5 * page < totalFeeds ),
+                                total: (totalFeeds - (5*(page-1)))
                             }
                         );
                     };
@@ -67,6 +71,7 @@ module.exports.loadChats =  async(req, res, next) => {
     let chatids;
     let nTotalOpenChats;
     let nTotalAnonyChats;
+    if (page < 1) return res.json({ code: 404, message: 'page not found' });
     User.findOne({ _id: req.session.user._id })
         .select('name email chats _id images')
         .then((user) => {
@@ -206,7 +211,7 @@ module.exports.loadChats =  async(req, res, next) => {
                                 hasPrev: page > 1,
                                 next: page + 1,
                                 prev: page - 1,
-                                hasNext: 1 * page < nTotalAnonyChats + nTotalOpenChats,
+                                hasNext: ( 1 * page < nTotalAnonyChats ) || (1 * page < nTotalOpenChats),
                             });
                         });
                 }); //end of anonyusers then
@@ -217,6 +222,7 @@ module.exports.loadChatsForAnonymousUser = (req, res, next) => {
     let nAnonyChats;
     let me;
     let chatids = []
+    if (page < 1) return res.json({ code: 404, message: 'page not found' });
     User.findOne({ _id: req.session.user._id })
         .select('name email anonyChats anonyString images')
         //find associated user with the session
@@ -352,8 +358,8 @@ module.exports.loadChatsInProfile = (req, res, next) => {
              */
             User.find({ _id: { $in: chatids } })
                 .sort({ $natural: -1 })
-                .skip((page - 1) * 2)
-                .limit(2)
+                .skip((page - 1) * 1)
+                .limit(1)
                 .then(openchats => {
                     openchats = [...openchats].map(chats => {
                         return {
@@ -366,8 +372,8 @@ module.exports.loadChatsInProfile = (req, res, next) => {
                     });
                     /*retrive users that chatted with user anonymously
                     limiting the records returned by a chosen preference */
-                    User.find({ anonyString: { $in: chatids } }).sort('-1').skip((page - 1) * 5)
-                        .limit(2)
+                    User.find({ anonyString: { $in: chatids } }).sort('-1').skip((page - 1) * 1)
+                        .limit(1)
                         .then(anonychats => {
                             //reformating the users returned so that their 
                             //actual identity remains protected
@@ -385,7 +391,7 @@ module.exports.loadChatsInProfile = (req, res, next) => {
                                 hasPrev: page > 1,
                                 next: page + 1,
                                 prev: page - 1,
-                                hasNext: 2 * page < nTotalAnonyUsers + ntotalOpenUsers,
+                                hasNext: (1 * page < nTotalAnonyUsers) ||  (1*page< ntotalOpenUsers),
                             });
                         });
                 });
@@ -427,8 +433,8 @@ module.exports.loadChatsForAnonymousProfile = (req, res, next) => {
              */
             User.find({ _id: { $in: chatids } })
                 .sort({ $natural: -1 })
-                .skip((page - 1) * 2)
-                .limit(2)
+                .skip((page - 1) * 1)
+                .limit(1)
                 .then(openchats => {
                     /*retrive users that chatted with user anonymously
                     limiting the records returned by a chosen preference */
@@ -443,7 +449,11 @@ module.exports.loadChatsForAnonymousProfile = (req, res, next) => {
                         };
                     });
                     res.json({
-                        chats: myChats
+                        chats: myChats,                               
+                         hasPrev: page > 1,
+                        next: page + 1,
+                        prev: page - 1,
+                        hasNext: 1 * page < ntotalOpenUsers,
                     });
                 })
                 .catch(err => {

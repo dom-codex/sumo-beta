@@ -173,7 +173,7 @@ module.exports.createUserChannel = (req, res, next) => {
             .then((hash) => {
               //create new user
               const user = new User({
-                name: name,
+                name: name.substring(0,30),
                 anonymousName: `anonymous${token.substring(4, 8)}`,
                 email: email,
                 password: hash,
@@ -453,7 +453,7 @@ module.exports.getProfilePage = (req, res, next) => {
           if (!data) return;
           User.updateOne(
             { _id: req.session.user._id },
-            { $set: { name: name } }
+            { $set: { name: name.substring(0,30) } }
           )
             .then((u) => {
               //fn() is called to notifer them of the
@@ -479,7 +479,7 @@ module.exports.getProfilePage = (req, res, next) => {
           if (!data) return; //kill execution if no data
           User.updateOne(
             { _id: req.session.user._id },
-            { $set: { desc: desc } }
+            { $set: { desc: desc.substring(0,200) } }
           )
             .then((u) => {
               req.session.user.desc = desc;
@@ -528,7 +528,7 @@ module.exports.getProfilePage = (req, res, next) => {
           const a = validator.escape(data)
           User.updateOne(
             { _id: req.session.user._id },
-            { $set: { anonymousName: data } }
+            { $set: { anonymousName: a.sustring(0,30) } }
           )
             .then((u) => {
               req.session.user.anonymousName = a;
@@ -593,7 +593,7 @@ module.exports.getProfilePage = (req, res, next) => {
   //end of main then
 };
 module.exports.modifyPhone = (req, res, next) => {
-  const phone = req.body.phone;
+  const phone = req.body.phone.substring(0,15);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     //reformat the errors if any

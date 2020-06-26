@@ -20,7 +20,7 @@
     $('.viewImage-cont').css('display','none');
   });
   document.addEventListener('DOMContentLoaded',()=>{
-  LoadChats();
+  LoadChats(1);
 })
   const body = document.querySelector('section')
   const instance = M.Tabs.init(document.querySelector('.tabs'));
@@ -47,10 +47,10 @@ $('.preloader-wrapper').css('display','none');
 $('#bg').css('display',`none`);
 $('input[type="file"]').val('')
 }
-const LoadChats = () =>{
+const LoadChats = (page) =>{
   const token =  $('input[name="_csrf"]').val();
   $('.loading').css('display','block')
-  fetch('/getprofilechats', {
+  fetch(`/getprofilechats?page=${page}`, {
     method: 'GET',
     credentials:'include',
       headers: {
@@ -58,17 +58,22 @@ const LoadChats = () =>{
       },
 }).then(res=>res.json())
 .then(res=>{
+  $('.collection').html('');
+  hideIndicator();
+  $('.next').remove();
+  $('.prev').remove();
   $('.loading').css('display','none')
   $('#badge').text(res.chats.length)
    if(res.chats.length > 0) {
      $('.new').css('display','none')
      if(res.hasNext){
-       $('.next').css('display','inline-block')
-       $('.next').attr('href',`/getprofilechats?page=${res.next}`)
+       $('.pages').append(`<button onclick="loadmore('${res.next}')" class="next">Next</button>`)
+     //  $('.next').attr('href',`/getprofilechats?page=${res.next}`)
      }
      if(res.hasPrev){
-      $('.prev').css('display','inline-block')
-      $('.prev').attr('href',`/getprofilechats?page=${res.prev}`)
+      $('.pages').prepend(`<button onclick="loadmore('${res.prev}')" class="prev">Prev</button>`)
+     // $('.prev').css('display','inline-block')
+      //$('.prev').attr('href',`/getprofilechats?page=${res.prev}`)
      }
      if(res.code === 404){
       $('.loading').css('display','none')
@@ -106,6 +111,10 @@ const LoadChats = () =>{
 `)
    }
 })
+}
+const  loadmore = (n) => {
+  showIndicator();
+  LoadChats(n);
 }
   const Handler = (e, inputedit) => {
     if (inputedit === "name") {

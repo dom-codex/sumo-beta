@@ -51,14 +51,13 @@ section{
   width:100%;
 }
 #ccf{
-  display: flex;
-  justify-content: center;
   margin-top:25px;
 }
 #ccf p{
   font-size:1.5rem;
   color:aliceblue;
   padding-top:15px;
+  text-align: center;
 }
 form{
   width:96%;

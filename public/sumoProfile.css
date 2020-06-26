@@ -591,10 +591,17 @@ a.btn.modal-trigger i{
   margin-top:20px;
   margin-bottom: 10px;
 }
-.pages a:nth-child(2){
+.pages button:nth-child(2){
   margin-left:30px
 }
-.next,.prev{display:none;}
+button.prev, button.next {
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+}
+button.prev:hover, button.next:hover{
+  background-color:rgba(0, 0, 0,.3);
+}
 #board{
   display:block;
   text-align:center;

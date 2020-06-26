@@ -167,12 +167,12 @@ display:none;
   width:100%; 
 }
 .modal-myModal{
-  position: absolute;
+  position: fixed;
   display:flex;
   justify-content: center;
   align-items: center;
-  left:40%;
-  top:25%;
+  left:39%;
+  top:50%;
   z-index:20000000;
   height:50px;
   width:50px;

@@ -157,7 +157,7 @@
                     <div class="input-field">
                        <i class="material-icons prefix">account_circle</i>
                           <label for="name" class="active">Name</label>
-                      <input maxlength="25" id="name" type="text" name="name" value="<%-user.name%>" class="validate" data-length="15" disabled>
+                      <input maxlength="30" id="name" type="text" name="name" value="<%-user.name%>" class="validate" data-length="15" disabled>
                     </div>
                     <div class="ctrl"><button id="nameedit" onclick="Handler(this,'name')">edit</button>
                       <button class="temp" id="namecancel">cancel</button>
@@ -209,8 +209,6 @@
                   <div class="loading">Loading...</div>
                 </ul>
                   <div class="pages"> 
-                        <a href="" class="prev">prev</a>
-                          <a href="" class="next">next</a>
                   </div>
                 </div>
 
@@ -300,7 +298,7 @@
                         <div class="input-field">
                           <i class="material-icons prefix">airplanemode_inactive</i>
         
-                          <input id="anonymous" value="<%-user.anonymousName%>" disabled>
+                          <input id="anonymous" value="<%-user.anonymousName%>" maxlength="30" disabled>
                           <label for="anonymous" class="active">anonymousName</label>
                         </div>
                         <div class="ctrl"><button onclick="Handler(this,'anonymous')" id="anonymousedit">edit</button><button class="temp"

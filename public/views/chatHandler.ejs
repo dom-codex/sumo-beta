@@ -101,16 +101,22 @@
 <script>
   let page = 1
   let height = 0
-  const feedView = $('.feeds')
+  //const feedWindow = $('.feeds')
 const loadFeed = () => {
   if(page == -1) return
-  else if ((feedView.scrollTop === 0 || page == 1)) {
-    height = feedView.scrollHeight;
+  else if ((feedWindow.scrollTop === 0 || page == 1)) {
+    height = feedWindow.scrollHeight;
     //$('.loader').css('display','flex')
     $('.feeds').append(`
     <div class="notfound feed">
       <small>Loading... </small></div>
-    `)
+    `);
+    if(page >1){
+      $('#feeds').prepend(`
+    <div class="notfound feed" style="margin-bottom:20px">
+      <small>Loading more feeds... </small></div>
+    `);
+    }
     fetch(`/retrievefeeds?page=${page}`, {
       method: 'GET',
       credentials:'include',
@@ -123,15 +129,16 @@ const loadFeed = () => {
       .then(res => {
         $('.notfound.feed').remove()
        // $('.loader').css('display','none')
-        page = res.next
+        page = res.hasNext ? res.next : -1;
         if(res.code === 301){
           page = -1
           section.scrollTop = 0
           return
         }
         else if (res.feeds.length > 0) {
+          const total = res.total
           res.feeds.forEach((msg, i) => {
-            $('#feeds').append(
+            $('#feeds').prepend(
             `<div class="feedcard Cards">
                   <div>
                     <p>Message:</p>
@@ -139,11 +146,15 @@ const loadFeed = () => {
                   <div class="cardb">
                     <p>${msg.message}</p>
                   </div>
-                  <div class="cardf"><small>${i+1}</small>
+                  <div class="cardf"><small>${total - i}</small>
                      <i>sent: ${msg.time}</i></div>
                 </div> `)
           })
-          feedWindow.scrollTop = feedWindow.scrollHeight;
+          if(res.hasNext){
+            feedWindow.scrollTop = feedWindow.scrollHeight - height;
+          }else{
+            feedWindow.scrollTop = 0;
+          }
         }else if(res.feeds.length <=0){
          return $('.feeds').append(`
           <div class="notfound feed">
@@ -152,7 +163,7 @@ const loadFeed = () => {
               the fun started <small></div>
           `)
         }
-        feedWindow.scrollTop = feedWindow.scrollHeight;
+        //feedWindow.scrollTop = feedWindow.scrollHeight;
       }).catch(err=>{
       })
 
