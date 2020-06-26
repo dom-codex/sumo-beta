@@ -373,7 +373,6 @@ const token = $('input[name="_csrf"]').val()
 const fd = new FormData();
 fd.append('image', file);
 // send `POST` request
-return
 fetch('/upload', {
     method: 'POST',
     credentials:'include',

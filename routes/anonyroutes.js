@@ -64,7 +64,7 @@ router.get('/userchannel/:id',
 isAuth,
 controller.userChannel);
 
-router.get('/sendmsg/:fid',isAuth ,controller.getPostToFeed);
+router.get('/sendmsg/:fid',controller.getPostToFeed);
 router.post('/feed/:feed',check('message').trim().escape(), controller.postToFeed);
 router.get('/chat/:chatId',isAuth, controller.getChatPage);
 router.post('/chatme',[check('message').trim().escape(),

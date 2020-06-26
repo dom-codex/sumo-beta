@@ -57,7 +57,7 @@ nav{
           align-items: center;
 }
 .img-title-cont{
-  min-width: 92%;
+  min-width: 85%;
   display:-webkit-box;
   display:-ms-flexbox;
   display:flex;
