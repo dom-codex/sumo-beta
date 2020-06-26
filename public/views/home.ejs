@@ -16,8 +16,17 @@
     <link href="./newhome.css" type="text/css" rel="stylesheet"/>
 </head>
 <body id="body">
-    <div id="notifier" class="<%=save.length>0?'save':''%>">Sent successfully</div>
-  <div class="fixed-action-btn click-to-toggle">
+  <script src="/js/jquery-3.4.1.min.js"></script>
+    <p id="notifier" class="<%=save.length>0?'save':''%>">Sent successfully</p>
+    <% if(save.length >0) {%>
+      <script>
+        $('#notifier').css('display','block');
+        setTimeout(()=>{
+          $('#notifier').remove();
+        },3000)
+      </script>
+      <%  } %>
+    <div class="fixed-action-btn click-to-toggle">
     <a class="btn-floating btn-large red">
       <i class="large material-icons">brightness_1</i>
     </a>
@@ -190,8 +199,6 @@
   </footer>
 
   <script src="/js/materialize.min.js"></script>
-  <script src="/js/jquery-3.4.1.min.js"></script>
-
   <script>
     document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.modal');

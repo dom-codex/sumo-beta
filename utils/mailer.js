@@ -171,12 +171,12 @@ module.exports.confirmationMailer = (email,name,id,toks)=>{
 };
 module.exports.suggestionMailer = (subject,suggestion)=>{
     const transporter = nodemailer.createTransport({
-    /*  host: "smtp.mailtrap.io",
+      /*host: "smtp.mailtrap.io",
       port: 2525,
       auth: {
-        user: "746d242333b2a4",
-        pass: "93663e3aafe21d"
-      }*/
+        user: "8cbc5292cd962a",
+        pass: "4a93371bd1c5c5"
+      } */
   
       service: "gmail",
         auth: {

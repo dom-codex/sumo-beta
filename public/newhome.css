@@ -261,41 +261,18 @@ section.features h4{
   position:fixed;
   top:0;
   left:0;
-  width:0%;
-  height: 0px;
-  z-index: 0;
+  width:100%;
+  height: 100px;
+  z-index: 99999999999999;
   background-color: rgb(155, 194, 155);
   display:none;
   text-align: center;
   color:green;
-  padding:0;
+  padding:15px;
   letter-spacing: 1px;
 }
-@keyframes save{
-  0%{
-    height:80px;
-    z-index: 20000;
-    padding:15px;
-    width:100%
-  }
-  99%{
-    height:80px;
-    z-index: 20000;
-    padding:15px;
-    width:100%
-  }
-  100%{
-    height:0px;
-    width:0%;
-    z-index:0;
-    padding:0
-  }
-}
 .save{
-  display:block;
-  animation-name: save;
-  animation-duration: 8s;
-  animation-fill-mode: forwards;
+  display:block
 }
 /* overriding default materializes styles */
 button.btn{
