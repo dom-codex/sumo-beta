@@ -132,3 +132,6 @@ li.collection-item{
   .user-image-cont{
       background-color: rgba(0,0,0,.89)!important;
   }
+  .form label{
+      color:#000!important
+  }

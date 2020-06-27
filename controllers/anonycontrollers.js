@@ -526,10 +526,11 @@ module.exports.getProfilePage = (req, res, next) => {
         //listener to change anonymous name
         socket.on("newanonymous", (data, fn) => {
           if (!data) return; //kill execution
-          const a = validator.escape(data)
+          let a = validator.escape(data)
+          a = a.substring(0,30);
           User.updateOne(
             { _id: req.session.user._id },
-            { $set: { anonymousName: a.sustring(0,30) } }
+            { $set: { anonymousName: a } }
           )
             .then((u) => {
               req.session.user.anonymousName = a;
