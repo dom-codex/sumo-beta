@@ -313,7 +313,7 @@ module.exports.loadChatsInProfile = (req, res, next) => {
     let nTotalAnonyUsers;
     const page = +req.query.page || 1;
     if (page < 1) return res.json({ code: 404, message: 'page not found' });
-    User.findById(req.session.user._id)
+    User.findById(req.session.user._id).sort({'chats.chatId':-1})
         .then((user) => {
             //filter out open chats id
             const chatid = user.chats.map((id) => {
@@ -357,7 +357,7 @@ module.exports.loadChatsInProfile = (req, res, next) => {
             filtering condition i.e max of 2 users per page
              */
             User.find({ _id: { $in: chatids } })
-                .sort({ $natural: -1 })
+                .sort({ 'name': 1 })
                 .skip((page - 1) * 1)
                 .limit(1)
                 .then(openchats => {
@@ -372,7 +372,9 @@ module.exports.loadChatsInProfile = (req, res, next) => {
                     });
                     /*retrive users that chatted with user anonymously
                     limiting the records returned by a chosen preference */
-                    User.find({ anonyString: { $in: chatids } }).sort('-1').skip((page - 1) * 1)
+                    User.find({ anonyString: { $in: chatids } })
+                    .sort({'name':1})
+                    .skip((page - 1) * 1)
                         .limit(1)
                         .then(anonychats => {
                             //reformating the users returned so that their 
@@ -388,6 +390,7 @@ module.exports.loadChatsInProfile = (req, res, next) => {
                             });
                             res.json({
                                 chats: [...openchats, ...anonymousChats],
+                                total: nTotalAnonyUsers + ntotalOpenUsers,
                                 hasPrev: page > 1,
                                 next: page + 1,
                                 prev: page - 1,
@@ -449,7 +452,8 @@ module.exports.loadChatsForAnonymousProfile = (req, res, next) => {
                         };
                     });
                     res.json({
-                        chats: myChats,                               
+                        chats: myChats, 
+                        total:ntotalOpenUsers,                              
                          hasPrev: page > 1,
                         next: page + 1,
                         prev: page - 1,

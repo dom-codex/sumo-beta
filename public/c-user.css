@@ -262,13 +262,13 @@ section.desktop {
 ul li a {
   color: rebeccapurple !important;
 }
-.title a,.title span{
+.title a,span.title{
   width: 60%;
     min-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width:200px;
+    max-width:210px;
     display:block;
 }
 ul li {

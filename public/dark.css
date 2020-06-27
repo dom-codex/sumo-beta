@@ -49,10 +49,13 @@ img.circle{
     color:#000
 }
 .spinner-layer{
-    border-color:rgba(0,0,0,.89)
+    border-color:#fff
 }
 .mychats{
     border-left: thin solid rgba(0,0,0,.1);
+}
+.search-vector p{
+    color:#fff
 }
 /* for side nav*/
 /*.user-view,.profile-view{

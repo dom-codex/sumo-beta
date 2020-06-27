@@ -904,10 +904,7 @@ module.exports.addChat = (req, res, next) => {
           const request = user.requests;
           request.push({
             id: userId,
-            name:
-              Auser.name.length > 9
-                ? Auser.name.substring(0, 6) + "..."
-                : Auser.name,
+            name:Auser.name,
             desc: Auser.desc,
             img: Auser.img,
           });
@@ -976,7 +973,7 @@ module.exports.addChat = (req, res, next) => {
         io()
           .to(newChat._id)
           .emit("new", {
-            name: Auser.name.substring(0, 5) + "...",
+            name: Auser.name,
             fid: userId,
             status: "online",
             img: Auser.img,
@@ -1398,7 +1395,6 @@ module.exports.removeAChat = (req, res, next) => {
                 { $set: { count: 1 } }
               ).then((_) => {
                  user.save().then((user) => {
-                  console.log("user is ", user);
                   //take user to profile page after execution
                   req.session.user = user;
                   return req.session.save(() => {
@@ -1458,7 +1454,6 @@ module.exports.removeAChat = (req, res, next) => {
             if (result.n > 0) {
               return user.save()
               .then((user) => {
-                console.log("user is ", user);
                 //take user to profile page after execution
                 req.session.user = user;
                 return req.session.save(() => {

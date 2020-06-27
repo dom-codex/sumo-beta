@@ -174,7 +174,7 @@ const loadFeed = () => {
   //script for search mechanism
   const search = (field) =>{
     const searchKey = $(field).val();
-    $('.search-loader').css('display','block')
+    $('.search-loader').css('display','block');
     fetch(`/searchuser`, {
           method: 'POST',
           credentials:'include',

@@ -63,7 +63,7 @@ const LoadChats = (page) =>{
   $('.next').remove();
   $('.prev').remove();
   $('.loading').css('display','none')
-  $('#badge').text(res.chats.length)
+  $('#badge').text(res.total)
    if(res.chats.length > 0) {
      $('.new').css('display','none')
      if(res.hasNext){
