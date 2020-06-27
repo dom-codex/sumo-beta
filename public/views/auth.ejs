@@ -18,6 +18,7 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
     <link href="newChannelForm.css" rel="stylesheet"/>
   </head>
   <body>
+    <script src="/js/jquery-3.4.1.min.js"></script>
     <header>
     <nav>
       <div>
@@ -30,22 +31,50 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
       <div class="forgotPass"><a href="/resetpassword">Forgot password</a></div>
       
       <!--error boards-->
-      <div class="<%=loginErrors.emailError.isAvailable || loginErrors.passwordError.isAvailable  ? 'display warning-board':'none'%>">
-          <p class="<%=loginErrors.emailError.isAvailable || loginErrors.passwordError.isAvailable  ? 'display warning-board':'none'%>">Invalid phone number or password</p>
+      <div class="firsterr display warning-board">
+          <p>Invalid phone number or password</p>
       </div>  
-          <div class="<%=success ? 'warning-board success display':'none' %>">
-        <% if(success) { %>
-          <p>you can now login!!!</p>
-          <%}%>
+          <div class="warning-board success display">
+          <p>you can now login!!!</p> 
       </div>  
-      <div class="<%=other.isSet ? 'other':'noother'%>">
-        <%=other.message%></div>        
+      <div class="other">
+        <%=other.message%>
+      </div>
+        
+        <% if(loginErrors.emailError.isAvailable || loginErrors.passwordError.isAvailable  )  {%>  
+        <script>
+          $('.firsterr').css('display','flex');
+          setTimeout(()=>{
+            $('.firsterr').remove();
+          },5000);
+        </script> 
+        <% } %>       
+        
+        <% if(success)  {%>  
+        <script>
+          $('.success').css('display','flex');
+          setTimeout(()=>{
+            $('.success').remove();
+          },5000);
+        </script> 
+        <% } %>        
+        
+        <% if(other.isSet )  {%>  
+        <script>
+          $('.other').css('display','block');
+          setTimeout(()=>{
+            $('.other').remove();
+          },5000);
+        </script> 
+        <% } %>     
       <!--form body-->
       <div class="form-body z-depth-2">
     <div class="row col s12 m12 l12">
     <div class="col s12 m12 l12">
       <ul class="tabs">
-        <li class="tab col s6 m6 l6 "><a href="#login" class="<%= success === true || loginErrors.mode === true || toLogin ? 'active': ''%>">login</a></li>
+        <li class="tab col s6 m6 l6 ">
+          <a href="#login" class="<%= success === true || loginErrors.mode === true || toLogin ? 'active': ''%>">login</a>
+        </li>
         <li class="tab col s6 m6 l6"><a href="#signup" class="<%= success === true || loginErrors.mode === true ? '' : 'active'%>">Signup</a></li>
       </ul>
     </div>

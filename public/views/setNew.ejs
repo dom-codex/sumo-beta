@@ -18,6 +18,7 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
     <link href="/newChannelForm.css" rel="stylesheet"/>
   </head>
   <body>
+    <script src="/js/jquery-3.4.1.min.js"></script>
     <header>
     <nav>
       <div>
@@ -27,14 +28,27 @@ href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
       </nav>
     </header>
     <section>
-      <div class="<%= noUser.length > 0 ? 'display warning-board':'none'%>">
-          <p class="<%= noUser.length > 0 ? 'display':'none'%>"><%=message%></p>
+      <div class="display firsterr warning-board">
+          <p><%=message%></p>
       </div>  
-          <div class="<%=success.length > 0 ? 'warning-board success display' : '' %>">
-        <% if (success.length > 0) { %>
+          <div class="warning-board success display">
           <p>check your mail box for the reset link</p>
-          <%}%>
       </div>
+      <% if(noUser.length > 0)  {%>  
+        <script>
+          $('.firsterr').css('display','flex');
+          setTimeout(()=>{
+            $('.firsterr').remove();
+          },5000);
+        </script> <% } %>
+              <% if(success.length > 0)  {%>  
+                <script>
+                  $('.success').css('display','flex');
+                  setTimeout(()=>{
+                    $('.success').remove();
+                  },5000);
+                </script> 
+                <% } %> 
       <div class="form-body z-depth-2">
     <div class="row">
     <div class="col s12 m12 l12">
