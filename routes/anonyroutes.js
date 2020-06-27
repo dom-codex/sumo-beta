@@ -23,7 +23,7 @@ router.post('/createUserChannel', [
 //input validators for the various input fields
 check('name').isLength({min:3}).withMessage('name too short').custom((value,{req})=>{
     return validators.comfirmNewUserName(value)
-}).trim(),
+}).trim().escape(),
 check('email').isEmail().custom((val,{req})=>{
     return validators.comfirmNewUserEmail(val);
 }).normalizeEmail(),
@@ -44,7 +44,7 @@ check('phone').custom((val,{req})=>{
             }
          })  
     }else return true
-}).trim(),  
+}).trim().escape(),  
 check('pwd').isLength({min:5}).withMessage('password too short').custom((val,{req})=>{
     return validators.comfirmNewUserPassword(val,req)
 }).trim()

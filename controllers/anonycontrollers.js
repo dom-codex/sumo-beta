@@ -156,7 +156,8 @@ module.exports.createUserChannel = (req, res, next) => {
   //extract user details if no errors
 
   //generate refreshToken
-  crypto.randomBytes(24, (err, buffer) => {
+  
+  crypto.randomBytes(32, (err, buffer) => {
     const userToken = buffer.toString("hex");
     //generate chat hash
     crypto.randomBytes(10, (err, buffer) => {
@@ -169,7 +170,7 @@ module.exports.createUserChannel = (req, res, next) => {
           const anonyString = buffer.toString("hex");
           //hash password
           bcrypt
-            .hash(password, 32)
+            .hash(password, 15)
             .then((hash) => {
               //create new user
               const user = new User({
