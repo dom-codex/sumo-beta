@@ -1,536 +1,517 @@
 <script>
-    const viewImage = () =>{
-    $('.viewImage-cont').css('display','block');
-  };
-   const viewUserImage = (img) =>{
-    $('.viewImage-cont').css('display','block');
-    $('img.user').css('display','none');
-    $('img.pal').css('display','block');
-    $('.view-image').append(`
-    <img class="pal" src="${img}" alt="a user"/>
-    `)
-  };
-   $('button.pal-close').on('click',()=>{
-    $('.viewImage-cont').css('display','none');
-    $('img.user').css('display','block');
-    $('img.pal').remove();
-   })
-
-  $('.view-contents button').on('click',()=>{
-    $('.viewImage-cont').css('display','none');
-  });
-  const retrieveImage = () =>{
-  const userFile = document.querySelector('#file-input').files;
-  if(!userFile.length > 0)return false
-  const file = document.querySelector('#file-input').files[0];
-  const isValidType = ['image/jpeg', 'image/gif', 'image/png', 'image/svg+xml'].includes(file.type)
-  const isSizeAllowed = file.size < (5 * 1024 * 1024)
-  if(file && isValidType && isSizeAllowed ){
-    return file
-  }
-  return false;
+  const viewImage = () =>{
+  $('.viewImage-cont').css('display','block');
+};
+ const viewUserImage = (img) =>{
+  $('.viewImage-cont').css('display','block');
+  $('img.user').css('display','none');
+  $('img.pal').css('display','block');
+  $('.view-image').append(`
+  <img class="pal" src="${img}" alt="a user"/>
+  `)
+};
+ $('button.pal-close').on('click',()=>{
+  $('.viewImage-cont').css('display','none');
+  $('img.user').css('display','block');
+  $('img.pal').remove();
+ })
+$('.view-contents button').on('click',()=>{
+  $('.viewImage-cont').css('display','none');
+});
+const retrieveImage = () =>{
+const userFile = document.querySelector('#file-input').files;
+if(!userFile.length > 0)return false
+const file = document.querySelector('#file-input').files[0];
+const isValidType = ['image/jpeg', 'image/gif', 'image/png', 'image/svg+xml'].includes(file.type)
+const isSizeAllowed = file.size < (5 * 1024 * 1024)
+if(file && isValidType && isSizeAllowed ){
+  return file
+}
+return false;
 }
 const sendImageApi = (data,tg) =>{
-  const token = document.querySelector('input[name="_csrf"]').value;
-
-  fetch(`/sendmms`,{
-          method:'POST',
-          credentials:'include',
-          headers:{
-            "csrf-token":token,
-          },
-          body: data 
-        })
-        .then(res=>res.json())
-        .then(res=>{
-          if(res.code === 300){
-          $(`.mms-loading.${tg}`).css('display','none');
-          $(`.reload.${tg}`).css('display','flex');
-          $(`.material-icons.${tg}`).text('error');
-          $(`.material-icons.${tg}`).css('color','red')
-         }else if(res.code !==300){
-         $(`.mms-loading.${res.class}`).remove();
-         $(`.material-icons.${res.class}`).text('done_all');
-         $('.mms-img img').css('opacity','1');
-         $(`.reload.${res.class}`).remove();
-        
-        }
-
-        })
+const token = document.querySelector('input[name="_csrf"]').value;
+fetch(`/sendmms`,{
+        method:'POST',
+        credentials:'include',
+        headers:{
+          "csrf-token":token,
+        },
+        body: data 
+      })
+      .then(res=>res.json())
+      .then(res=>{
+        if(res.code === 300){
+        $(`.mms-loading.${tg}`).css('display','none');
+        $(`.reload.${tg}`).css('display','flex');
+        $(`.material-icons.${tg}`).text('error');
+        $(`.material-icons.${tg}`).css('color','red')
+       }else if(res.code !==300){
+       $(`.mms-loading.${res.class}`).remove();
+       $(`.material-icons.${res.class}`).text('done_all');
+       $('.mms-img img').css('opacity','1');
+       $(`.reload.${res.class}`).remove();
+      
+      }
+      })
 }
 const sendMms = (data,tg) =>{
-  $(`.mms-loading.${tg}`).css('display','block');
- $(`.reload.${tg}`).css('display','none');
- $(`.material-icons.${tg}`).text('access_time');
- $(`.material-icons.${tg}`).css('color','#fff')
+$(`.mms-loading.${tg}`).css('display','block');
+$(`.reload.${tg}`).css('display','none');
+$(`.material-icons.${tg}`).text('access_time');
+$(`.material-icons.${tg}`).css('color','#fff')
 sendImageApi(data,tg);
 }
-    const socket = io();
-         let timer;
-    socket.on('disconnect', (reason) => {
-      //refresh browser if server socket disconnects
-     if(reason === 'transport close'){
-      timer = setTimeout(()=>{
-      alert('underlying connection lost please reload')
-      },4000)
-     } 
-    });
+  const socket = io();
+       let timer;
+  socket.on('disconnect', (reason) => {
+    //refresh browser if server socket disconnects
+   if(reason === 'transport close'){
+    timer = setTimeout(()=>{
+    alert('underlying connection lost please reload')
+    },4000)
+   } 
+  });
 socket.on('connect', (error) => {
-  clearTimeout(timer)
+clearTimeout(timer)
 });
-      socket.on('chatMsg',(data)=>{
-        const msgWindow = $('.chats');
-        $('#typingIndicator').remove()
-        if(data.img && data.img.length > 0){
-          const tag = Date.now();
-          msgWindow.append(`
-        <span class="u1 chat mms-box">
-          <div class="mms">
-            <div class="mms-img blob mms-notify sumo${tag}">
-
-              <div class="sumo${tag} msg-loader preloader-wrapper small active msg-loader">
-    <div class="spinner-layer spinner-green-only">
-      <div class="circle-clipper left">
-        <div class="circle"></div>
-      </div><div class="gap-patch">
-        <div class="circle"></div>
-      </div><div class="circle-clipper right">
-        <div class="circle"></div>
-      </div>
+    socket.on('chatMsg',(data)=>{
+      const msgWindow = $('.chats');
+      $('#typingIndicator').remove()
+      if(data.img && data.img.length > 0){
+        const tag = Date.now();
+        msgWindow.append(`
+      <span class="u1 chat mms-box">
+        <div class="mms">
+          <div class="mms-img blob mms-notify sumo${tag}">
+            <div class="sumo${tag} msg-loader preloader-wrapper small active msg-loader">
+  <div class="spinner-layer spinner-green-only">
+    <div class="circle-clipper left">
+      <div class="circle"></div>
+    </div><div class="gap-patch">
+      <div class="circle"></div>
+    </div><div class="circle-clipper right">
+      <div class="circle"></div>
     </div>
   </div>
-
-              <img src="${data.img}" class="download-img"/>
-              <a href="${data.download}" download="${sumo + '-'+Date.now()}">
-                <i class="material-icons">file_download</i></a>
-              </div> 
-              </div>
-              ${( data.message)}
+</div>
+            <img src="${data.img}" class="download-img"/>
+            <a href="${data.download}" download>
+              <i class="material-icons">file_download</i></a>
+            </div> 
             </div>
-                <div class="time">
-                  ${data.time} &nbsp; 
-                </div>
-              </span>
-      `);
-      chatWindow.scrollTop = chatWindow.scrollHeight;
-      const parent = document.querySelector(`.sumo${tag}`);
-      const img = parent.children[1];
-      const a = parent.children[2];
-      return img.addEventListener('load',()=>{
-        img.style.display = 'block';
-        a.style.display = 'flex';
-        $(`.msg-loader.sumo${tag}`).remove();
-      })
-        }        
-        msgWindow.append( `
-        <span class="u1 chat">${data.message}
-          <div class="time">${data.time}</div>
-          </span>`)
-          chatWindow.scrollTop = chatWindow.scrollHeight
-        socket.emit('receive',null);
-      
-      })
-      socket.on('offline',(data)=>{
-      $('#status').text(data.status)
-      })
-      socket.on('active',(data)=>{
-      $('#status').text(data.status)
-      })
-      const btn = document.querySelector('button[type="submit"]');
-      btn.addEventListener('click',(e)=>{
-        //get necessary data
-        let fb;
-        let body;
-        const file = retrieveImage()
-        const message = document.querySelector('#msg').value;
-        const cid = document.querySelector('#friendId').value;
-        const token = document.querySelector('input[name="_csrf"]').value;
-        const msgWindow = $('.chats');
-        msgWindow.scrollTop = msgWindow.scrollHeight
-        const input = document.querySelector('textarea')
-          //add time stamp
-        const time = validator.escape( moment().format('LT'));
-        //append message to sender window
-
-        /*socket.emit('chat',{message:message,fid:cid,time:time},()=>{
-        });*/
-        //use fetch api to send message
-        if(file){
-          $('input[type="file"]').val('')
-          const tag = Date.now();
-           let fd = new FormData();
-           fd.append('image', file);
-           fd.append('tag', tag);
-           fd.append('receiver',cid);
-           fd.append('message',message);
-           fd.append('time',time);
-
-           $('.preview-cont').remove();
-           msgWindow.append(`
-        <span class="u2 chat mms-box">
-          <div class="mms">
-            <div class="mms-img blob">
-              <img src="${URL.createObjectURL(file)}" />
-              <button
-              class="reload ${tag}"> try again 
-              <i class="material-icons">cached</i> </button>
-              <div class="preloader-wrapper small active mms-loading ${tag}">
-           <div class="spinner-layer spinner-green-only">
-      <div class="circle-clipper left">
-        <div class="circle"></div>
-      </div><div class="gap-patch">
-        <div class="circle"></div>
-      </div><div class="circle-clipper right">
-        <div class="circle"></div>
-      </div>
+            ${( data.message)}
+          </div>
+              <div class="time">
+                ${data.time} &nbsp; 
+              </div>
+            </span>
+    `);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    const parent = document.querySelector(`.sumo${tag}`);
+    const img = parent.children[1];
+    const a = parent.children[2];
+    return img.addEventListener('load',()=>{
+      img.style.display = 'block';
+      a.style.display = 'flex';
+      $(`.msg-loader.sumo${tag}`).remove();
+    })
+      }        
+      msgWindow.append( `
+      <span class="u1 chat">${data.message}
+        <div class="time">${data.time}</div>
+        </span>`)
+        chatWindow.scrollTop = chatWindow.scrollHeight
+      socket.emit('receive',null);
+    
+    })
+    socket.on('offline',(data)=>{
+    $('#status').text(data.status)
+    })
+    socket.on('active',(data)=>{
+    $('#status').text(data.status)
+    })
+    const btn = document.querySelector('button[type="submit"]');
+    btn.addEventListener('click',(e)=>{
+      //get necessary data
+      let fb;
+      let body;
+      const file = retrieveImage()
+      const message = document.querySelector('#msg').value;
+      const cid = document.querySelector('#friendId').value;
+      const token = document.querySelector('input[name="_csrf"]').value;
+      const msgWindow = $('.chats');
+      msgWindow.scrollTop = msgWindow.scrollHeight
+      const input = document.querySelector('textarea')
+        //add time stamp
+      const time = validator.escape( moment().format('LT'));
+      //append message to sender window
+      /*socket.emit('chat',{message:message,fid:cid,time:time},()=>{
+      });*/
+      //use fetch api to send message
+      if(file){
+        $('input[type="file"]').val('')
+        const tag = Date.now();
+         let fd = new FormData();
+         fd.append('image', file);
+         fd.append('tag', tag);
+         fd.append('receiver',cid);
+         fd.append('message',message);
+         fd.append('time',time);
+         $('.preview-cont').remove();
+         msgWindow.append(`
+      <span class="u2 chat mms-box">
+        <div class="mms">
+          <div class="mms-img blob">
+            <img src="${URL.createObjectURL(file)}" />
+            <button
+            class="reload ${tag}"> try again 
+            <i class="material-icons">cached</i> </button>
+            <div class="preloader-wrapper small active mms-loading ${tag}">
+         <div class="spinner-layer spinner-green-only">
+    <div class="circle-clipper left">
+      <div class="circle"></div>
+    </div><div class="gap-patch">
+      <div class="circle"></div>
+    </div><div class="circle-clipper right">
+      <div class="circle"></div>
     </div>
   </div>
-              </div>
-              ${message}
+</div>
             </div>
-                <div class="time">
-                  ${time} &nbsp; 
-                  <div class="time"><i class="material-icons ${tag}">access_time</i></div> 
-                </div>
-              </span>
-      `);
-      $(`button.${tag}`).on('click',()=>{
-        sendMms(fd,tag);
-      })
-      input.value = "";
-      sendImageApi(fd,tag);
-        }else{
-          if(!input.value || input.value == " ") {
-            return;
-        }
-        input.value =''
-          msgWindow.append(`
-        <span class="u2 chat">${validator.escape(message)}
-                <div class="time">
-                  ${validator.escape(time)} &nbsp; 
-                  <div class="time"><i class="material-icons">done</i></div> 
-                </div>
-              </span>
-      `);
-        fetch(`/chatme`,{
-          method:'POST',
-          credentials:'include',
-          headers:{
-            "csrf-token":token,
-            "Content-Type":'application/json'
-          },
-          body: JSON.stringify({
-            receiver: cid,
-            message:message,
-            time: time,
-          })
+            ${message}
+          </div>
+              <div class="time">
+                ${time} &nbsp; 
+                <div class="time"><i class="material-icons ${tag}">access_time</i></div> 
+              </div>
+            </span>
+    `);
+    $(`button.${tag}`).on('click',()=>{
+      sendMms(fd,tag);
+    })
+    input.value = "";
+    sendImageApi(fd,tag);
+      }else{
+        if(!input.value || input.value == " ") {
+          return;
+      }
+      input.value =''
+        msgWindow.append(`
+      <span class="u2 chat">${validator.escape(message)}
+              <div class="time">
+                ${validator.escape(time)} &nbsp; 
+                <div class="time"><i class="material-icons">done</i></div> 
+              </div>
+            </span>
+    `);
+      fetch(`/chatme`,{
+        method:'POST',
+        credentials:'include',
+        headers:{
+          "csrf-token":token,
+          "Content-Type":'application/json'
+        },
+        body: JSON.stringify({
+          receiver: cid,
+          message:message,
+          time: time,
         })
-        .then(res=>res.json())
-        .then(res=>{
-           if(res.code === 300){
-              const chatboxchildren = document.querySelector('.chats').children;
-             const lastchild = chatboxchildren[chatboxchildren.length - 1]
-             const icon =  lastchild.children[0].children[0].children[0];
-             icon.textContent = 'error';
-             return icon.style.color = 'red'
-            }
-          else if(res.code!==200){
+      })
+      .then(res=>res.json())
+      .then(res=>{
+         if(res.code === 300){
+            const chatboxchildren = document.querySelector('.chats').children;
+           const lastchild = chatboxchildren[chatboxchildren.length - 1]
+           const icon =  lastchild.children[0].children[0].children[0];
+           icon.textContent = 'error';
+           return icon.style.color = 'red'
+          }
+        else if(res.code!==200){
+          return
+        }
+        const spans = $('.u2.chat');
+      spans[spans.length - 1].childNodes[1].childNodes[1].childNodes[0].textContent = 'done_all'
+      })
+    }
+      chatWindow.scrollTop = chatWindow.scrollHeight
+    })
+   const emojiBtn = $('.openEmoji');
+   emojiBtn.on('click',()=>{
+     $('.emoticons').css('display','block')
+     chatWindow.scrollTop = chatWindow.scrollHeight
+   })
+   $('#msg').on('focus',()=>{
+     $('.emoticons').css('display','none')
+   })
+   //typing indicator
+   const fid = $('#friendId').val()
+   $('textarea').focus(()=>{
+     socket.emit('typing',fid)
+   })
+   $('textarea').blur(()=>{
+     socket.emit('stopTyping',fid)
+   })
+   socket.on('isTyping',()=>{
+     const typingIndicator = document.querySelector('#typingIndicator')
+     if(!typingIndicator){
+      $('.chats').append( `             
+          <span class="u1 chat" id="typingIndicator">typing..
+              </span>`)
+     }
+     $('#status').css('display','none')
+     $('#typing').css('display','block')
+   })    
+    socket.on('stoppedTyping',()=>{
+     $('#typingIndicator').remove()
+     $('#status').css('display','block')
+     $('#typing').css('display','none')
+   })
+   //chat loader on scroll
+   const Scroll = () => {
+    if(page == -1) return
+    else if ((chatWindow.scrollTop === 0 && page > 1)) {
+      height = chatWindow.scrollHeight;
+      $('.loader').css('display','flex')
+      fetch(`/retrievechat?page=${page}`, {
+        method: 'POST',
+        credentials:'include',
+        headers: {
+          "csrf-token": document.querySelector('input[name="_csrf"]').value,
+          "Content-Type": 'application/json'
+        },
+        body: JSON.stringify({
+          fid: document.querySelector('#friendId').value,
+          uid: document.querySelector('#uid').value,
+        })
+      })
+        .then(res => res.json())
+        .then(res => {
+          $('.loader').css('display','none')
+          page = res.next
+          if(res.code === 301){
+            page = -1
+            section.scrollTop = 0
             return
           }
-          const spans = $('.u2.chat');
-        spans[spans.length - 1].childNodes[1].childNodes[1].childNodes[0].textContent = 'done_all'
-        })
-      }
-        chatWindow.scrollTop = chatWindow.scrollHeight
-      })
-     const emojiBtn = $('.openEmoji');
-     emojiBtn.on('click',()=>{
-       $('.emoticons').css('display','block')
-       chatWindow.scrollTop = chatWindow.scrollHeight
-     })
-     $('#msg').on('focus',()=>{
-       $('.emoticons').css('display','none')
-     })
-     //typing indicator
-     const fid = $('#friendId').val()
-     $('textarea').focus(()=>{
-       socket.emit('typing',fid)
-     })
-     $('textarea').blur(()=>{
-       socket.emit('stopTyping',fid)
-     })
-     socket.on('isTyping',()=>{
-       const typingIndicator = document.querySelector('#typingIndicator')
-       if(!typingIndicator){
-        $('.chats').append( `             
-            <span class="u1 chat" id="typingIndicator">typing..
-                </span>`)
-       }
-       $('#status').css('display','none')
-       $('#typing').css('display','block')
-     })    
-      socket.on('stoppedTyping',()=>{
-       $('#typingIndicator').remove()
-       $('#status').css('display','block')
-       $('#typing').css('display','none')
-     })
-     //chat loader on scroll
-     const Scroll = () => {
-      if(page == -1) return
-      else if ((chatWindow.scrollTop === 0 && page > 1)) {
-        height = chatWindow.scrollHeight;
-        $('.loader').css('display','flex')
-        fetch(`/retrievechat?page=${page}`, {
-          method: 'POST',
-          credentials:'include',
-          headers: {
-            "csrf-token": document.querySelector('input[name="_csrf"]').value,
-            "Content-Type": 'application/json'
-          },
-          body: JSON.stringify({
-            fid: document.querySelector('#friendId').value,
-            uid: document.querySelector('#uid').value,
-          })
-        })
-          .then(res => res.json())
-          .then(res => {
-            $('.loader').css('display','none')
-            page = res.next
-            if(res.code === 301){
-              page = -1
-              section.scrollTop = 0
-              return
-            }
-            else if (res.messages.length > 0) {
-              res.messages.forEach((msg, i) => {
-               if (msg.receiver.toString() === $('#friendId').val().toString()) {
-                 if(msg.imageId.length > 0){
-                   $('.chats').prepend(`
-        <span class="u2 chat mms-box">
-          <div class="mms">
-            <div class="mms-img">
-
-              <div class="preloader-wrapper small active msg-loader">
-    <div class="spinner-layer spinner-green-only">
-      <div class="circle-clipper left">
-        <div class="circle"></div>
-      </div><div class="gap-patch">
-        <div class="circle"></div>
-      </div><div class="circle-clipper right">
-        <div class="circle"></div>
-      </div>
+          else if (res.messages.length > 0) {
+            res.messages.forEach((msg, i) => {
+             if (msg.receiver.toString() === $('#friendId').val().toString()) {
+               if(msg.imageId.length > 0){
+                 $('.chats').prepend(`
+      <span class="u2 chat mms-box">
+        <div class="mms">
+          <div class="mms-img">
+            <div class="preloader-wrapper small active msg-loader">
+  <div class="spinner-layer spinner-green-only">
+    <div class="circle-clipper left">
+      <div class="circle"></div>
+    </div><div class="gap-patch">
+      <div class="circle"></div>
+    </div><div class="circle-clipper right">
+      <div class="circle"></div>
     </div>
   </div>
-
-              <img onclick="viewUserImage('${msg.imageUrl}')" src="${msg.imageUrl}" class="download-img sumo${res.next}"/>
-              </div> 
-              </div>
-              ${msg.body}
+</div>
+            <img onclick="viewUserImage('${msg.imageUrl}')" src="${msg.imageUrl}" class="download-img sumo${res.next}"/>
+            </div> 
             </div>
-                <div class="time">
-                  ${msg.time} &nbsp; 
-                  <div class="time"><i class="material-icons">done_all</i></div> 
-                </div>
-              </span>
-      `);
-                 }else{
-                  $('.chats').prepend(`
-              <span class="u2 chat">${ msg.body}
-                <div class="time">
-                  ${msg.time} &nbsp; 
-                  <div class="time"><i class="material-icons">done_all</i></div> 
-                </div>
-              </span>
-              `)}
-                }else{
-                  if(msg.imageId.length > 0){
-                  $('.chats').prepend(`
-        <span class="u1 chat mms-box">
-          <div class="mms">
-            <div class="mms-img">
-
-              <div class="preloader-wrapper small active msg-loader">
-    <div class="spinner-layer spinner-green-only">
-      <div class="circle-clipper left">
-        <div class="circle"></div>
-      </div><div class="gap-patch">
-        <div class="circle"></div>
-      </div><div class="circle-clipper right">
-        <div class="circle"></div>
-      </div>
+            ${msg.body}
+          </div>
+              <div class="time">
+                ${msg.time} &nbsp; 
+                <div class="time"><i class="material-icons">done_all</i></div> 
+              </div>
+            </span>
+    `);
+               }else{
+                $('.chats').prepend(`
+            <span class="u2 chat">${ msg.body}
+              <div class="time">
+                ${msg.time} &nbsp; 
+                <div class="time"><i class="material-icons">done_all</i></div> 
+              </div>
+            </span>
+            `)}
+              }else{
+                if(msg.imageId.length > 0){
+                $('.chats').prepend(`
+      <span class="u1 chat mms-box">
+        <div class="mms">
+          <div class="mms-img">
+            <div class="preloader-wrapper small active msg-loader">
+  <div class="spinner-layer spinner-green-only">
+    <div class="circle-clipper left">
+      <div class="circle"></div>
+    </div><div class="gap-patch">
+      <div class="circle"></div>
+    </div><div class="circle-clipper right">
+      <div class="circle"></div>
     </div>
   </div>
-
-              <img onclick="viewUserImage('${msg.imageUrl}')" src="${msg.imageUrl}" class="download-img sumo${res.next}"/>
-              <a href="${msg.downloadLink}" download="${sumo + '-'+Date.now()}">
-                <i class="material-icons">file_download</i>
-                </a>
-              </div> 
-              </div>
-              ${msg.body}
+</div>
+            <img onclick="viewUserImage('${msg.imageUrl}')" src="${msg.imageUrl}" class="download-img sumo${res.next}"/>
+            <a href="${msg.downloadLink}" download>
+              <i class="material-icons">file_download</i>
+              </a>
+            </div> 
             </div>
+            ${msg.body}
+          </div>
+              <div class="time">
+                ${msg.time} &nbsp; 
                 <div class="time">
-                  ${msg.time} &nbsp; 
-                  <div class="time">
-                    </div> 
-                </div>
-              </span>
-      `);
-                } 
-                else {
-                  $('.chats').prepend(`               
-                <span class="u1 chat">${msg.body}
-                  <div class="time">${msg.time}</div>
-                </span>`)
-
-                }
+                  </div> 
+              </div>
+            </span>
+    `);
+              } 
+              else {
+                $('.chats').prepend(`               
+              <span class="u1 chat">${msg.body}
+                <div class="time">${msg.time}</div>
+              </span>`)
               }
-              })
             }
-            const images = document.querySelectorAll(`.sumo${res.next}`);
-    images.forEach(img=>{
-      img.addEventListener('load',()=>{
-        img.style.display = 'block';
-        const a = img.parentNode.children[2];
-        const loader = img.parentNode.children[0];
-        if(a){
-          a.style.display = 'flex';
-        }
-        loader.remove()
-      })
-    })
-            chatWindow.scrollTop = chatWindow.scrollHeight - height
-          }).catch(err=>{
-            $('.loader').css('display','none')
-          })
-
+            })
+          }
+          const images = document.querySelectorAll(`.sumo${res.next}`);
+  images.forEach(img=>{
+    img.addEventListener('load',()=>{
+      img.style.display = 'block';
+      const a = img.parentNode.children[2];
+      const loader = img.parentNode.children[0];
+      if(a){
+        a.style.display = 'flex';
       }
-     }
-    //load top 10 latest chats with user
-    const loadLatestChats = () =>{
-      $('.loader').css('display','flex')
-        fetch(`/retrievechat?page=${1}`, {
-          method: 'POST',
-          credentials:'include',
-          headers: {
-            "csrf-token": document.querySelector('input[name="_csrf"]').value,
-            "Content-Type": 'application/json'
-          },
-          body: JSON.stringify({
-            fid: document.querySelector('#friendId').value,
-            uid: document.querySelector('#uid').value,
-          })
-        })
-          .then(res => res.json())
-          .then(res => {
-            $('.loader').css('display','none')
-            page = res.next
-            if(res.code === 301){
-              page = -1
-              section.scrollTop = 0
-              return
-            }
-            else if (res.messages.length > 0) {
-              res.messages.forEach((msg, i) => {
-               if (msg.receiver.toString() === $('#friendId').val().toString()) {
-                 if(msg.imageId.length > 0){
-                   $('.chats').prepend(`
-        <span class="u2 chat mms-box">
-          <div class="mms">
-            <div class="mms-img">
-
-              <div class="preloader-wrapper small active msg-loader">
-    <div class="spinner-layer spinner-green-only">
-      <div class="circle-clipper left">
-        <div class="circle"></div>
-      </div><div class="gap-patch">
-        <div class="circle"></div>
-      </div><div class="circle-clipper right">
-        <div class="circle"></div>
-      </div>
-    </div>
-  </div>
-
-              <img src="${msg.imageUrl}" onclick="viewUserImage('${msg.imageUrl}')" class="download-img"/>
-              </div> 
-              </div>
-              ${msg.body}
-            </div>
-                <div class="time">
-                  ${msg.time} &nbsp; 
-                  <div class="time"><i class="material-icons">done_all</i></div> 
-                </div>
-              </span>
-      `);
-                 }else{
-                  $('.chats').prepend(`
-              <span class="u2 chat">${ msg.body}
-                <div class="time">
-                  ${ msg.time} &nbsp; 
-                  <div class="time"><i class="material-icons">done_all</i></div> 
-                </div>
-              </span>
-              `)}
-                }else{
-                  if(msg.imageId.length > 0){
-                  $('.chats').prepend(`
-        <span class="u1 chat mms-box">
-          <div class="mms">
-            <div class="mms-img">
-
-              <div class="preloader-wrapper small active msg-loader">
-    <div class="spinner-layer spinner-green-only">
-      <div class="circle-clipper left">
-        <div class="circle"></div>
-      </div><div class="gap-patch">
-        <div class="circle"></div>
-      </div><div class="circle-clipper right">
-        <div class="circle"></div>
-      </div>
-    </div>
-  </div>
-
-              <img src="${msg.imageUrl}" onclick="viewUserImage('${msg.imageUrl}')" class="download-img"/>
-              <a href="${msg.downloadLink}" download="${sumo + '-'+Date.now()}">
-                <i class="material-icons">file_download</i>
-                </a>
-              </div> 
-              </div>
-              ${msg.body}
-            </div>
-                <div class="time">
-                  ${msg.time} &nbsp; 
-                  <div class="time">
-                    </div> 
-                </div>
-              </span>
-      `);
-                } 
-                else {
-                  $('.chats').prepend(`               
-                <span class="u1 chat">${msg.body}
-                  <div class="time">${msg.time}</div>
-                </span>`)
-
-                }
-              }
-              })
-            }
-            const images = document.querySelectorAll('img');
-    images.forEach(img=>{
-      img.addEventListener('load',()=>{
-        img.style.display = 'block';
-        const loader = img.parentNode.children[0].style.display = 'none';
-        const a = img.parentNode.children[2];
-        if(a){
-          a.style.display = 'flex';
-        }
-      })
+      loader.remove()
     })
-            chatWindow.scrollTop = chatWindow.scrollHeight - height
-          }).catch(err=>{
-            $('.loader').css('display','none')
-          })
-
+  })
+          chatWindow.scrollTop = chatWindow.scrollHeight - height
+        }).catch(err=>{
+          $('.loader').css('display','none')
+        })
     }
-    </script>
+   }
+  //load top 10 latest chats with user
+  const loadLatestChats = () =>{
+    $('.loader').css('display','flex')
+      fetch(`/retrievechat?page=${1}`, {
+        method: 'POST',
+        credentials:'include',
+        headers: {
+          "csrf-token": document.querySelector('input[name="_csrf"]').value,
+          "Content-Type": 'application/json'
+        },
+        body: JSON.stringify({
+          fid: document.querySelector('#friendId').value,
+          uid: document.querySelector('#uid').value,
+        })
+      })
+        .then(res => res.json())
+        .then(res => {
+          $('.loader').css('display','none')
+          page = res.next
+          if(res.code === 301){
+            page = -1
+            section.scrollTop = 0
+            return
+          }
+          else if (res.messages.length > 0) {
+            res.messages.forEach((msg, i) => {
+             if (msg.receiver.toString() === $('#friendId').val().toString()) {
+               if(msg.imageId.length > 0){
+                 $('.chats').prepend(`
+      <span class="u2 chat mms-box">
+        <div class="mms">
+          <div class="mms-img">
+            <div class="preloader-wrapper small active msg-loader">
+  <div class="spinner-layer spinner-green-only">
+    <div class="circle-clipper left">
+      <div class="circle"></div>
+    </div><div class="gap-patch">
+      <div class="circle"></div>
+    </div><div class="circle-clipper right">
+      <div class="circle"></div>
+    </div>
+  </div>
+</div>
+            <img src="${msg.imageUrl}" onclick="viewUserImage('${msg.imageUrl}')" class="download-img"/>
+            </div> 
+            </div>
+            ${msg.body}
+          </div>
+              <div class="time">
+                ${msg.time} &nbsp; 
+                <div class="time"><i class="material-icons">done_all</i></div> 
+              </div>
+            </span>
+    `);
+               }else{
+                $('.chats').prepend(`
+            <span class="u2 chat">${ msg.body}
+              <div class="time">
+                ${ msg.time} &nbsp; 
+                <div class="time"><i class="material-icons">done_all</i></div> 
+              </div>
+            </span>
+            `)}
+              }else{
+                if(msg.imageId.length > 0){
+                $('.chats').prepend(`
+      <span class="u1 chat mms-box">
+        <div class="mms">
+          <div class="mms-img">
+            <div class="preloader-wrapper small active msg-loader">
+  <div class="spinner-layer spinner-green-only">
+    <div class="circle-clipper left">
+      <div class="circle"></div>
+    </div><div class="gap-patch">
+      <div class="circle"></div>
+    </div><div class="circle-clipper right">
+      <div class="circle"></div>
+    </div>
+  </div>
+</div>
+            <img src="${msg.imageUrl}" onclick="viewUserImage('${msg.imageUrl}')" class="download-img"/>
+            <a href="${msg.downloadLink}" download>
+              <i class="material-icons">file_download</i>
+              </a>
+            </div> 
+            </div>
+            ${msg.body}
+          </div>
+              <div class="time">
+                ${msg.time} &nbsp; 
+                <div class="time">
+                  </div> 
+              </div>
+            </span>
+    `);
+              } 
+              else {
+                $('.chats').prepend(`               
+              <span class="u1 chat">${msg.body}
+                <div class="time">${msg.time}</div>
+              </span>`)
+              }
+            }
+            })
+          }
+          const images = document.querySelectorAll('img');
+  images.forEach(img=>{
+    img.addEventListener('load',()=>{
+      img.style.display = 'block';
+      const loader = img.parentNode.children[0].style.display = 'none';
+      const a = img.parentNode.children[2];
+      if(a){
+        a.style.display = 'flex';
+      }
+    })
+  })
+          chatWindow.scrollTop = chatWindow.scrollHeight - height
+        }).catch(err=>{
+          $('.loader').css('display','none')
+        })
+  }
+  </script>

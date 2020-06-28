@@ -22,6 +22,7 @@
     </head>
 <body>
   <%- include('viewPic.ejs',{img:img}) %>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <section>
     <input type="hidden" value="<%= fid%>" id="friendId">
     <input type="hidden" value="<%= uid%>" id="uid">
@@ -87,7 +88,6 @@
   <script src="/js/materialize.min.js"></script>
   <script  src="https://cdnjs.cloudflare.com/ajax/libs/validator/13.1.0/validator.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script>
       const menu = document.querySelectorAll('.dropdown-trigger');
