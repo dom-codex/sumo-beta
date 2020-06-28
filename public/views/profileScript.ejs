@@ -355,8 +355,9 @@ $('.open-upload-modal').on('click',()=>{
 })
 const uploadFile = (file) => {
   showIndicator()
+  const regex = /\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/;
   $('.file-cont input').val('')
-if(!['image/jpeg','image/jpg', 'image/PNG','image/gif', 'image/png', 'image/svg+xml'].includes(file.type)) {
+if(!file.name.match(regex)) {
   $('.upload-error small').text('File must be an image.')
   $('.upload-error').css('display','block')
    $('.preloader-wrapper').css('display','none')
@@ -389,7 +390,6 @@ if(data.img){
    const img = new Image();
    img.src = data.img;
    img.classList.add('profilePic');
-   hideIndicator() ;
   window.location.reload();
   return
 }
