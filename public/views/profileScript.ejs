@@ -356,7 +356,7 @@ $('.open-upload-modal').on('click',()=>{
 const uploadFile = (file) => {
   showIndicator()
   $('.file-cont input').val('')
-if(!['image/jpeg', 'image/gif', 'image/png', 'image/svg+xml'].includes(file.type)) {
+if(!['image/jpeg','image/jpg', 'image/PNG','image/gif', 'image/png', 'image/svg+xml'].includes(file.type)) {
   $('.upload-error small').text('File must be an image.')
   $('.upload-error').css('display','block')
    $('.preloader-wrapper').css('display','none')
