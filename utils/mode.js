@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const Message = require("../models/messages");
 const detectors = require("../utils/detectors");
+const validator = require('validator');
 module.exports.anonymousUserMode = (req, res, next, io) => {
   let page = +req.query.page || 1;
   //reformat this line later
@@ -26,11 +27,11 @@ module.exports.anonymousUserMode = (req, res, next, io) => {
           //iterate through the ids and emit the online event
           //to the rooms of our individual chats
           chatids.forEach((element) => {
-            socket.broadcast.to(element).emit("online", {
+            /*socket.broadcast.to(element).emit("online", {
               name: me.anonymousName,
               fid: id,
               img: me.images.anonymous.thumbnail,
-            });
+            });*/
           });
           //socket.broadcast.emit("online", { name: '6anonymous', fid: id, })
           //  socket.emit("activeUsers", onlineUser);
@@ -68,6 +69,7 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
   let friend;
   let status;
   let me;
+  let thumbnail;
   //fetch chats on loading
   User.findById(req.session.user._id)
   .then(user => {
@@ -95,6 +97,7 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
             );
             friend = myf.name;
             status = onList ? myf.status : "removed";
+            thumbnail = myf.images.open.thumbnail;
             img = myf.images.open.link;
             return null;
           } else {
@@ -112,7 +115,8 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
                 req.session.user.anonyString.toString()
             );
             friend = myf.anonymousName;
-            img = myf.images.open.link;
+            img = myf.images.anonymous.link;
+            thumbnail = myf.images.anonymous.thumbnail;
             status = onList ? myf.anonymousStatus : "removed you";
           }
           //set up socket connection listener
@@ -151,6 +155,7 @@ module.exports.anonymousChatMode = (req, res, next, io) => {
             fid: id,
             uid: req.session.user.anonyString,
             img: img,
+            thumbnail:thumbnail,
             friend: friend,
             status: status,
             anonymous:me.isAnonymous ? true : false,
@@ -251,6 +256,7 @@ module.exports.normalChatMode = (req, res, next, io) => {
   let status;
   let anStatus;
   let user;
+  let thumbnail
   User.findById(req.session.user._id)
     .then((me) => {
       user = me;
@@ -277,6 +283,7 @@ module.exports.normalChatMode = (req, res, next, io) => {
             friend = myf.name;
             status = onList ? myf.status : "removed you";
             img = myf.images.open.link;
+            thumbnail = myf.images.open.thumbnail;
 
             return null;
           } else {
@@ -290,6 +297,7 @@ module.exports.normalChatMode = (req, res, next, io) => {
             friend = myf.anonymousName;
             status = onList ? myf.anonymousStatus : "removed you";
             img = myf.images.anonymous.link;
+            thumbnail = myf.images.anonymous.thumbnail;
           };
           io().once("connect", (socket) => {
             //online trigger
@@ -326,9 +334,154 @@ module.exports.normalChatMode = (req, res, next, io) => {
             friend: friend,
             status: status,
             img: img,
+            thumbnail:thumbnail,
             anStatus: anStatus,
             anonymous: req.session.user.isAnonymous ? true : false,
           });
         });
     });
 };
+
+module.exports.mainMenu = (req,res,next,io) =>{
+  let me
+  User.findOne({ _id: req.session.user._id })
+  .then((user) => {
+    me= user
+    //const feedRoom = io();
+      io().once("connect", (socket) => {
+        detectors.goOnline(me._id, socket);
+        socket.join(me._id);
+        //profile sockets
+       // detectors.goOnline(user._id, socket);
+        //listener for user who wants to change
+        //their display name
+        socket.on("newname", (data, fn) => {
+          const name = validator.escape(data)
+          if (!data) return;
+          User.updateOne(
+            { _id: req.session.user._id },
+            { $set: { name: name.substring(0,30) } }
+          )
+            .then((u) => {
+              req.session.user.name = name;
+              req.session.save(() => {
+                fn();
+              });
+            })
+            .catch((err) => {
+              throw err;
+            });
+        });
+        socket.on("newdesc", (data, fn) => {
+          const desc = validator.escape(data)
+          if (!data) return; //kill execution if no data
+          User.updateOne(
+            { _id: req.session.user._id },
+            { $set: { desc: desc.substring(0,200) } }
+          )
+            .then((u) => {
+              req.session.user.desc = desc;
+              req.session.save(() => {
+                fn();
+              });
+            })
+            .catch((err) => {
+              throw err;
+            });
+        });
+        socket.on("newanonymous", (data, fn) => {
+          if (!data) return; //kill execution
+          let a = validator.escape(data)
+          a = a.substring(0,30);
+          User.updateOne(
+            { _id: req.session.user._id },
+            { $set: { anonymousName: a } }
+          )
+            .then((u) => {
+              req.session.user.anonymousName = a;
+              req.session.save(() => {
+                fn();
+              });
+            })
+            .catch((err) => {
+              next(err);
+            });
+        });
+        //end of profile sockets
+        socket.on("disconnect", () => {
+          detectors.goOffline(me._id, socket);
+          socket.disconnect(true);
+        });
+      });
+      const error = req.flash("error");
+      const succes = req.flash("success");
+      let errors;
+      let success;
+      if (error.length > 0) {
+        errors = error[0];
+      }
+      if (succes.length > 0) {
+        success = succes[0];
+      }
+      req.toks ? res.cookie('sumo.toks', req.toks, { maxAge:1000*60*60, httpOnly: true }) :''
+      res.render("sumo-view", {
+        user: user,
+        total:me.chats.length + me.anonyChats.length,
+        name:user.name,
+        email: user.email,
+        feed: user.feeds,
+        view:me.images.open.link,
+        img: me.images.open.thumbnail,
+        sharelink: user.share,
+        uid: user._id,
+        chat: user.chatShare,
+        chats: [],
+        anonymous: user.isAnonymous ? true : false,
+        errors: errors ? errors : { field: "", message: "" },
+        success: success ? success : { message: "" },
+      });
+    })
+}
+module.exports.goAnoymousMode = (req,res,next,io)=>{
+  User.findOne({ _id: req.session.user._id })  
+  .then((me) => {
+
+    //set listener for a possible socket connection
+    io().once("connect", (socket) => {
+      socket.join(me.anonyString);
+      detectors.goOnline(me.anonyString, socket);
+      
+      socket.on("disconnect", () => {
+        socket.broadcast.emit("left", me._id);
+        detectors.goOffline(me.anonyString, socket);
+      });
+    });
+    const error = req.flash('error');
+    const succes = req.flash('success');
+    let errors;
+    let success;
+    if (error.length > 0) {
+      errors = error[0];
+    };
+    if (succes.length > 0) {
+      success = succes[0];
+    };
+    req.toks ? res.cookie('sumo.toks', req.toks, { maxAge:1000*60*60, httpOnly: true }) :'';
+    const inform = req.flash("inform");
+    res.render("sumo-view", {
+      user: me, 
+      total:me.anonyChats.length,         
+      errors: errors ? errors : { field: '', message: '' },
+      success: success ? success : { message: '' },
+      name: me.anonymousName,
+      chat: me.chatShare,
+      email: me.email,
+      sharelink: me.share,
+      img: me.images.anonymous.thumbnail,
+      view:me.images.anonymous.link,
+      uid: me.anonyString,
+      inform: inform.length > 0 ? inform[0] : { status: false, msg: "" },//filteredUsersList,
+      anonymous: me.isAnonymous ? true : false,
+    });
+  })
+}

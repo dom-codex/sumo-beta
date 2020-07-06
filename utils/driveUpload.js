@@ -106,24 +106,24 @@ drive.files.create({
             //https://lh3.googleusercontent.com/d/1_T1H42q6u3LosvPLYCRdMElLQgoSigxA=s220?authuser=0
             //https://drive.google.com/file/d/1SV2m3pejgUSr0xcMnfiWY2e9LxNa9af1/view?usp=sharing
             user.images.anonymous.link = `https://drive.google.com/uc?export=view&sz=w10h10&id=${file.data.id}`;
-            user.images.anonymous.thumbnail = `https://drive.google.com/uc?export=view&sz=w10h10&id=${file.data.id}`;
-            img = `https://drive.google.com/uc?export=view&sz=w10h10&id=${file.data.id}`;
-            //user.images.anonymous.link = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`;
-            //img = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`;
-           // user.images.anonymous.thumbnail = `https://drive.google.com/thumbnail?authuser=0&sz=w50h50&id=${file.data.id}`
+            //user.images.anonymous.thumbnail = `https://drive.google.com/uc?export=view&sz=w10h10&id=${file.data.id}`;
+            //img = `https://drive.google.com/uc?export=view&sz=w10h10&id=${file.data.id}`;
+            //user.images.anonymous.link = `https://drive.google.com/thumbnail?authuser=1&sz=w70h70&id=${file.data.id}`;
+            //img = `https://drive.google.com/thumbnail?authuser=1&sz=w70h70&id=${file.data.id}`;
+            //user.images.anonymous.thumbnail = `https://drive.google.com/thumbnail?authuser=0&sz=w50h50&id=${file.data.id}`
            //img = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
             return user.save();
         }else{
           //user.images.open.link = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`;
           //user.images.open.thumbnail = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`;
           user.images.open.id = file.data.id;
+           //first 2 user.images.open.link = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
             user.images.open.link = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
-            user.images.open.thumbnail = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
-             img = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
-           //user.images.open.thumbnail = file.data.thumbnailLink 
-           //user.images.open.link = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`
+             //img = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
+           //ser.images.open.thumbnail = file.data.thumbnailLink 
+          // user.images.open.link = `https://drive.google.com/thumbnail?authuser=1&sz=w70h70&id=${file.data.id}`
            //img = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`;
-          // user.images.open.thumbnail = `https://drive.google.com/thumbnail?authuser=0&sz=w50h50&id=${file.data.id}`
+           //user.images.open.thumbnail = `https://drive.google.com/thumbnail?authuser=1&sz=w50h50&id=${file.data.id}`
           //img = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`;
             return user.save(); 
         }
@@ -135,7 +135,7 @@ drive.files.create({
               return;
             }
           res.json({
-            img:img
+            success:true,
           });
             //file removed
           });
@@ -177,8 +177,8 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory,mime) =>{
               user.images.anonymous.id = file.data.id,
               //https://drive.google.com/file/d/1SV2m3pejgUSr0xcMnfiWY2e9LxNa9af1/view?usp=sharing
               user.images.anonymous.link = `https://drive.google.com/uc?export=view&id=${file.data.id}`;
-              user.images.anonymous.thumbnail = `https://drive.google.com/uc?export=view&id=${file.data.id}`;
-              img = `https://drive.google.com/uc?export=view&id=${file.data.id}`;
+            //  user.images.anonymous.thumbnail = `https://drive.google.com/uc?export=view&id=${file.data.id}`;
+              //img = `https://drive.google.com/uc?export=view&id=${file.data.id}`;
               //user.images.anonymous.link = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`
               //img = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`
               //user.images.anonymous.thumbnail = `https://drive.google.com/thumbnail?authuser=0&sz=w50h50&id=${file.data.id}`
@@ -189,8 +189,8 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory,mime) =>{
           }else{
               user.images.open.id = file.data.id;
               user.images.open.link = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
-              user.images.open.thumbnail = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
-               img = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
+              //user.images.open.thumbnail = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
+              // img = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
              //user.images.open.thumbnail = file.data.thumbnailLink 
              //user.images.open.link = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`
              //img = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`
@@ -208,7 +208,7 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory,mime) =>{
                   return;
                 }
               res.json({
-                img:img
+               success:true
               });
                 //file removed
               });
@@ -238,7 +238,7 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory,mime) =>{
     }
     AUTHENTICATION(listFiles);
    }
-   module.exports.uploadMMS = (req,res,filename,directory,mime) =>{
+   module.exports.uploadMMS = (req,res,filename,directory,mime,tid,thumbdirectory) =>{
     function listFiles(auth) {
       const drive = google.drive({version: 'v3', auth});
     var folderId = '1w4K937veC-noqc1Z3O0sYaO1kCnSwupM';
@@ -264,15 +264,123 @@ module.exports.driveUploadUpdate = (req,res,id,filename,directory,mime) =>{
                 const imgID =  file.data.id;
                 const downloadLink = file.data.webContentLink;
                 const link = `https://drive.google.com/uc?export=view&sz=w10h10&id=${file.data.id}`;
+                const thumbnail = `https://drive.google.com/uc?export=view&sz=w10h10&id=${tid}`;
                 fs.unlink(directory, (err) => {
                 if (err) {
                   console.error(err);
                   return
                 }
-                require('../helpers/uploadMms').uploadMMS(req,res,imgID,link,downloadLink);
-              });
+                fs.unlink(thumbdirectory,(err)=>{
+                require('../helpers/uploadMms').uploadMMS(req,res,imgID,link,downloadLink,tid,thumbnail);
+              })
+            });
+      };
+    });
+    };
+    AUTHENTICATION(listFiles);
+  };    
+  module.exports.uploadMMSThumbnail = (req,res,filename,directory,mime) =>{
+    function listFiles(auth) {
+      const drive = google.drive({version: 'v3', auth});
+    var folderId = '1w4K937veC-noqc1Z3O0sYaO1kCnSwupM';
+    var fileMetadata = {
+      'name': filename,
+      parents: [folderId]
+    };
+    var media = {
+      mimeType: mime,
+      body: fs.createReadStream(directory)
+    };
+    drive.files.create({
+      resource: fileMetadata,
+      media: media,
+      fields: '*'
+    }, function (err, file) {
+      if (err) {
+        // Handle error
+        console.error(err);
+      } else {
+        console.log('t uploaded');
+      //console.log('File is : ', file);
+                const imgID =  file.data.id;
+                //const downloadLink = file.data.webContentLink;
+                //const link = `https://drive.google.com/uc?export=view&sz=w10h10&id=${file.data.id}`;
+                require('../utils/driveUpload').uploadMMS(req,res,req.file.filename,req.file.path,req.file.mimeType,imgID,directory);
+                //require('../helpers/uploadMms').uploadMMS(req,res,imgID,link,downloadLink);
       };
     });
     };
     AUTHENTICATION(listFiles);
   }; 
+//uploader for cropped photo
+module.exports.uploadCroppedPhoto = (req,res,filename,mime) =>{
+  function listFiles(auth) {
+    const drive = google.drive({version: 'v3', auth});
+  var folderId = '1E_lDURXuTgOWhtrrOxNqNY7-qGv1_Gdc';
+  var fileMetadata = {
+    'name': filename,
+    parents: [folderId]
+  };
+  var media = {
+    mimeType: mime,
+    body: fs.createReadStream(req.croppedUrl)
+  };
+  drive.files.create({
+    resource: fileMetadata,
+    media: media,
+    fields: '*'
+  }, function (err, file) {
+    if (err) {
+      // Handle error
+      console.error(err);
+    } else {
+      let img;
+      console.log('cropped uploaded');
+      //console.log('File is : ', file);
+      User.findById(req.session.user._id)
+      .select('images isAnonymous')
+      .then(user=>{
+          if(!user) throw new Error('no user')
+          else if(user.isAnonymous){
+              //user.images.anonymous.link = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`;
+             // user.images.anonymous.thumbnail = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
+              user.images.anonymous.thumbId = file.data.id;
+              //https://lh3.googleusercontent.com/d/1_T1H42q6u3LosvPLYCRdMElLQgoSigxA=s220?authuser=0
+              //https://drive.google.com/file/d/1SV2m3pejgUSr0xcMnfiWY2e9LxNa9af1/view?usp=sharing
+              //user.images.anonymous.link = `https://drive.google.com/uc?export=view&sz=w10h10&id=${file.data.id}`;
+              user.images.anonymous.thumbnail = `https://drive.google.com/uc?export=view&sz=w10h10&id=${file.data.id}`;
+              //img = `https://drive.google.com/uc?export=view&sz=w10h10&id=${file.data.id}`;
+              //user.images.anonymous.link = `https://drive.google.com/thumbnail?authuser=1&sz=w70h70&id=${file.data.id}`;
+              //img = `https://drive.google.com/thumbnail?authuser=1&sz=w70h70&id=${file.data.id}`;
+              //user.images.anonymous.thumbnail = `https://drive.google.com/thumbnail?authuser=0&sz=w50h50&id=${file.data.id}`
+             //img = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`
+              return user.save();
+          }else{
+           // user.images.open.link = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`;
+            //user.images.open.thumbnail = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`;
+            user.images.open.thumbId = file.data.id;
+             //first 2 user.images.open.link = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
+              user.images.open.thumbnail = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
+               //img = ` https://drive.google.com/uc?export=view&id=${file.data.id}`;
+             //ser.images.open.thumbnail = file.data.thumbnailLink 
+            // user.images.open.link = `https://drive.google.com/thumbnail?authuser=1&sz=w70h70&id=${file.data.id}`
+             //img = `https://drive.google.com/thumbnail?authuser=0&sz=w70h70&id=${file.data.id}`;
+             //user.images.open.thumbnail = `https://drive.google.com/thumbnail?authuser=1&sz=w50h50&id=${file.data.id}`
+            //img = `https://lh3.googleusercontent.com/d/${file.data.id}=s220?authuser=0`;
+              return user.save(); 
+          }
+      })
+      .then(user=>{
+          fs.unlink(req.croppedUrl, (err) => {
+              if (err) {
+                console.error(err);
+                return;
+              }
+              //file removed
+            });
+      });
+    };
+  });
+  };
+  AUTHENTICATION(listFiles);
+  }

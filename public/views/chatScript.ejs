@@ -1,17 +1,42 @@
 <script>
-  const viewImage = () =>{
+     let text = '';
+   let count = 1;
+  const viewImage = (src) =>{
+    const img  = document.querySelector('img.user');
+    if(img){
+      
+      $('.view-image-loading').css('display','none');
+       $('img.user').css('display','block');
+       $('.viewImage-cont').css('display','block');
+       return
+    }
   $('.viewImage-cont').css('display','block');
+  $('.view-image').append(`<img class="user" src="${src}" alt="a user"/>`);
+    document.querySelector('img.user').addEventListener('load',()=>{
+       
+      $('.view-image-loading').css('display','none');
+       $('img.user').css('display','block');
+    })
 };
- const viewUserImage = (img) =>{
+ const viewUserImage = (img,i) =>{
   $('.viewImage-cont').css('display','block');
   $('img.user').css('display','none');
   $('img.pal').css('display','block');
-  $('.view-image').append(`
+  /*$('.view-image').append(`
   <img class="pal" src="${img}" alt="a user"/>
-  `)
+  `) */
+  $('.view-image').append(`
+    <img class="pal s${i}" src="${img}" alt="a user"/>
+    `);
+    $('img.pal').css('display','block');
+    document.querySelector(`img.pal`).addEventListener('load',()=>{
+      $('.view-image-loading').css('display','none');
+      $(`img.pal`).css('display','block')
+    })
 };
  $('button.pal-close').on('click',()=>{
   $('.viewImage-cont').css('display','none');
+  $('.view-image-loading').css('display','flex');
   $('img.user').css('display','block');
   $('img.pal').remove();
  })
@@ -95,7 +120,7 @@ clearTimeout(timer)
     </div>
   </div>
 </div>
-            <img src="${data.img}" class="download-img"/>
+            <img src="${data.thumbnail}" class="download-img" onclick="viewUserImage('${data.img}','${Date.now()}')"/>
             <a href="${data.download}" download>
               <i class="material-icons">file_download</i></a>
             </div> 
@@ -149,6 +174,9 @@ clearTimeout(timer)
       /*socket.emit('chat',{message:message,fid:cid,time:time},()=>{
       });*/
       //use fetch api to send message
+      $('#msg').css('height','45px')
+      $('#msg').css('overflow','hidden')
+
       if(file){
         $('input[type="file"]').val('')
         const tag = Date.now();
@@ -163,7 +191,7 @@ clearTimeout(timer)
       <span class="u2 chat mms-box">
         <div class="mms">
           <div class="mms-img blob">
-            <img src="${URL.createObjectURL(file)}" />
+            <img src="${URL.createObjectURL(file)}" onclick="viewUserImage('${URL.createObjectURL(file)}',${Date.now()})"/>
             <button
             class="reload ${tag}"> try again 
             <i class="material-icons">cached</i> </button>
@@ -191,12 +219,16 @@ clearTimeout(timer)
       sendMms(fd,tag);
     })
     input.value = "";
+    count = 1;
+    text = ' ';
     sendImageApi(fd,tag);
       }else{
         if(!input.value || input.value == " ") {
           return;
       }
       input.value =''
+      text = ' ';
+      count = 1;
         msgWindow.append(`
       <span class="u2 chat">${validator.escape(message)}
               <div class="time">
@@ -241,8 +273,28 @@ clearTimeout(timer)
      $('.emoticons').css('display','block')
      chatWindow.scrollTop = chatWindow.scrollHeight
    })
+   //text area focus event
    $('#msg').on('focus',()=>{
-     $('.emoticons').css('display','none')
+      inputWindow.scrollTop = inputWindow.scrollHeight
+      emocont.classList.remove('showEmoji')
+     $('.input').css('height','30vh');
+      $('.chats').css('height','calc(70vh - 100px)');
+   })
+   $('#msg').on('input',(e)=>{
+    chatWindow.scrollTop = chatWindow.scrollHeight
+    //inputWindow.scrollTop = inputWindow.scrollHeight
+    const h = $('#msg').height();
+     text = e.currentTarget.value;
+     if(h >= 60 && h < 80){
+      inputWindow.scrollTop = inputWindow.scrollHeight
+       $('#msg').css('overflow-y','scroll')
+     }
+     if(text.length === count * 50){
+      if(h < 80){
+     $('#msg').height(h + 20);
+     count++ 
+     }
+     }
    })
    //typing indicator
    const fid = $('#friendId').val()
@@ -261,11 +313,13 @@ clearTimeout(timer)
      }
      $('#status').css('display','none')
      $('#typing').css('display','block')
+     chatWindow.scrollTop = chatWindow.scrollHeight
    })    
     socket.on('stoppedTyping',()=>{
      $('#typingIndicator').remove()
      $('#status').css('display','block')
      $('#typing').css('display','none')
+     chatWindow.scrollTop = chatWindow.scrollHeight
    })
    //chat loader on scroll
    const Scroll = () => {
@@ -313,7 +367,7 @@ clearTimeout(timer)
     </div>
   </div>
 </div>
-            <img onclick="viewUserImage('${msg.imageUrl}')" src="${msg.imageUrl}" class="download-img sumo${res.next}"/>
+            <img onclick="viewUserImage('${msg.imageUrl}','${Date.now()}')" src="${msg.thumbnail}" class="download-img sumo${res.next}"/>
             </div> 
             </div>
             ${msg.body}
@@ -350,7 +404,7 @@ clearTimeout(timer)
     </div>
   </div>
 </div>
-            <img onclick="viewUserImage('${msg.imageUrl}')" src="${msg.imageUrl}" class="download-img sumo${res.next}"/>
+            <img onclick="viewUserImage('${msg.imageUrl}','${Date.now()}')" src="${msg.thumbnail}" class="download-img sumo${res.next}"/>
             <a href="${msg.downloadLink}" download>
               <i class="material-icons">file_download</i>
               </a>
@@ -436,7 +490,7 @@ clearTimeout(timer)
     </div>
   </div>
 </div>
-            <img src="${msg.imageUrl}" onclick="viewUserImage('${msg.imageUrl}')" class="download-img"/>
+            <img src="${msg.thumbnail}" onclick="viewUserImage('${msg.imageUrl}','${Date.now()}')" class="download-img"/>
             </div> 
             </div>
             ${msg.body}
@@ -473,7 +527,7 @@ clearTimeout(timer)
     </div>
   </div>
 </div>
-            <img src="${msg.imageUrl}" onclick="viewUserImage('${msg.imageUrl}')" class="download-img"/>
+            <img src="${msg.thumbnail}" onclick="viewUserImage('${msg.imageUrl}','${Date.now()}')" class="download-img"/>
             <a href="${msg.downloadLink}" download>
               <i class="material-icons">file_download</i>
               </a>

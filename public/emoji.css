@@ -5,7 +5,7 @@
   box-sizing: border-box;
 }
 .emoticons{
-  display:none;
+  display:none!important;
 }
 .link-active{
   background-color:rgba(0,0,0,.05);
@@ -64,7 +64,7 @@
   overflow-y: scroll;
 }*/
 .emoji-footer{
-  background-color:rgb(118, 69, 167);
+  background-color:#1a237e;
   padding:12px;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;

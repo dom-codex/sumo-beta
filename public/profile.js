@@ -12,8 +12,8 @@ const emailDone = document.querySelector('#emaildone');
 const descCancel = document.querySelector('#desccancel');
 const descDone = document.querySelector('#descdone');
 
-const chatCancel = document.querySelector('#chatcancel');
-const chatDone = document.querySelector('#chatdone');
+//const chatCancel = document.querySelector('#chatcancel');
+//const chatDone = document.querySelector('#chatdone');
 
 const anonymousCancel = document.querySelector('#anonymouscancel');
 const anonymousDone = document.querySelector('#anonymousdone');
@@ -44,13 +44,13 @@ phoneCancel.addEventListener('click',()=>{
     phoneCancel.style.display="none";
     phoneDone.style.display="none";
 })
-chatCancel.addEventListener('click',()=>{
+/*chatCancel.addEventListener('click',()=>{
     $('#declined').css('display','none')
    document.querySelector('#chat').disabled=true;
    document.querySelector('#chatedit').style.display='inline-block'
     chatCancel.style.display="none";
     chatDone.style.display="none";
-})
+})*/
 anonymousCancel.addEventListener('click',()=>{
    document.querySelector('#anonymous').disabled=true;
    document.querySelector('#anonymousedit').style.display='inline-block'

@@ -39,7 +39,7 @@ let timer;
          }).catch(err=>{
 console.log(err);
          });
-        },2000); 
+        },12000); 
  };
  module.exports.goOnline = (id,socket)=>{
      clearTimeout(timer);

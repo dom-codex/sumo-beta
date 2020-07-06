@@ -10,9 +10,10 @@ module.exports = (req, res, next) => {
     req.session.user !== null &&
     req.session.user !== undefined &&
     req.session.isVerified &&
-    req.session.isauth
+    req.session.isauth &&
+    !req.session.user.isDeleted
   ) {
-    return res.redirect(`/userchannel/${req.session.user._id}`);
+    return res.redirect(`/sumouser?su=${req.session.user._id}`);
   } else if (id !== undefined && id.length > 0) {
     //validate id
     try{
@@ -39,7 +40,7 @@ module.exports = (req, res, next) => {
         req.session.user = user;
         req.session.isVerified = user.isVerified;
         req.session.save(() => {
-          return res.redirect(`/userchannel/${user._id}`);
+          return res.redirect(`/sumouser?su=${user._id}`);
         });
       })
       .catch((e) => {});

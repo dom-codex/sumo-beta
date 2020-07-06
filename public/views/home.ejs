@@ -6,9 +6,9 @@
     <title>Home</title>
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileColor" content="1a237e">
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#1a237e">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet"/>
     <link href="/css/materialize.min.css" rel="stylesheet"/>
@@ -16,6 +16,12 @@
     <link href="./newhome.css" type="text/css" rel="stylesheet"/>
 </head>
 <body id="body">
+  <%- include('modal.ejs',{
+    title:'Contact Form',
+    link:'/suggest',
+    type:'suggestion',
+    csrf:csrfToken
+  })%>
   <script src="/js/jquery-3.4.1.min.js"></script>
     <p id="notifier" class="<%=save.length>0?'save':''%>">Sent successfully</p>
     <% if(save.length >0) {%>
@@ -41,14 +47,47 @@
     </ul>
   </div>
 <main>
+  <section class="showcase">
+    <header>
+      <div class="nav">
+        <div class="nav1">
+          <div class="app-logo-cont">
+            <img src="/fb.jpg" alt="app logo"/>
+          </div>
+        </div>
+        <div class="nav2">
+          <ul>
+            <li class="home">Home</li>
+            <li class="about"><a href="/about">About</a></li>
+            <li class="contact modal-trigger" data-target="modal2">Contact</li>
+          </ul>
+        </div>
+        <div class="nav3"><a href="/getstarted?login=true">login</a>
+        </div>
+        <div class="dropdown-nav">
+          <a id="showdd" class='dropdown-trigger' href='#' data-target='dropdown1'><i class="material-icons">menu</i></a>
+          <ul id='dropdown1' class='dropdown-content'>
+            <li><a href="/about">About</a></li>
+            <li class="divider" tabindex="-1"></li>
+            <li><a href="#" class="modal-trigger" data-target="modal2">Contact</a></li>
+            <li class="divider" tabindex="-1"></li>
+            <li><a href="/getstarted?login=true">Login</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    <div class="jumbo">
+      <div class="app-name-desc">
+        <h1>Sumo messenger</h1>
+        <p class="app-desc">An interactive application which let's you share your views with others with full control of your visibility to others </p>
+      </div>
+      <div class="getstarted-btn">
+        <a class="getstarted" href="/getstarted">Get Started</a>
+      </div>
+      </div>
+    </section>
     <div class="background">
-      <%- include('modal.ejs',{
-        title:'Contact Form',
-        link:'/suggest',
-        type:'suggestion',
-        csrf:csrfToken
-      })%>
-      <header>
+      <!--<header>
         <nav>
           <a id="showdd" class='dropdown-trigger btn' href='#' data-target='dropdown1'>
             <i class="material-icons">dehaze</i></a>
@@ -75,13 +114,13 @@
             <li><a href="/getstarted?login=true">LOGIN</a></li>
           </ul>
         </nav>
-      </header>
+      </header> 
       <section class="theme">
         <div class="showcase">
           <h2>SUMO MESSENGER!!!</h2>
            <div class="container"> 
   
-  <!-- Full-width images with caption text -->
+  Full-width images with caption text
   <div class="image-sliderfade fade">  
     <div class="text">
       <p>Receive anonymous compliments </p>
@@ -103,7 +142,7 @@
 </div> 
 <br> 
   
-<!-- The dots/circles -->
+ The dots/circles 
 <div style="text-align:center"> 
   <span class="dot"></span>  
   <span class="dot"></span>  
@@ -114,9 +153,9 @@
    <div class="join"><a href="/getstarted">JOIN NOW</a></div>
       </section>
       <div id="notifier" class="<%=save.length > 0? 'save': '' %>"><p>sent successfully!!!</p></div>
-     <!-- <div id="sub-cont"><div class="sub"><button data-target="modal2" class="btn modal-trigger"><i class="material-icons">comment</i></button></div>-->
+      <div id="sub-cont"><div class="sub"><button data-target="modal2" class="btn modal-trigger"><i class="material-icons">comment</i></button></div>
   </div>
-    </div>
+    </div> -->
     <section class="screenshots">
       <div class="screenshot-title"><p>App screenshots</p></div>
       <div class="carousel">
@@ -127,7 +166,7 @@
         <div class="carousel-item" ><img src="/sumo5.png"></div>
         <div class="carousel-item"><img src="/sumo6.png"></div>
       </div>
-      <div style="text-align: center;margin-top: 14px;">slide on image</div>
+      <div style="text-align: center;margin-top: 14px;color:#fff">slide on image</div>
     </section>
     <section class="features" id="features">
       <div class="features-title"><h4>Features</h4></div>
@@ -177,7 +216,7 @@
           </p>
           </div>
         </div>      
-          <div class="feature-tile">
+          <div class="feature-tile last">
           <div class="feature-circle z-depth-1">
             <i class="material-icons">terrain</i>
           </div>

@@ -4,7 +4,7 @@
 }
 body.body{
     min-width:320px;
-    background-color: rebeccapurple;
+    background-color:orange;
 }
 h1,h3{
     text-align: center;
@@ -14,7 +14,7 @@ h1,h3{
     padding-left:5px;
 }
 nav{
-    background-color: indigo;
+    background-color: #1a237e;
     display:flex;
     justify-content: space-between;
     align-items: center;

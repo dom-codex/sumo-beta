@@ -1,16 +1,4 @@
 <script>
-  //script for side nav
-  document.addEventListener("DOMContentLoaded", function () {
-    const ele = document.querySelectorAll(".sidenav");
-    const sidenav = M.Sidenav.init(ele);
-    const elems = document.querySelectorAll(".dropdown-trigger");
-    const dropdown = M.Dropdown.init(elems);
-    const instance = M.Sidenav.getInstance($(".sidenav"));
-    instance.open();
-  });
-  const feedList = document.querySelector(".feeds");
-  feedList.scrollTop = feedList.scrollHeight;
-
   const socket = io();
   let timer;
   socket.on("disconnect", (reason) => {
@@ -26,84 +14,49 @@
   });
   //event for status
   socket.on("offline", (data) => {
-    const cids = $("body .sidenav").find(".chatids");
+    const cids = $("body").find(".chatids");
     for (let i = 0; i < cids.length; i++) {
       let cid = cids[i];
       if (cid.value.toString() === data.chat.toString()) {
-        const indicator = cid.parentNode.children[2]
-       /* const indicator2 =
-          cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
-            .childNodes[3];*/
-        indicator.style.backgroundColor = "grey";
-      //  indicator2.style.backgroundColor = "grey";
+        const indicator = cid.parentNode.children[1].children[0].children[0];
+       indicator.style.backgroundColor = "grey";
       }
     }
   });
 
   socket.on("active", (data) => {
-    const cids = $("body .sidenav").find(".chatids");
+    const cids = $("body").find(".chatids");
     for (let i = 0; i < cids.length; i++) {
       let cid = cids[i];
       if (cid.value.toString() === data.chat.toString()) {
-        const indicator = cid.parentNode.children[2]
-        /*const indicator2 =
-          cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
-            .childNodes[3];*/
-        indicator.style.backgroundColor = "rebeccapurple";
-       // indicator2.style.backgroundColor = "rebeccapurple";
-      }
-    }
-  });
-  //detector for  large screen
-  socket.on("offline", (data) => {
-    const cids = $(".window").find(".chatids");
-    for (let i = 0; i < cids.length; i++) {
-      let cid = cids[i];
-      if (cid.value.toString() === data.chat.toString()) {
-        const indicator = cid.parentNode.children[2]
-
-        /*const indicator2 =
-          cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
-            .childNodes[3];*/
-        indicator.style.backgroundColor = "grey";
-       // indicator2.style.backgroundColor = "grey";
-      }
-    }
-  });
-
-  socket.on("active", (data) => {
-    const cids = $(".window").find(".chatids");
-    for (let i = 0; i < cids.length; i++) {
-      let cid = cids[i];
-      if (cid.value.toString() === data.chat.toString()) {
-        const indicator = cid.parentNode.children[2]
-       /* const indicator2 =
-          cid.parentNode.parentNode.childNodes[1].childNodes[3].childNodes[1]
-            .childNodes[3];*/
-        indicator.style.backgroundColor = "rebeccapurple";
-       // indicator2.style.backgroundColor = "rebeccapurple";
+        const indicator = cid.parentNode.children[1].children[0].children[0];
+       indicator.style.backgroundColor = "indigo";
       }
     }
   });
   //end of event for status
   socket.on("connect", (socketio) => {
     const uid = document.querySelector("#uid");
-    socket.emit("identify", uid.value);
+    //socket.emit("identify", uid.value);
   });
 
   socket.on("notification", (data) => {
-    $(".feeds").append(` 
-     <div class="feedcard Cards">
-        <div><p>Message:</p></div>
-        <div class="cardb">
-        <p>${ data.message}</p>
-        </div>
-        <div class="cardf"><small>${parseInt(data.length)}</small> 
-          <i>sent: ${( data.time)}</i></div>
-      </div> `);
-      $('.notfound.feed').css('display','none')
+    $('.feeds-window').append(
+            `
+            <div class="feedcard z-depth-1">
+                  <div class="feed-title">
+                    <p>Message:</p>
+                  </div>
+                  <div class="card-body">
+                    <p>${data.message}</p>
+                  </div>
+                  <div class="card-footer"><small>${data.length}</small>
+                     <i>sent: ${data.time}</i></div>
+                </div> `)
+      $('.feeds-window .notfound').remove();
+      showToast('new anonymous mesage')
     feedWindow.scrollTop = feedWindow.scrollHeight;
-    $(".newfeedwindow").css("display", "none");
+   // $(".newfeedwindow").css("display", "none");
   });
   // tell others you are online
   //const id = document.querySelector('#uid').value;
@@ -117,11 +70,20 @@
       $("#largeErr").css("display", "none");
     }, 2600);
   });
+  const showToast = (message)=>{
+    let id;
+          $('.b-toasts p').text(message);
+          $('.b-toasts').css('display','block');
+          id = setTimeout(()=>{
+            $('.b-toasts').css('display','none');
+            clearTimeout(id)
+          },3000)
+  }
   //listener for added chat
   socket.on("online", (data) => {
-    const chatTiles = document.querySelector('.userChats').children
+    const chatTiles = document.querySelector('.chats').children
     if (chatTiles.length >= 10) {
-      document.querySelector('.userChats').removeChild(chatTiles[chatTiles.length - 1])
+      document.querySelector('.chats').removeChild(chatTiles[chatTiles.length - 1])
     }
     //to notify other connected sockets
     const uid = document.querySelector("#uid").value;
@@ -131,40 +93,41 @@
       chatsids.push(inputs[i].value);
     }
     const isRendered = chatsids.some((id) => id === data.fid);
-    if (!isRendered || uid == data.fid) {
-      $('.notfound.chat').remove();
-      $(".errdisplay").css("display", "none");
-    $("#largeErr").css("display", "none");
-      $(".userChats").prepend(` 
-      <li class="collection-item avatar Cards" style="background-color:${data.isNew ? 'white' : '' }">
-    <input class="chatids" type="hidden" value="${data.fid}"/>
-    <img src="${data.img}" alt="" class="circle">
-    <div class="indicator" style="background-color:${ data.status === 'online' ||data.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }"></div>
-    <div>
-    <span class="title"> 
-     <a href="/chat/${data.fid}" >
-      ${ data.name}</a>
-
-    </span>
-    <p>
-    <small class="brief">
-      say hi to ${ data.name}</small>
-    </p></div>
-    <div class=" secondary-content">
-        <small>
-        </small>
-    </div>
-  </li>
- `);
-      $(".newchatwindow").css("display", "none");
+    if (!isRendered) {
+      $('.chats .notfound').remove()
+      $('.chats').prepend(`
+      <div class="chat-tile" style="background-color:${data.isNew ? 'white' : 'transparent' }">
+        <input class="chatids" type="hidden"  value="${data.fid}"/>
+              <div class="chat-details">
+                <div class="chat-img">
+                  <div class="indicators" style="background-color:${ data.status === 'online' ||data.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }"></div>
+                  <img src="${data.img}" alt="${data.name}"/>
+                </div>
+                <div class="chat-main">
+                  <a class="chat-name" href="/chat/${data.fid}" >
+                   ${( data.name)} </a>
+                  <p class="chat-desc">
+                    say hi to ${ data.name}
+                    </p>
+                </div>
+              </div>
+              <div class="chat-controls">
+                <small class="time"></small>
+              </div>
+            </div>
+      `)
+      const nDm = $('.dm.banner').text()
+      const newDm = parseInt(nDm) + 1;
+      $('.dm.banner').text(newDm);
+      showToast('new chat!!!')
     } else if (isRendered) {
-      const cids = $(".userChats").find(".chatids");
+      const cids = $(".chats").find(".chatids");
       for (let i = 0; i < cids.length; i++) {
         if (cids[i].value.toString() === data.fid.toString()) {
-          const small = cids[i].parentNode.childNodes[5];
-          const messageIdicator = cids[i].parentNode.children[1].children[1]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
-          cids[i].parentNode.children[1].children[0].children[0].style.backgroundColor = 'rebeccapurple'//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
-          cids[i].parentNode.children[1].children[0].children[0].style.display = 'block'//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+          //const small = cids[i].parentNode.children;
+          //const messageIdicator = cids[i].parentNode.children[1].children[1]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+          //cids[i].parentNode.children[1].children[0].children[0].style.backgroundColor = 'rebeccapurple'//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+          //cids[i].parentNode.children[1].children[0].children[0].style.display = 'block'//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
         }
       }
     }
@@ -177,14 +140,36 @@
       if (user._id == uid.value) {
         return;
       }
-      $(".userChats").append(`  
+      $('.chats').append(`
+      <div class="chat-tile" style="background-color:${user.isNew ? 'white' : 'transparent' }">
+        <input class="chatids" type="hidden"  value="${user._id}"/>
+              <div class="chat-details">
+                <div class="chat-img">
+                  <div class="indicators"style="background-color:${ user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey'}"></div>
+                  <img src="${user.img}" alt="${user.name}"/>
+                </div>
+                <div class="chat-main">
+                  <a class="chat-name" href="/chat/${user._id}" >
+                   ${(user.name)} </a>
+                  <p class="chat-desc">
+                    say hi to ${user.name}
+                    </p>
+                </div>
+              </div>
+              <div class="chat-controls">
+                <small class="time"></small>
+              </div>
+            </div>
+      `)
+     /* $(".userChats").append(`  
       
       <li class="collection-item avatar Cards" style="background-color:${ user.isNew ? 'white' : '' }">
     <input class="chatids" type="hidden" value="${user._id}"/>
     <img src="${user.img}" alt="" class="circle">
     <div class="indicator" style="background-color:${ user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey'}"></div>
     <div>
-    <span class="title">    <a href="/chat/${user._id}" >
+    <span class="title">   
+       <a href="/chat/${user._id}" >
         ${user.name} </a>
 
     </span>
@@ -198,21 +183,21 @@
         </small>
     </div>
   </li>
-  `);
-      $(".newchatwindow").css("display", "none");
+  `);*/
     });
   });
+
   //gets start chat button
   const joinHandler = (fieldtoselect) => {
     //obtain the inputed chat string
     const chatString = ( $(fieldtoselect).val());
     const token = $('input[name="_csrf"]').val();
     if (!chatString || chatString === "") {
-      $(".errdisplay").text("field cannot be empty").css("display", "block");
-      $("#largeErr").text("field cannot be empty").css("display", "block");
+    //  $(".errdisplay").text("field cannot be empty").css("display", "block");
+    //  $("#largeErr").text("field cannot be empty").css("display", "block");
       return;
     }
-    $(".spinner-cont").css("display", "flex");
+    showIndicator();
     fetch("/addchat", {
       method: "POST",
       headers: {
@@ -225,53 +210,50 @@
     })
       .then((res) => res.json())
       .then((res) => {
-        $(".spinner-cont").css("display", "none");
+      hideIndicator()
         if (res.code === 400) {
-          $(".errdisplay").text(res.message).css("display", "block");
-          $("#largeErr").text(res.message).css("display", "block");
+          showToast(res.message);
+          $(fieldtoselect).val('')
         } else if (res.code === 200) {
-          $(fieldtoselect).val("");
-          $(".errdisplay").text(res.message).css("display", "block").css('color','indigo');
-          $("#largeErr").text(res.message).css("display", "block").css('color','indigo');
-         // $(".new").css("display", "none");
+          showToast('request sent successfully');
+          $(fieldtoselect).val('')
         }
       });
   };
-  const chatBtn = $("#startchat");
-  const largeChatBtn = $("#startchatlarge");
-  chatBtn.on("click", () => joinHandler("#chatString"));
-  largeChatBtn.on("click", () => joinHandler("#chatStringLarge"));
-
   socket.on("disconnect", () => {
     socket.disconnect(true);
   });
   socket.on("notify", (data) => {
     //data should contain the last message in the list
     //data should also contain the no of new messages
-    const cids = $("#userChatsSmall").find(".chatids");
+    let inList = false
+    const cids = $(".chats").find(".chatids");
     for (let i = 0; i < cids.length; i++) {
       let cid = cids[i];
       if (cid.value.toString() === data.id.toString()) {
-        const time = cid.parentNode.children[4].children[0];
-        const messageIdicator = cid.parentNode.children[3].children[1].children[0]//cid.parentNode.childNodes[3].childNodes[3].childNodes[0];
+        inList = true;
+        const tile = cid.parentNode.children;
+        const messageIdicator = tile[1].children[1].children[1];
+        const time = tile[2].children[0];
         messageIdicator.textContent = ""; 
-        data.withImage?messageIdicator.innerHTML =`<span class="withImage" style="display:flex;align-items:center;"><i class="material-icons thumbnail">insert_photos</i>${messageIdicator.textContent = data.msg.length > 25 ? data.msg.substring(0, 12) + '...' : data.msg}</span>` : messageIdicator.textContent = data.msg.length > 25 ? data.msg.substring(0, 25) + '...' : data.msg;
+        data.withImage?messageIdicator.innerHTML =`<span class="withImage" style="display:flex;align-items:center;"><i class="material-icons thumbnail">insert_photos</i>${messageIdicator.textContent =  data.msg}</span>` : 
+        messageIdicator.textContent = data.msg;
         time.textContent = " ";
         time.textContent = (data.time);
         //move the notification to the top
-        const parent = $("#userChatsSmall");
+        const parent = $(".chats");
         //add to the top  of the list
-        cid.parentNode.style.backgroundColor = "#fff";
         const content = cid.parentNode;
         cid.parentNode.remove();
         parent.prepend(content); 
+        showToast('new message!!!')
         break
       } else {
         continue;
       }
     }
     //for large chat window
-    const ids = $("#userChatsLarge").find(".chatids");
+    /*const ids = $(".chats").find(".chatids");
     for (let i = 0; i < ids.length; i++) {
       let cid = ids[i];
       if (cid.value.toString() === data.id.toString()) {
@@ -294,66 +276,35 @@
       } else {
         continue;
       }
-    }
-    $("#userChatsSmall").prepend(`    
-    <li class="collection-item avatar Cards" style=" background-color:${ data.isNew ? 'white' : '' }">
-    <input class="chatids" type="hidden"  value="${data.id}"/>
-    <img src="${data.img}" alt="" class="circle">
-    <div class="indicator" style="background-color:${ data.status === 'online' || data.anStatus === 'online'  ? 'rebeccapurple' : 'grey'}"></div>
-    <div>
-    <span class="title">   
-       <a href="/chat/${data.id}" >
-        ${ data.name} </a>
-
-    </span>
-    <p>
-    <small class="brief">
-      ${data.withImage ?
+    } */
+    if (!inList) $('.chats').prepend(`
+      <div class="chat-tile" style="background-color:${data.isNew ? 'white' : 'transparent' }">
+        <input class="chatids" type="hidden"  value="${data.id}"/>
+              <div class="chat-details">
+                <div class="chat-img">
+                  <div class="indicators" style="background-color:${data.status === 'online' || data.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }"></div>
+                  <img src="${data.img}" alt="${data.name}"/>
+                </div>
+                <div class="chat-main">
+                  <a class="chat-name" href="/chat/${data.id}" >
+                   ${( data.name)} </a>
+                  <p class="chat-desc">
+                    ${data.withImage ?
         `<span class="withImage" style="display:flex;
         align-items:center;">
           <i class="material-icons thumbnail">insert_photos</i>
           ${data.msg}
             </span>` : data.msg}
-      </small>
-    </p></div>
-    <div class=" secondary-content">
-        <small>
-            ${( data.time)}
-        </small>
-    </div>
-  </li>
- `);
-    $("#userChatsLarge").prepend(`            
-    <li class="collection-item avatar Cards" style="background-color:${ user.isNew ? 'white' : '' }">
-    <input class="chatids" type="hidden"  value="${data.id}"/>
-    <img src="${data.img}" alt="" class="circle" height="50px" width="50px">
-    <div class="indicator" style="background-color:${data.status === 'online' || data.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }"></div>
-    <div>
-    <span class="title">   
-       <a href="/chat/${data.id}" >
-        ${ data.name} </a>
-
-    </span>
-    <p>
-    <small class="brief">
-      ${data.withImage ?
-        `<span class="withImage" style="display:flex;
-        align-items:center;">
-          <i class="material-icons thumbnail">insert_photos</i>
-          ${( data.msg)}
-            </span>` :  data.msg}
-      </small>
-    </p></div>
-    <div class=" secondary-content">
-        <small>
-            ${( data.time)}
-        </small>
-    </div>
-  </li> `);
+                    </p>
+                </div>
+              </div>
+              <div class="chat-controls">
+                <small class="time">${data.time}</small>
+              </div>
+            </div>
+      `)
   });
-  $('.inform span').on('click', () => {
-    $('.inform').css('display', 'none')
-  })
+
   //script for requests
   const chatsBtn = $('.controls button:nth-child(1)')
   const requestBtn = $('.controls button:nth-child(2)')
@@ -416,27 +367,28 @@
   })
   //new request event
   socket.on("new", (data) => {
-    const badge = $('.controls button:nth-child(2) span')
-    badge.text(data.requests)
-    $('.notfound.req').remove()
-    $('.palsRequest').prepend(`
-    <li class="collection-item avatar Cards">
+    const badge = $('.req.banner')
+    badge.text(data.requests);
+    showToast('new chat request');
+    $('.requests-window .notfound').remove()
+    $('.requests-window').prepend(`
+    <div class="chat-tile">
       <input class="rid" type="hidden" value="${data.fid}"/>
-    <img src="${data.img}" alt="" class="circle" height="50px" width="50px">
-    <div>
-    <span class="title">   
-        ${data.name}
-    </span>
-    <p>
-    <small class="brief">
-      ${( data.desc)}
-            </small>
-    </p></div>
-    <div class=" secondary-content">
-  <button id="decline" onclick="chatRequestHandler('${data.fid}','decline')">decline</button>
-  <button id="grant" onclick="chatRequestHandler('${data.fid}','grant')">accept</button>
-    </div>
-  </li>
+              <div class="chat-details">
+                <div class="chat-img">
+                  <img onclick="viewUserImage('${data.view}','${Date.now()}')" src="${data.img}" alt="${data.name}"/>
+                </div>
+                <div class="chat-main">
+                  <p class="chat-name">${data.name}</p>
+                  <p class="chat-desc">${data.desc}</p>
+                </div>
+              </div>
+              <div class="chat-controls">
+                <button id="decline" onclick="chatRequestHandler('${data.fid}','decline')">decline</button>
+                <button id="grant" onclick="chatRequestHandler('${data.fid}','grant')">accept</button>
+                <div class="mode-label">${data.isAnonymous?'anonymous':'open user'}</div>  
+                </div>
+            </div>
  `)
   });
 </script>

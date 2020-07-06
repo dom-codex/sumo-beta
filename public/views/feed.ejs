@@ -1,6 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>channel page</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/css/materialize.css" rel="stylesheet" type="text/css"/>
+  <link href="/cha.css" rel="stylesheet"/>
+</head>
+  <body class="z-depth-5">
+    <input type="hidden" class="strings"/>
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <input type="hidden" id="uid" value="<%= uid %>">
+    <input type="hidden" value="<%-csrfToken%>" name="_csrf">   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+      <%- include('upload-loader.ejs') %>
+      <div class="b-toasts">
+        <p class="notification">request sent successfully </p>
+      </div>
+    <main>
+        <button class="fabbtn" onclick="sectionSwitch(this,'section.search-window',true,true)"><i class="material-icons">person_add</i></button>
+      <!--fab btn -->
+      <header>
+        <div class="nav">
+          <div class="nav1">
+            <div class="app-logo-cont">
+              <img src="/fb.jpg" alt="app-logo" />
+            </div>
+            <p class="app-name">SUMO</p>
+          </div>
+          <div class="nav2">
+            <ul>
+              <li onclick="sectionSwitch(this,'section.profile-window',true)"><i class="material-icons">person</i>
+                <p>profile</p>
+              </li>
+              <li onclick="sectionSwitch(this,'section.search-window',true)"><i class="material-icons">search</i>
+                <p>search</p>
+              </li>
+              <li><i class="material-icons">exit_to_app</i>
+                <p>logout</p></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="tabs-section">
+        <div class="tabs-categories">
+          <ul>
+            <li onclick="sectionSwitch(this,'section.chat-window',false)"><i class="material-icons">chat</i>DM <span class="banner">30</span></li>
+            <li class="tabs" onclick="sectionSwitch(this,'section.feeds-window',false)"><i class="material-icons">rss_feed</i>feeds</li>
+            <li onclick="sectionSwitch(this,'section.requests-window',false)"><i class="material-icons">group_add</i>requests<span class=" req banner">0</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <section class="display">
+      <div class="display-window">
+        <section class="feeds-window visible">
+          <!--<div class="feedcard">
+                  <div class="feed-title">
+                    <p>Message:</p>
+                  </div>
+                  <div class="card-body">
+                    <p>${msg.message}sdlkadaldfklsjsklfjksfskfjskfjsfksjfskfjsfksjfksfjskfjsfksjfskfjskfjsfksjfskfjskfjsfksjfksjfksfjskfjskfjskfjskfjsfksjfskfjskfjsfksjfksjfskfjskfjskfsjfksjfskfjskfjsfkjsfksjfksfjskfjfkjsfkjsfkjskfjsfksjfskfjskfjskfjskfjsfksjfksfjskfjskfjskfjskfjsfksjfksjfksfjskfjskfjskfjskfjskfjskfjskfjskfjsfkjsfksjfskfjskf</p>
+                  </div>
+                  <div class="card-footer"><small>1</small>
+                     <i>sent: ${msg.time}</i></div>
+                </div> -->
+        </section>
+        <section class="chat-window">
+          <div class="chats">
+            <!--<div class="chat-tile">
+              <input type="hidden"/>
+              <div class="chat-details">
+                <div class="chat-img">
+                  <div class="indicators"></div>
+                  <img src="/theme.jpg" alt="user"/>
+                </div>
+                <div class="chat-main">
+                  <p class="chat-name">dominique</p>
+                  <p class="chat-desc">some desc</p>
+                </div>
+              </div>
+              <div class="chat-controls">
+                <small class="time">3:44pm</small>
+              </div>
+            </div> -->
+          </div>
+        </section>
+        <section class="search-window">
+          <div class="search-results">
+            <h4>SEARCH</h4>
+            <div class="search-controls">
+              <input type="text" placeholder="name" class="search-box"/>
+              <button class="search-btn"><i class="material-icons">search</i></button>
+            </div>
+            <div class="results">
+              <div class="notfound">
+                <i class="material-icons search-pre">search</i>
+                <p></p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="requests-window">
+          <div class="requests">
+          </div>
+        </section>
+        </div>
+      </section>
+    </main>
+    <script>
+      const sectionSwitch = (e,field,isnav=false,isfab=false)=>{
+        const toShow = document.querySelector(field);
+        const fab =   document.querySelector('.fabbtn')
+        //get all tabs
+        const tabs = document.querySelectorAll('.tabs-section li');
+        const navtabs = document.querySelectorAll('.nav2 li');
+        //get all section
+        const sections = document.querySelectorAll('section');
+        //loop through all section and remove visible class
+        //remove indicator from  tab
+        for(const ele of tabs){
+          ele.classList.remove('tabs');
+        }       
+         for(const ele of navtabs){
+          ele.classList.remove('nav-tab');
+        }
+        for(const ele of sections){
+          ele.classList.remove('visible');
+        }
+
+        if(isfab){
+          fab.classList.remove('hide-fab');
+         document.querySelector('.nav2 ul li:nth-child(2)').classList.add('nav-tab')
+        }
+        else if(isnav){
+          //add color instead
+          e.classList.add('nav-tab');
+          fab.classList.remove('hide-fab');
+          return toShow.classList.add('visible');
+        }
+        //add border color to visible tab
+        e.classList.add('tabs');
+        fab.classList.remove('hide-fab');
+        //add visible class
+        toShow.classList.add('visible');
+        if(field === 'section.profile-window'){
+          fab.classList.add('hide-fab');
+        }
+      }
+    </script>
+    <script>
+      const showIndicator = ()=>{
+$('.spinner-modal-cont').css('display','flex');
+$('.spinner-modal').css('display','flex');
+$('.preloader-wrapper').css('display','block');
+//$('input[type="file"]').val('')
+}
+const hideIndicator = () =>{
+$('.spinner-modal-cont').css('display','none');
+$('.spinner-modal').css('display','none');
+$('.spinner-error').css('display','none');
+$('.preloader-wrapper').css('display','none');
+//$('input[type="file"]').val('')
+}
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script  src="https://cdnjs.cloudflare.com/ajax/libs/validator/13.1.0/validator.min.js"></script>
+    <script src="/effect.js" type="text/javascript"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <%- include('feedScript.ejs') %>
+    <%- include('chatHandler.ejs') %>
+    <script>
+      LoadRequests();
+      loadChats();
+      loadFeed() </script>
+  </body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title> <%- name %>'s feed </title>
@@ -23,15 +213,15 @@
 <body class="feedBody">
   <input type="hidden" id="uid" value="<%= uid %>">
   <input type="hidden" value="<%=csrfToken%>" name="_csrf">
-  <!--side nav codes-->
+  side nav codes
   <%- include('sideNav.ejs',{
   onlineUsers:onlineUsers,
   name:name,
   email:email,
   uid:uid
 }) %>
-  <!--end of side nav import-->
-  <!--loader-->
+  end of side nav import
+  loader
   <div class="spinner-cont">
     <div id="spinner">
     <div class="preloader-wrapper small active">
@@ -49,8 +239,7 @@
     </div>
   </div>
 </div>
-
-  <!--code for header-->
+code for header
   <header>
     <nav>
       <div>
@@ -177,11 +366,10 @@
   <script src="/socket.io/socket.io.js"></script>
   <%- include('feedScript.ejs') %>
   <%- include('chatHandler.ejs') %>
-  <script>  LoadRequests();
+  LoadRequests();
     loadChats();
     loadFeed()
-</script>
 <script src="/effect.js" type="text/javascript"></script>
 </body>
 
-</html>
+</html> -->

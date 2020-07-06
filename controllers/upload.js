@@ -44,23 +44,40 @@ module.exports.uploader = (req,res) =>{
       else if (err) {
           return res.json(err.message);
       }else{
-          const jim = require('../utils/jimpConfig').processImage;
-          jim(req.file.path)
-          .then(_=>{
+          //const jim = require('../utils/jimpConfig').processImage;
+          const sharp = require('sharp');
+          try{
+            const directory = path.join( __dirname ,'..', 'photo',req.file.originalname)
+            sharp(req.file.path).resize(150,150).toFile(directory,(err,img)=>{
+              err?console.log(err):req.croppedUrl = directory
+            })
+          }catch(err){
+            console.log(err)
+          }
           User.findById(req.session.user._id)
           .select('isAnonymous images')
           .then(user=>{
-              if(!user) throw new Error('');       else if(user.images &&user.images.open && user.images.open.id.length > 0 &&  !user.isAnonymous){
-               require('../utils/driveUpload').driveUploadUpdate(req,res,user.images.open.id,req.file.filename,req.file.path,req.file.mimeType) ;
+              if(!user) throw new Error('');      
+               else if(user.images &&user.images.open && user.images.open.id.length > 0 &&  !user.isAnonymous){
+               user.images.open.thumbId && user.images.open.thumbId.length>0 ? require('../utils/driveUpload').driveUploadDelete(user.images.open.thumbId) :'';
+               user.images.open.id && user.images.open.id.length>0 ? require('../utils/driveUpload').driveUploadDelete(user.images.open.id) :'';
+              require('../utils/driveUpload').uploadCroppedPhoto(req,res,'crop'+'_'+req.file.filename,req.file.mimeType); 
+              require('../utils/driveUpload').driveUpload(req,res,req.file.filename,req.file.path); 
+              //require('../utils/driveUpload').driveUploadUpdate(req,res,user.images.open.id,req.file.filename,req.file.path,req.file.mimeType) ;
                // require('../utils/driveUpload').driveUploadDelete(user.images.open.id,) 
               } else if(user.images &&user.images.anonymous.id.length > 0 && user.isAnonymous){
-                require('../utils/driveUpload').driveUploadUpdate(req,res,user.images.anonymous.id,req.file.filename,req.file.path,req.file.mimeType) ;
+                user.images.anonymous.thumbId && user.images.anonymous.thumbId.length > 0? require('../utils/driveUpload').driveUploadDelete(user.images.anonymous.thumbId) :'';
+                user.images.anonymous.id && user.images.anonymous.id.length > 0? require('../utils/driveUpload').driveUploadDelete(user.images.anonymous.id) :'';
+                require('../utils/driveUpload').uploadCroppedPhoto(req,res,'crop'+'_'+req.file.filename,req.file.mimeType) ;
+                require('../utils/driveUpload').driveUpload(req,res,req.file.filename,req.file.path);
+                // require('../utils/driveUpload').driveUploadUpdate(req,res,user.images.open.id,req.file.filename,req.file.path,req.file.mimeType) ;
                // require('../utils/driveUpload').driveUploadDelete(user.images.anonymous.id) 
               }else{
+              require('../utils/driveUpload').uploadCroppedPhoto(req,res,'crop'+'_'+req.file.filename,req.file.mimeType);
               require('../utils/driveUpload').driveUpload(req,res,req.file.filename,req.file.path);
               };
             }); 
-          });
+          
       //  require('../utils/driveUpload').driveUpload(req,req.file.filename,req.file.path)
        //require('./utils/driveUpload').driveUploadUpdate('11RxSQtwGuVKHQnTIux0xneHxn0AvLE6h',req.file.filename,req.file.path)
        // require('./utils/driveUpload').driveUploadDelete('11RxSQtwGuVKHQnTIux0xneHxn0AvLE6h')

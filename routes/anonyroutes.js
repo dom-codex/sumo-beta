@@ -15,6 +15,7 @@ const limit = rateLimit({
     windowMs:1000 * 60 * 5,
     message: 'Too many requests pls try again in 5 mins'
 })
+router.get('/sumouser',isAuth,controller.Menu)
 router.get('/',controller.gethome);
 router.get('/about',controller.about);
 router.get('/getstarted',controller.createChannel)
@@ -121,7 +122,7 @@ router.post('/chatrequest',[check('id').trim().escape(),check('state').trim().es
 router.post('/searchuser',check('searchKey').trim().escape(),isAuth,controller.searchUser);
 router.get('/retrieverequest',isAuth,controller.retrieveRequests);
 
-router.post('/removeachat',isAuth, controller.removeAChat);
+router.get('/removeachat',isAuth, controller.removeAChat);
 router.post('/togglemode',isAuth, controller.goAnonymous);
 router.get('/deleteuseraccount/:id',isAuth,controller.deleteAccount);
 router.get('/logout',isAuth, controller.logout);

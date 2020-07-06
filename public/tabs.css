@@ -1,5 +1,5 @@
 .tabs .tab a {
-    color: rebeccapurple;
+    color: #1a237e;
     /*Custom Text Color*/
   }
   
@@ -10,18 +10,18 @@
   }
   
   .tabs .tab a:focus.active {
-    color:rebeccapurple;
+    color:#1a237e;
     /*Custom Text Color While Active*/
     background-color:rgba(0,0,0,.02);
     /*Custom Background Color While Active*/
   }
   
   .tabs .indicator {
-    background-color:purple;
+    background-color:#33386e;
     /*Custom Color Of Indicator*/
   }
   .active{
-    color:rebeccapurple!important;
+    color:#1a237e!important;
   }
   #badge{
     padding:2px 5px;

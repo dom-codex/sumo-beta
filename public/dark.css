@@ -1,137 +1,133 @@
-body{
-}
-nav{
-    background-color: rgba(0,0,0,.89);
-    width:100%;
-    overflow:hidden
-}
-input:focus, textarea:focus,.input-field input.valid {
-    border-bottom: 1px solid rgba(0,0,0,.89)!important;
-    box-shadow: 0 1px 0 0 rgba(0,0,0,.89)!important;
+body.b{
+    background-color:rgba(0,0,0,.75)
   }
-  input:focus + label,  .input-field .prefix.active{
-    color: rgba(0,0,0,.89)!important;
+  .nav,.tabs-section ul li{
+    background-color:rgba(0,0,0,.8)!important;
+    color:darkgoldenrod
   }
-div.feedcard.Cards,.user-view,.background,.profile-view{
-    background-color: rgba(0,0,0,.89)!important;
-    background-image: none;
-}
-.feedBody ul li a {
-    color:darkgray!important
+  .nav2 ul  li:nth-child(3) i{
+    color:darkgoldenrod
   }
-.sidenav,.mychats{
-    background-color: rgba(0,0,0,.89)!important;
-}
-.sidenav h2,.mychats h2{
-    color:#fff;
-}
-img.circle{
-    border:3px solid #ccc;
-
-}
-.circle-badge{
-    background-color: rgba(0,0,0,.89);
-}
-.controls button:hover,
- .join-btn button,
- .controls button:focus,
- .join-btn button:focus{
-    color:#fff;
-    background-color: rgba(255,255,2555,.5)!important;
-}
-.join-btn button:hover{
-    background-color: rgba(255,255,2555,.7)!important;   
-}
-.secondary-content small, .notfound.chat,.notfound.req{
+  .nav2{
+    color:darkgoldenrod
+  }
+  .nav2 a i{
+    color:darkgoldenrod!important
+  }  
+  .nav2 a i:hover{
+    color:orange!important
+  }
+  section{
+    background-color:rgba(0,0,0,0.25)!important
+  }
+  section.display,section.search-window{
+    background-color: transparent!important
+  }
+  .app-name{
+    color:orange
+  }
+  .banner{
+    background-color:orange;
+    color:#000;
+    font-weight: bold
+  }
+  .notfound p{
+    color:darkgrey
+  }
+  .feedcard{
+    border: 3px solid #cccccc45;
+    color: #ccccccd4;
+    background-color: transparent;
+  }
+  .card-footer small{
+    border-color:#ccc9
+  }
+  /* end of feed card style */
+  .chat-tile{
+      background-color: transparent!important;
+  }
+  .chat-name{
+    color:#ccc;
+  }
+  .chat-desc{
+    color:darkgrey
+  }
+  .time{
+    color:darkgrey
+  }
+  /* end of chat,request style */
+  .profile-window label{
     color:#fff!important
-}
-.notfound.feed small{
-    color:#000
-}
-.spinner-layer{
-    border-color:#fff
-}
-.mychats{
-    border-left: thin solid rgba(0,0,0,.1);
-}
-.search-vector p{
+  }
+  .profile-heading{
+    background-color:#ffa500d4
+  }
+  .profile-window input{
+    color:#fff!important
+  }
+  .profile-window h4{
+    color:#ccc
+  }
+  .ctrl button{
+    border-color:#ccc;
     color:#fff
-}
-/* for side nav*/
-/*.user-view,.profile-view{
+  }
+  .go-anonymous p{
+    color:darkgray
+  }
+  .checkbox:checked + .toggle{
+    background-color: rgba(0,0,0,.8)
+  }
+  .delete-btn{
+    border-color:#ccc;
+    color:#fff
+  }
+  /*end of profile style */
+  div.search-results{
+      background-color:transparent!important ;
+  }
+  .search-results input{
+    color: #cccc
+  }  
+  .search-results h4{
+    color: #cccc
+  }
+  .spinner-layer{
+    border-color:#000
+  }
+  /*chat page */
+  body.chatPage{
+    background-color: #ccc!important;
+  }
+  .chatPage textarea{
+    border-color: #000!important;
+  }
+  .emoji-footer{
     background-color: rgba(0,0,0,.85);
-}*/
-/*for chat page */ 
-.chat.u2:before{
-    border-left: 5px solid rgba(0,0,0,.69);
-    border-right: 5px solid transparent;
-    border-top: 5px solid rgba(0,0,0,.69);
-    border-bottom: 5px solid transparent;
-}
+  }
+  .chatpage.nav .nav2 ul li{
+    color:#fff
+  }
   .input{
-      background-color: rgba(0,0,0,.89);
+    background-color: rgba(0,0,0,0.5);
   }
-  .openEmoji i{
-      color:#fff;
-  }
-  .send{
-      background-color: rgba(0,0,0,.89)!important;
+  button.send{
+    background-color: rgba(0,0,0,.8)!important;
   }
   .chat.u2{
-      background-color: rgba(0,0,0,.69)!important;
-      box-shadow: none;
+    background-color: rgba(0,0,0,.6)!important;
+    box-shadow: none!important;
   }
-  .material-icons.thumbnail{
-      color:#fff!important
+  .chat.u2::before{
+    border-left: 5px solid rgba(0,0,0,.6);
+    border-top: 5px solid rgba(0,0,0,.6);
   }
-  /*for profile */
-  .body{
-      background-color: rgba(0,0,0,.04);
+  .chat.u2 .time{
+    color:#e6e6e6!important
   }
-  button.open-upload-modal{
-      border: 2px solid #fff;
-  }
-  #dropdown1 li {
-      background-color:rgba(0,0,0,.69)!important;
-      border-bottom:thin solid rgba(0,0,0,.2)!important;
-  }
-  #dropdown1 li a, #dropdown1 li a i{
-      color:rgba(255,255,255,.85)!important;
-  }
-  .collapsible-header{
-      background-color: rgba(0,0,0,.68)!important;
-      color:rgba(255,255,255,.9)!important;
-  }
-  span#badge{
-      background-color: rgba(0,0,0,.7);
-  }
-  #test1,#test2,#test3,#test4{
-      background-color: rgba(0,0,0,.25);
-  }
-  label,label.active,input,textarea,.row i,.anonymous p{
-    color:rgba(255,255,255,.95)!important
-}
-.password.open button, #copy1,#copy2{
-    background-color: rgba(0,0,0,.85);
-}
-#copy1,#copy2{
-    border-color: rgba(255,255,255,.95);
-    color:rgba(255,255,255,.9);
-}
-#copy1:hover,#copy2:hover{
-    color:#000;
-    background-color: rgba(255,255,255,.5)!important;
-}
-li.collection-item{
-    background-color:rgba(0,0,0,.6)!important
-}
-/*for toggle */
-.checkbox:checked + .toggle { 
-    background-color:black;
-  } 
-  .user-image-cont{
-      background-color: rgba(0,0,0,.89)!important;
-  }
-  .form label{
-      color:#000!important
+  /*inputs*/
+  input:focus, textarea:focus {
+    border-bottom: 1px solid #000!important;
+    box-shadow: 0 1px 0 0 #000!important;
+
   }

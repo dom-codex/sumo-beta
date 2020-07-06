@@ -7,9 +7,9 @@
   <title>chat room</title>
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="manifest" href="/manifest.json">
-  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileColor" content="#1a237e">
   <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#1a237e">
   <link href="/css/materialize.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet" />
@@ -20,13 +20,51 @@
     <link href="/dark.css" rel="stylesheet" type="text/css" />
      <%}%>
     </head>
-<body>
+<body class="z-depth-5 chatPage">
   <%- include('viewPic.ejs',{img:img}) %>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <section>
     <input type="hidden" value="<%= fid%>" id="friendId">
     <input type="hidden" value="<%= uid%>" id="uid">
-    <header>
+      <!-- Modal Structure -->
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <h4>NOTICE</h4>
+      <p>Are you sure want to remove this chat ?</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">NO</a>
+      <a href="/removeachat?friend=<%=fid%>" class="modal-close waves-effect waves-green btn-flat">YES</a>
+    </div>
+  </div>
+    <header class="z-depth-3">
+      <div class="nav chatpage ">
+        <div class="nav1">
+          <div class="img-cont">
+            <img onclick="viewImage('<%=img%>')" src="<%=thumbnail%>" class="friendPhoto"/>
+            </div>
+            <div id="user-details">
+              <p><%-friend%>
+                <div id="details">
+                  <small id="status"><%=status%></small>
+                  <small id="typing">typing...</small>
+                </div>
+              </p>
+            </div>
+        </div>
+        <div class="nav2">
+          <ul>
+          <li class="menu li" ><a href = '/channel'><i class="material-icons">menu</i><p>Menu</p></a></li>
+            <li class='dropdown-trigger'  data-target='dropdown1'><i class="material-icons">settings</i><p>Settings</p></li>
+          </ul>
+          <ul id='dropdown1' class='dropdown-content'>
+            <li ><a href="#"data-target="modal1" class="btn modal-trigger"><i class="material-icons">delete</i>remove user</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    
+    <!--<header>
       <nav>
         <div class="img-title-cont">
           <div class="img-cont">
@@ -47,7 +85,8 @@
         <li><a href="/userchannel/<%=uid%>"><i class="material-icons">rss_feed</i>feed</a></li>
       </ul>
       </nav>
-    </header>
+    </header> -->
+<div class="second-section">
 <div class="loader">Loading...</div>
     <div class="chats">
     </div>
@@ -65,7 +104,7 @@
         </button>
         <input type="hidden" value="<%=csrfToken%>" name="_csrf">
         <input name="receiver" type="hidden" value="<%= fid %>">
-        <textarea id="msg" class="materialize-textarea" name="message" placeholder="Enter message"></textarea>
+        <textarea id="msg" autocomplete="off" class="" name="message" placeholder="Message"></textarea>
         <!-- replace with a vector icon later -->
         <button type="submit" class="send"><i class="material-icons">send</i></button>
         <input type="file" id="file-input" accept="image/*"/>
@@ -74,15 +113,27 @@
         <%- include('emoji.ejs')%>
       </div>
     </div>
+    </div>
   </section>
   <script>
-    const chatWindow = document.querySelector('section')
+    const chatWindow = document.querySelector('.chats')
+    const inputWindow = document.querySelector('.input')
     chatWindow.scrollTop = chatWindow.scrollHeight;
     const showSmiley = document.querySelector('.openEmoji');
+   const emocont =  document.querySelector('.emoticons');
+
       showSmiley.addEventListener('click',()=>{
-        reRenderList()
-        document.querySelector('.emoticons').style.display = 'block';
+        if($('.emoticons').hasClass('showEmoji')){
+          emocont.classList.remove('showEmoji')
+          $('.input').css('height','30vh');
+        $('.chats').css('height','calc(70vh - 100px)');
+          return
+        }
+        reRenderList();
         document.querySelector('#face').classList.add('isActive')
+        emocont.classList.add('showEmoji');
+        $('.input').css('height','62vh');
+        $('.chats').css('height','calc(38vh - 101px)');
       })
   </script>
   <script src="/js/materialize.min.js"></script>
@@ -95,9 +146,12 @@
     let page = 1
     let height = 0
     document.addEventListener("DOMContentLoaded",()=> {
+    const elems = document.querySelectorAll('.modal');
+    const instances = M.Modal.init(elems);
+ 
     loadLatestChats();
 
-    $('section').on('scroll',()=>{Scroll()})
+    $('.chats').on('scroll',()=>{Scroll()})
   });
   </script>
   <%- include('chatScript.ejs') %>
@@ -111,7 +165,8 @@
           <i class="material-icons">clear</i> </button>
       <img src="${url}" class="img-preview" />
       </div>`
-    )
+    );
+    chatWindow.scrollTop = 0
     $('.preview-close').on('click',()=>{
   $('.preview-cont').remove();
 })

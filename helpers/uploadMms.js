@@ -1,18 +1,21 @@
 const User = require('../models/user');
 const Message = require('../models/messages');
 const io = require('../socket').getIO;
-module.exports.uploadMMS = (req,res,imgID,imgUrl,d) =>{
+module.exports.uploadMMS = (req,res,imgID,imgUrl,d,tid,thumbnail) =>{
     const receiver = req.body.receiver;
     const message = req.body.message;
     const time = req.body.time;
     let pal;
     let userId;
     let msgID;
+    let mypal
     User.findById(req.session.user._id)
       .then(async(user) => {
         let chat;
-        for await(let pally of User.findOne({$or:[{_id:receiver},{anonyString:receiver}]}).select('chats anonyChats isAnonymous')){
-        if(pally.isAnonymous){
+        for await(let pally of User.findOne({$or:[{_id:receiver},{anonyString:receiver}]})
+        .select('chats anonyChats isAnonymous isDeleted')){
+        mypal = pally
+          if(pally.isAnonymous){
           chat = pally.anonyChats;
         }else{
           chat = pally.chats;
@@ -41,9 +44,21 @@ module.exports.uploadMMS = (req,res,imgID,imgUrl,d) =>{
           message:'message not sent because you are no longer pals with this user'
         });
       };
+      if (mypal.isDeleted) {
+        const deleteImage = require('../utils/driveUpload').driveUploadDelete
+        deleteImage(imgID)
+        deleteImage(tid)
+        return res.json({
+          code: 300,
+          message:
+            "message not sent because you are no longer pals with this user",
+        });
+      };
         const messages = new Message({
           imageId:imgID,
           downloadLink:d,
+          thumbnail:thumbnail,
+          thumbId:tid,
           imageUrl:imgUrl,
           sender: userId,
           receiver: receiver,
@@ -140,7 +155,7 @@ module.exports.uploadMMS = (req,res,imgID,imgUrl,d) =>{
               .to(receiver)
               .emit("notify", { 
                 id: userId, 
-                name: pal.split(' ')[0], 
+                name: pal, 
                 msg: message,
                 withImage:true,
                 time: time });
@@ -152,6 +167,7 @@ module.exports.uploadMMS = (req,res,imgID,imgUrl,d) =>{
               message: message,
               time: time,
               img:imgUrl,
+              thumbnail:thumbnail,
               download:d
             });
             res.json({

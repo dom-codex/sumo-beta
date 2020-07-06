@@ -16,6 +16,10 @@ const UserSchema = new schema ({
           id:{
             type:String,
             default:''
+          },         
+          thumbId:{
+            type:String,
+            default:''
           },
           link:{
           type:String,
@@ -28,6 +32,10 @@ const UserSchema = new schema ({
         },
         anonymous:{
           id:{ 
+            type:String,
+            default:''
+          },   
+          thumbId:{ 
             type:String,
             default:''
           },
@@ -44,7 +52,12 @@ const UserSchema = new schema ({
       isVerified:{
         type:Boolean,
         default:false
+      },    
+      isDeleted:{
+        type:Boolean,
+        default:false
       },
+      timeDeleted:String,
       desc:String,
       gender: String,
       phone: String,
@@ -56,15 +69,6 @@ const UserSchema = new schema ({
       resetToken: String,
       userToken: String,
       tokenMaxAge: Number,
-      requests:[
-        {
-          
-           name: String,
-           id: schema.Types.ObjectId,
-           desc: String,
-           img:String
-        }
-      ],
       status: String,
       anonymousStatus: String,
       chats: [
@@ -74,12 +78,6 @@ const UserSchema = new schema ({
             refs: 'User'
           },
           lastUpdate:Number,
-          messages:[
-            {
-              type:schema.Types.ObjectId,
-              ref:'Message'
-            }
-          ],
         }
       ],     
        anonyChats: [
@@ -89,12 +87,6 @@ const UserSchema = new schema ({
             refs: 'User'
           },
           lastUpdate:Number,
-          messages:[
-            {
-              type:schema.Types.ObjectId,
-              ref:'Message'
-            }
-          ],
         }
       ]
 

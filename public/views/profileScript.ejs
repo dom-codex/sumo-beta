@@ -1,6 +1,19 @@
 <script>
-  const viewImage = () =>{
+  const viewImage = (src) =>{
+    const img  = document.querySelector('img.user');
+    if(img){
+      
+      $('.view-image-loading').css('display','none');
+       $('img.user').css('display','block');
+       $('.viewImage-cont').css('display','block');
+       return
+    }
     $('.viewImage-cont').css('display','block');
+    $('.view-image').append(`<img class="user" src="${src}" alt="a user"/>`);
+    document.querySelector('img.user').addEventListener('load',()=>{
+       $('.view-image-loading').css('display','none');
+       $('img.user').css('display','block');
+    })
   };
    const viewUserImage = (img,i) =>{
     $('.viewImage-cont').css('display','block');
@@ -9,6 +22,10 @@
     $('.view-image').append(`
     <img class="pal s${i}" src="${img}" alt="a user"/>
     `);
+    $(`.s${i}`).on('load',()=>{
+      $('.view-image-loading').css('display','none');
+      $(`.s${i}`).css('display','block')
+    })
   };
    $('button.pal-close').on('click',()=>{
     $('.viewImage-cont').css('display','none');
@@ -20,34 +37,19 @@
     $('.viewImage-cont').css('display','none');
   });
   document.addEventListener('DOMContentLoaded',()=>{
-  LoadChats(1);
+  const elemes = document.querySelectorAll('.modal');
+  const modal2instance = M.Modal.init(elemes);
 })
   const body = document.querySelector('section')
-  const instance = M.Tabs.init(document.querySelector('.tabs'));
+  //const instance = M.Tabs.init(document.querySelector('.tabs'));
     M.updateTextFields();
-  const elems = document.querySelectorAll('.dropdown-trigger');
-  const instancess = M.Dropdown.init(elems);
-    var collapsible= document.querySelectorAll('.collapsible');
-    var col = M.Collapsible.init(collapsible);
-  const elemss = document.querySelectorAll('.modal');
-  const instances = M.Modal.init(elemss);
-
-const showIndicator = ()=>{
-$('#bg').css('display','block');
-$('.upload-modal').css('display','flex');
-$('.modal-upload').css('display','flex');
-$('.preloader-wrapper').css('display','block');
-$('input[type="file"]').val('')
-}
-const hideIndicator = () =>{
-$('.upload-modal').css('display','none');
-$('.modal-upload').css('display','none');
-$('.upload-error').css('display','none');
-$('.preloader-wrapper').css('display','none');
-$('#bg').css('display',`none`);
-$('input[type="file"]').val('')
-}
-const LoadChats = (page) =>{
+  //const elems = document.querySelectorAll('.dropdown-trigger');
+  //const instancess = M.Dropdown.init(elems);
+    //var collapsible= document.querySelectorAll('.collapsible');
+    //var col = M.Collapsible.init(collapsible);
+  //const modals = document.querySelectorAll('.modal');
+  //const instances = M.Modal.init(modals);
+/*const LoadChats = (page) =>{
   const token =  $('input[name="_csrf"]').val();
   $('.loading').css('display','block')
   fetch(`/getprofilechats?page=${page}`, {
@@ -111,11 +113,11 @@ const LoadChats = (page) =>{
 `)
    }
 })
-}
-const  loadmore = (n) => {
+}*/
+/*const  loadmore = (n) => {
   showIndicator();
   LoadChats(n);
-}
+}*/
   const Handler = (e, inputedit) => {
     if (inputedit === "name") {
       document.querySelector('#name').disabled = false;
@@ -154,22 +156,6 @@ const  loadmore = (n) => {
       e.style.display = "none";
     }
   }
-
-  let timer;
-  const socket = io();
-  
-  socket.on('disconnect', (reason) => {
-    //refresh browser if server socket disconnects
-   if(reason === 'transport close'){
-    timer = setTimeout(()=>{
-    alert('underlying connection lost please reload')
-    },4000)
-   } 
-  });
-socket.on('connect', () => {
-clearTimeout(timer)
-});
-
   nameDone.addEventListener('click', () => {
     showIndicator()
     const newName = document.querySelector('#name').value;
@@ -179,11 +165,12 @@ clearTimeout(timer)
       document.querySelector('#nameedit').style.display = 'inline-block'
       nameCancel.style.display = "none";
       nameDone.style.display = "none";
-      $('.myname').text(newName);
+      $('.profile-name').text(newName);
     });
   })
 
   phoneDone.addEventListener('click', () => {
+    showIndicator()
     document.querySelector('#phoneForm').submit();
       document.querySelector('#phone').disabled = true;
       document.querySelector('#phoneedit').style.display = 'inline-block'
@@ -200,7 +187,7 @@ clearTimeout(timer)
       document.querySelector('#descedit').style.display = 'inline-block'
       descCancel.style.display = "none";
       descDone.style.display = "none";
-      $('.small-desc').text(newdesc)
+      $('.profile-desc').text(newdesc)
     });
   })
   emailDone.addEventListener('click', () => {
@@ -211,7 +198,7 @@ clearTimeout(timer)
       emailCancel.style.display = "none";
       emailDone.style.display = "none";
   })    
-  chatDone.addEventListener('click', () => {
+  /*chatDone.addEventListener('click', () => {
     const newChat = document.querySelector('#chat').value;
     showIndicator()
     socket.emit('newchat', newChat, (declined) => {
@@ -227,7 +214,7 @@ clearTimeout(timer)
       chatDone.style.display = "none";
     }
     });
-  })   
+  })*/   
    anonymousDone.addEventListener('click', () => {
     const newAnonymous = document.querySelector('#anonymous').value;
     showIndicator()
@@ -237,12 +224,12 @@ clearTimeout(timer)
       document.querySelector('#anonymousedit').style.display = 'inline-block'
       anonymousCancel.style.display = "none";
       anonymousDone.style.display = "none";
-      $('.myname').text(newAnonymous);
+      $('.profile-name').text(newAnonymous);
     });
   })
 
 //event listeners for the various modal buttons
-const removeHandler = (e,idToRemove)=>{
+/*const removeHandler = (e,idToRemove)=>{
 $('#delete').css('display','none')
 $('#yes').css('display','inline-block')
 const yes = $('.modal-footer button:nth-child(2)');
@@ -251,52 +238,53 @@ showIndicator()
 const form = e.parentNode.parentNode.parentNode;
 form.submit()
 })
-}
+}*/
 //script for toggle element
-const elemes = document.querySelector('#modal2');
-const modal2instance = M.Modal.init(elemes);
-const switcher = $('#switch');
+const switcher = $('input[type="checkbox"]');
 const toggler = $('.toggle');
 const declineBtn = $('#decline')
 const continueBtn = $('#continue')
-//const modal2 = M.Modal.getInstance($('#modal2'));
-
+const modal2trigger = $('button[data-target="modal2"]');
 switcher.on('click',()=>{
-if(!switcher.attr('checked')){
-  return modal2instance.open()
+  //modal2.open();
+if(switcher.prop('checked')){
+  //return modal2.open()
+  return modal2trigger.trigger('click')
 }
 showIndicator();
 $('#modetoggler').submit()
 
 })
 declineBtn.on('click',()=>{
-if(switcher.attr('checked')){
+if(!switcher.prop('checked')){
   switcher.prop("checked", true);
-  modal2instance.close();
+  //modal2.close();
 }else{
   switcher.prop("checked", false);
- modal2instance.close();
+// modal2.close();
 }
-
 })
 continueBtn.on('click',()=>{
 //continueBtn.text('switching...')
 showIndicator()
-modal2instance.close();
+//modal2instance.close();
 $('#modetoggler').submit()
 })
 //script for change password
-const changePasswordRevealer = $('.password button');
+const changePasswordRevealer = $('.change-pass-btn');
 changePasswordRevealer.on('click',()=>{
 $('#cpf').toggleClass('change')
-const note = $('.open button').text();
+$('#cpf').css('height','177px');
+const note = $('.change-pass-btn span').text();
 if(note ==='change password'){
-  $('.open button').text('close')
+  $('.change-pass-btn').text('close window')
 }else{
-  $('.open button').text('change password')
+  $('.change-pass-btn').text('change password')
 }
 })
- $('.changepassbtn button').on('click',()=>{showIndicator()}) 
+ $('.changepassbtn button').on('click',()=>{
+  showIndicator()
+}) 
 const feedString = $('#feedstring');
 const feedLink = `${window.location.origin}/sendmsg/${feedString.val()}`;
 const feedShareInput = $('#feeds');
@@ -307,7 +295,7 @@ document.getElementById('wa-share').href = `https://api.whatsapp.com/send?text=$
 
 //function will dismiss copy notifier
 const dismissCopy = ()=>{
-$('.notifier').css('visibility','hidden')
+$('.notifier').css('display','none')
 }
 $('#copy1').on('click',()=>{
 /* Select the text field */
@@ -317,7 +305,7 @@ feedShare.select();
 feedShare.setSelectionRange(0, 99999);
 /* Copy the text inside the text field */
 document.execCommand("copy");
-$('.notifier').css('visibility','visible')
+$('.notifier').css('display','block')
 setTimeout(dismissCopy,1300)
 
 }) 
@@ -329,18 +317,16 @@ chatShare.select();
 chatShare.setSelectionRange(0, 99999);
 /* Copy the text inside the text field */
 document.execCommand("copy");
-$('.notifier').css('visibility','visible')
+$('.notifier').css('display','block')
 setTimeout(dismissCopy,2000)
 }) 
 //account deleting script
-$('.logout.delete button').on('click',()=>{
-  const modal = document.querySelector('#modal1');
-  $('#delete').css('display','inline-block')
-  const yesBtn = $('#yes')
-  yesBtn.css('display','none')
-  $('#modal1 p').text('Are you sure you want to delete your account?')
-  const modal1 = M.Modal.getInstance(modal);
-  modal1.open();
+$('.delete-btn').on('click',()=>{
+  //const modal = document.querySelector('#modal1');
+  //$('#modal1 p').text('Are you sure you want to delete your account?')
+  //const modal1 = M.Modal.getInstance(modal);
+  //modal1.open();
+  $('button[data-target="modal1"]').trigger('click')
   $('#delete').on('click',()=>{
     modal1.close();
     showIndicator();
@@ -350,7 +336,7 @@ $('.logout.delete button').on('click',()=>{
 $('.okay').on('click',()=>{
   hideIndicator();
 })
-$('.open-upload-modal').on('click',()=>{
+$('.upload-button').on('click',()=>{
   $('input[type="file"]').trigger('click');
 })
 const uploadFile = (file) => {
@@ -358,9 +344,15 @@ const uploadFile = (file) => {
   const regex = /\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/;
   $('.file-cont input').val('')
 if(!file.name.match(regex)) {
-  $('.upload-error small').text('File must be an image.')
-  $('.upload-error').css('display','block')
-   $('.preloader-wrapper').css('display','none')
+hideIndicator()
+$('.invalid').text('file must be an image');
+$('.invalid').css('display','block');
+let id;
+id = setTimeout(()=>{
+  $('.invalid').text('');
+  $('.invalid').css('display','none');
+  clearTimeout(id)
+},3200)
         return;
     }
     // check file size (< 5MB)
@@ -385,17 +377,19 @@ fetch('/upload', {
 })
 .then(res => res.json())
 .then(data =>{ 
-if(data.img){
-   $('.profilePic').empty();
-   const img = new Image();
-   img.src = data.img;
-   img.classList.add('profilePic');
+if(data.success){
   window.location.reload();
   return
 }
-$('.preloader-wrapper').css('display','none');
-$('.upload-error small').text(data);
-$('.upload-error').css('display','block');
+hideIndicator()
+$('.invalid').text(data);
+$('.invalid').css('display','block');
+let id;
+id = setTimeout(()=>{
+  $('.invalid').text('');
+  $('.invalid').css('display','none');
+  clearTimeout(id)
+},3200)
 })
 .catch(err => console.error(err));
 }

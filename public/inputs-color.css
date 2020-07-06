@@ -1,28 +1,35 @@
   /* label color */
-   label {
-    color:rebeccapurple!important;
+  /* label {
+    color:#1a237e!important;
   }
-  /* label focus color */
+  /* label focus color 
    input:focus + label {
-    color: rebeccapurple!important;
+    color: #1a237e!important;
   }
   /* label underline focus color */
    input:focus, textarea:focus {
-    border-bottom: 1px solid rebeccapurple!important;
-    box-shadow: 0 1px 0 0 rebeccapurple!important;
+    border-bottom: 1px solid #1a237e!important;
+    box-shadow: 0 1px 0 0 #1a237e!important;
 
   }
   /* valid color */
   .input-field input.valid {
-    border-bottom: 1px solid rebeccapurple!important;
-    box-shadow: 0 1px 0 rebeccapurple!important;
+    border-bottom: 1px solid #1a237e!important;
+    box-shadow: 0 1px 0 #1a237e!important;
   }
   /* invalid color */
   .input-field input.invalid {
-    border-bottom: 1px solid rebeccapurple!important;
-    box-shadow: 0 1px 0 0 rebeccapurple!important;
+    border-bottom: 1px solid transparent!important;
+    box-shadow: 0 1px 0 0 transparent!important;
   }
   /* icon prefix focus color */
   .input-field .prefix.active {
-    color:rebeccapurple!important;
+    color:orange!important;
+  }
+  input:disabled,textarea:disabled{
+    border-bottom-style: solid!important;
+  }
+  .search-window input:focus, .search-window:active{
+    border-bottom:transparent!important;
+    box-shadow: 0 1px 0 0 transparent!important;
   }

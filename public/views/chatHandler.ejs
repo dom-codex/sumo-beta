@@ -1,47 +1,66 @@
 <script>
-  const LoadRequests = () => {
-    fetch("/retrieverequest",{
+  const LoadRequests = (n) => {
+    showIndicator();
+    $('.requests-window').html('')
+    fetch(`/retrieverequest?page=${n}`,{
       method:'GET',
       credentials:'include'
     })
       .then((data) => data.json())
       .then((data) => {
-        const badge = $(".controls button:nth-child(2) span");
+        hideIndicator();
+        $('.requests-window')
+        .append(`<div class="requests"></div>`)
+       const badge = $(".req.banner");
         badge.text(parseInt(data.requestLength));
+        $('.next').remove();
+        $('.prev').remove();
         if(data.requests.length <=0){
-          return $('.palsRequest').append(
-            `<div class="notfound req"><small>
-              you don't have any pending requests</small></div>`
+          return $('.requests-window').append(
+            `<div class="notfound">
+              <i class="material-icons">pending</i>
+              <p>No pending request found... </p>
+              </div>`
           )
         }
+        if(data.hasNext){
+          const next = data.next
+          $('.requests').append(`
+          <button class="next" onclick=LoadRequests(${next})>next</button>
+            `)
+        }     
+          if(data.hasPrev){
+            const prev = data.prev
+          $('.requests').append(`
+          <button class="prev" onclick=LoadRequests(${prev})>prev</button.
+          `)
+        }
         data.requests.forEach((req) => {
-          $(".palsRequest").prepend(`
- 
-          <li class="collection-item avatar Cards">
-      <input class="rid" type="hidden" value="${req.id}"/>
-    <img src="${req.img}" alt="" class="circle" height="50px" width="50px">
-    <div>
-    <span class="title">   
-        ${req.name}
-    </span>
-    <p>
-    <small class="brief">
-      ${req.desc}
-            </small>
-    </p></div>
-    <div class=" secondary-content">
-  <button id="decline" onclick="chatRequestHandler('${req.id}','decline')">decline</button>
-  <button id="grant" onclick="chatRequestHandler('${req.id}','grant')">accept</button>
-    </div>
-  </li>
- `);
+          $(".requests-window").prepend(`
+          <div class="chat-tile">
+              <input type="hidden" class="rid" value="${req.id}"/>
+              <div class="chat-details">
+                <div class="chat-img">
+                  <img onclick="viewUserImage('${req.view}','${Date.now()}')" src="${req.img}" alt="${req.name}"/>
+                </div>
+                <div class="chat-main">
+                  <p class="chat-name">${req.name}</p>
+                  <p class="chat-desc">${req.desc}</p>
+                </div>
+              </div>
+              <div class="chat-controls">
+                <button onclick="chatRequestHandler('${req.id}','decline')">decline</button>
+                <button onclick="chatRequestHandler('${req.id}','grant')">accept</button>
+                <div class="mode-label">${req.isAnonymous?'anonymous':'open user'}</div>  
+              </div>
+            </div>`);
         });
       });
   };
   //script for accepting and decline a chat
   const chatRequestHandler = (id, state) => {
     const token = $('input[name="_csrf"]').val();
-    $('.requests-loader').css('display','block')
+    showIndicator()
     fetch("/chatrequest", {
       method: "POST",
       credentials:'include',
@@ -56,68 +75,78 @@
     })
       .then((res) => res.json())
       .then((res) => {
-        $('.requests-loader').css('display','none')
+        hideIndicator()
+         if (res.code === 300){
+          return showToast('already friends')
+        } 
         const rids = $(".rid");
-        const badgea = $(".controls .smally");
-        const badgeb = $(".controls .biggy");
+        const badge = $(".req.banner");
+        badge.text(res.newchat.nreq);
         for (let i = 0; i < rids.length; i++) {
           if (rids[i].value.toString() === res.newchat._id) {
             const parent = rids[i].parentNode.parentNode;
             parent.removeChild(rids[i].parentNode);
-            badgea.text(res.newchat.nreq);
-            badgeb.text(res.newchat.nreq);
+            const nchild = document.querySelector('.requests-window').childElementCount
+            if(nchild <= 0){
+              $('.requests-window').append(
+            `<div class="notfound">
+              <i class="material-icons">pending</i>
+              <p>No pending request found... </p>
+              </div>`)
+            }
           } else continue;
+        }
+        if(!res.newchat.nreq > 0){
+          $('.requests-window').append(
+            `<div class="notfound">
+              <i class="material-icons">pending</i>
+              <p>No pending request found... </p>
+              </div>`)
         }
         if (res.code === 301) {
           return;
-        } else {
-          $('.notfound.chat').remove()
-          $(".userChats").prepend(`  
-          <li class="collection-item avatar Cards">
-    <input class="chatids" type="hidden"  value="${res.newchat._id}"/>
-    <img src="${res.newchat.img}" alt="" class="circle" height="50px" width="50px">
-    <div class="indicator" style="background-color:${res.newchat.status === 'online' || res.newchat.anStatus === 'online'  ? 'rebeccapurple' : 'grey' };"></div>
-    <div>
-    <span class="title">   
-       <a href="/chat/${res.newchat._id}" >
-        ${res.newchat.name} </a>
-
-    </span>
-    <p>
-    <small class="brief">
-      say hi to ${ res.newchat.name}
-      </small>
-    </p></div>
-    <div class=" secondary-content">
-        <small>
-        </small>
-    </div>
-  </li>       
-`);
+        }
+        else {
+          $('.chats .notfound').remove()
+          $(".chats").prepend(`  
+          <div class="chat-tile" style="background-color:${res.newchat.isNew ? 'white' : 'transparent' }">
+        <input class="chatids" type="hidden"  value="${res.newchat._id}"/>
+              <div class="chat-details">
+                <div class="chat-img">
+                  <div class="indicators" style="background-color:${ res.newchat.status === 'online' ||res.newchat.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }"></div>
+                  <img src="${res.newchat.img}" alt="${res.newchat.name}"/>
+                </div>
+                <div class="chat-main">
+                  <a class="chat-name" href="/chat/${res.newchat._id}" >
+                   ${ res.newchat.name} </a>
+                  <p class="chat-desc">
+                    say hi to ${res.newchat.name}
+                    </p>
+                </div>
+              </div>
+              <div class="chat-controls">
+                <small class="time"></small>
+              </div>
+            </div>        
+          `);
+          const nDm = $('.dm.banner').text()
+          const newDm = parseInt(nDm) + 1;
+          $('.dm.banner').text(newDm);
+          showToast('chat accepted')
         }
       });
   };
 </script>
 <script>
-  let page = 1
-  let height = 0
+  let Feedpage = 1
+  let Feedheight = 0
   //const feedWindow = $('.feeds')
 const loadFeed = () => {
-  if(page == -1) return
-  else if ((feedWindow.scrollTop === 0 || page == 1)) {
-    height = feedWindow.scrollHeight;
-    //$('.loader').css('display','flex')
-    $('.feeds').append(`
-    <div class="notfound feed">
-      <small>Loading... </small></div>
-    `);
-    if(page >1){
-      $('#feeds').prepend(`
-    <div class="notfound feed" style="margin-bottom:20px">
-      <small>Loading more feeds... </small></div>
-    `);
-    }
-    fetch(`/retrievefeeds?page=${page}`, {
+  if(Feedpage == -1) return
+  else if ((feedWindow.scrollTop === 0 || Feedpage == 1)) {
+   showIndicator()
+    Feedheight = feedWindow.scrollHeight;
+    fetch(`/retrievefeeds?page=${Feedpage}`, {
       method: 'GET',
       credentials:'include',
       headers: {
@@ -127,43 +156,41 @@ const loadFeed = () => {
     })
       .then(res => res.json())
       .then(res => {
-        $('.notfound.feed').remove()
+        hideIndicator()
+        //$('.notfound.feed').remove()
        // $('.loader').css('display','none')
-        page = res.hasNext ? res.next : -1;
+        Feedpage = res.hasNext ? res.next : -1;
         if(res.code === 301){
-          page = -1
-          section.scrollTop = 0
+          Feedpage = -1
+          //section.scrollTop = 0
           return
         }
         else if (res.feeds.length > 0) {
           const total = res.total
           res.feeds.forEach((msg, i) => {
-            $('#feeds').prepend(
-            `<div class="feedcard Cards">
-                  <div>
+            $('.feeds-window').prepend(
+            `
+            <div class="feedcard z-depth-1">
+                  <div class="feed-title">
                     <p>Message:</p>
                   </div>
-                  <div class="cardb">
+                  <div class="card-body">
                     <p>${msg.message}</p>
                   </div>
-                  <div class="cardf"><small>${total - i}</small>
+                  <div class="card-footer"><small>${total - i}</small>
                      <i>sent: ${msg.time}</i></div>
                 </div> `)
           })
-          if(res.hasNext){
-            feedWindow.scrollTop = feedWindow.scrollHeight - height;
-          }else{
-            feedWindow.scrollTop = 0;
-          }
+          feedWindow.scrollTop = feedWindow.scrollHeight - Feedheight;
+          
         }else if(res.feeds.length <=0){
-         return $('.feeds').append(`
-          <div class="notfound feed">
-            <small> you have got no feeds yet, why not
-              share your feed link with loved ones to get
-              the fun started <small></div>
+         return $('.feeds-window').append(`
+         <div class="notfound">
+            <i class="material-icons">portable_wifi_off </i>
+            <p>No Feed found!!! </p>
+            </div>
           `)
         }
-        //feedWindow.scrollTop = feedWindow.scrollHeight;
       }).catch(err=>{
       })
 
@@ -172,9 +199,11 @@ const loadFeed = () => {
 </script>
 <script>
   //script for search mechanism
-  const search = (field) =>{
-    const searchKey = $(field).val();
-    $('.search-loader').css('display','block');
+  const search = () =>{
+    const searchKey = $('.search-box').val();
+    //$('.search-loader').css('display','block');
+    showIndicator();
+    $('.results').html('')
     fetch(`/searchuser`, {
           method: 'POST',
           credentials:'include',
@@ -188,84 +217,84 @@ const loadFeed = () => {
         })
         .then(res=>res.json())
         .then(res=>{
-          $('.search-loader').css('display','none');
-          if(!res.result){
-            return $('.search-vector p').text('oops no user found!!!')
+          hideIndicator();
+          //$('.search-loader').css('display','none');
+          if(res.code === 400){
+            $('.results').html('')
+            return $('.results').append(`
+            <div class="notfound">
+                <i class="material-icons search-pre">search_off</i>
+                <p>Opps ${res.message}!!!</p>
+              </div>
+            `)
+          }else if(!res.result.length){
+            return $('.results').append(`
+            <div class="notfound">
+                <i class="material-icons search-pre">search_off</i>
+                <p>Opps no user was found!!!</p>
+              </div>
+            `) 
           }
-          $('.searchResult').html('');
-          $('.searchResult.large').html('');
+          //$('.searchResult').html('');
+          //$('.searchResult.large').html('');
           if(res.result.length > 0){
+            $('.results').html('');
             res.result.forEach(user=>{
               if(!user.pals){
-                $('.searchResult').append(`
-
-     <li class="collection-item avatar Cards">
-    <input class="" type="hidden" value=""/>
-    <img src="${user.img}" alt="" class="circle">
-    <div>
-    <span class="title">
-        ${user.name} 
-
-    </span>
-    <p>
-    <small class="brief">
-      ${user.desc}</small>
-    </p></div>
-    <div class=" secondary-content">
-      <div>
-      <button onclick="addUser('#chatString','${user.chatId}')">add</button>
-    </div>
-    </div>
-  </li>
+                $('.results').append(`
+                <div class="chat-tile">
+              <input type="hidden"/>
+              <div class="chat-details">
+                <div class="chat-img">
+                  <img onclick="viewUserImage('${user.view}','${Date.now()}')" src="${user.img}" alt="user"/>
+                </div>
+                <div class="chat-main">
+                  <p class="chat-name">${user.name}</p>
+                  <p class="chat-desc">${user.desc}</p>
+                </div>
+              </div>
+              <div class="chat-controls">
+                <button onclick="addUser('${user.chatId}')"><i class="material-icons">add</i></button>
+              </div>
+            </div>
    `)
     return 
     }
-   $('.searchResult').append(`
-   
-   <li class="collection-item avatar Cards">
-    <input class="" type="hidden" value=""/>
-    <img src="${user.img}" alt="" class="circle">
-    <div>
-    <span class="title">
-        ${( user.name)} 
-
-    </span>
-    <p>
-    <small class="brief">
-      ${( user.desc)}</small>
-    </p></div>
-    <div class=" secondary-content">
-      <div>
-        <a href="/chat/${user.id}">chat</a>
-    </div>
-    </div>
-  </li>
+   $('.results').append(`
+   <div class="chat-tile">
+              <input type="hidden"/>
+              <div class="chat-details">
+                <div class="chat-img">
+                  <img onclick="viewUserImage('${user.view}','${Date.now()}')" src="${user.img}" alt="user"/>
+                </div>
+                <div class="chat-main">
+                  <p class="chat-name">${user.name}</p>
+                  <p class="chat-desc">${user.desc}</p>
+                </div>
+              </div>
+              <div class="chat-controls">
+                <a href="/chat/${user.id}"><i class="material-icons">near_me</i></a>
+              </div>
+            </div>
               `)   
             })
           }
         })
       }
-  const addUser = (field,val) =>{
-    $('#chatString').val(val)
-    joinHandler(field)
+  const addUser = (val) =>{
+    $('.strings').val(val)
+    joinHandler('.strings')
   }
-  $('#startsearch').on('click',()=>search('#searchStringLarge'))
-  $('#startsearchsmall').on('click',()=>search('#searchString'))
+  $('.search-btn').on('click',()=>search())
 </script>
 <script>
   //script for loading chats
-    let next;
-    let prev
-
+let Chatpage = 1
+let Chatheight = 0
   const loadChats = (action = '') =>{
-    let page =1
-    if(action === 'next'){
-      page = next;
-    }else if(action === 'prev'){
-      page = prev
-    }
-    $('.chats-loader').css('display','block')
-    fetch(`/loadchats?page=${page}`, {
+    if(Chatpage < 1)return
+    showIndicator()
+    fetch(`/loadchats?page=${Chatpage}`, {
           method: 'GET',
           credentials:'include',
           headers: {
@@ -275,91 +304,60 @@ const loadFeed = () => {
         })
         .then(res=>res.json())
         .then(res=>{
-          $('.chats-loader').css('display','none');
-          if(res.chats.length <= 0){
-            $('#userChatsLarge').append(
-              `<div class="notfound chat">
-                <small> you don't have any chat yet
-                  </small></div>`
-            );
-            return $('#userChatsSmall').append(
-              `<div class="notfound chat">
-                <small> you don't have any chat yet
-                  </small></div>`
-            )
-          }
-          next = res.next;
-          prev = res.prev;
-
+          hideIndicator()
+          Chatpage = res.next ? res.next : -1;
           if(res.hasNext){
-       $('.pages ul').append(
-         `<button onClick="loadChats('next')" class="next">Next</button>`
-       )
-     }else{
-       $('.next').remove()
-     }
-     if(res.hasPrev){
-      $('.pages ul').append(
-         `<button onClick="loadChats('prev')" class="prev" >Prev</button>`
-       )
-     }else{
-       $('.prev').remove()
-     }
-     $('.userChats').html('')
+            $('.loadmore').css('display','block')
+          }else{
+            Chatpage = -1
+            $('.loadmore').remove()
+          }
+          if(res.chats.length <= 0 && Chatpage === 1){
+           return $('.chats').append(`
+           <div class="notfound">
+            <i class="material-icons">sms_failed </i>
+            <p>No chats found!!! </p>
+            </div>
+           `) 
+          }         
+          else if(res.chats.length <= 0 && Chatpage === -1){
+           return $('.chats').append(`
+           <div class="notfound">
+            <i class="material-icons">sms_failed </i>
+            <p>No chats found!!! </p>
+            </div>
+           `) 
+          }
     res.chats.forEach((user,i)=>{
-      $('#userChatsLarge').append(`
-      <li class="collection-item avatar Cards"  style="background-color:${user.isNew ? 'white' : 'transparent' }">
-    <input class="chatids" type="hidden" value="${user._id}"/>
-    <img src="${user.img}" alt="" class="circle">
-    <div class="indicator" style="background-color:${ user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }"></div>
-    <div>
-    <div class="title">    
-      <a href="/chat/${user._id}" >
-        ${( user.name)} </a>  
-    </div>
-    <p>
-    <small class="brief">
-      ${user.withImage ?
-        `<span class="withImage" style="display:flex;
-        align-items:center;">
-          <i class="material-icons thumbnail">insert_photos</i>
-          ${( user.message)}
-            </span>` : ( user.message)}
-    </small>
-    </p></div>
-    <div class=" secondary-content">
-        <small>
-            ${( user.time)}
-        </small>
-    </div>
-  </li>`);          
-   $('#userChatsSmall').append(`
-          <li class="collection-item avatar Cards"  style="background-color:${user.isNew ? 'white' : 'transparent' }">
-    <input class="chatids" type="hidden" value="${user._id}"/>
-    <img src="${user.img}" alt="" class="circle">
-    <div class="indicator" style="background-color:${ user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }"></div>
-    <div>
-    <div class="title">    
-      <a href="/chat/${user._id}" >
-        ${( user.name)} </a>  
-    </div>
-    <p>
-    <small class="brief">
-      ${user.withImage ?
-        `<span class="withImage" style="display:flex;
-        align-items:center;">
-          <i class="material-icons thumbnail">insert_photos</i>
-          ${user.message}
-            </span>` :  user.message}
-    </small>
-    </p></div>
-    <div class=" secondary-content">
-        <small>
-            ${( user.time)}
-        </small>
-    </div>
-  </li>`)
+      $('.chats').append(`
+      <div class="chat-tile" style="background-color:${user.isNew ? 'white' : 'transparent' }">
+        <input class="chatids" type="hidden"  value="${user._id}"/>
+              <div class="chat-details">
+                <div class="chat-img">
+                  <div class="indicators" style="background-color:${ user.status === 'online' || user.anStatus === 'online'  ? 'rebeccapurple' : 'grey' }"></div>
+                  <img onclick="viewUserImage('${user.view}','${Date.now()}')" src="${user.img}" alt="${user.name}"/>
+                </div>
+                <div class="chat-main">
+                  <a class="chat-name" href="/chat/${user._id}" >
+                   ${( user.name)} </a>
+                  <p class="chat-desc">
+                     ${user.withImage ?
+                      `<span class="withImage" style="display:flex;
+                          align-items:center;">
+                         <i class="material-icons thumbnail">insert_photos</i>${( user.message)}</span>` :
+                           ( user.message)}</p>
+                </div>
+              </div>
+              <div class="chat-controls">
+                <small class="time"> ${( user.time)}</small>
+                <div class="mode-label">${user.isAnonymous?'anonymous':'open user'}</div>  
+                </div>
+            </div>
+      `)
           })
+          chatWindow.scrollTop = 0;
         })
+        
       }
+
 </script>

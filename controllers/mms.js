@@ -56,9 +56,16 @@ module.exports.sendMMS = (req,res,next)=>{
               }
                 );
           }else{
-            console.log('here');
-              require('../utils/driveUpload').uploadMMS(req,res,req.file.filename,req.file.path,req.file.mimeType);
+            const sharp = require('sharp');
+            const fileLocation = path.join( __dirname ,'..', 'photo',req.file.filename);
+            try{
+              sharp(req.file.path).resize(150,150).toFile(fileLocation,(err,img)=>{
+                err?console.log(err):require('../utils/driveUpload').uploadMMSThumbnail(req,res,req.file.filename,fileLocation,req.file.mimeType);
+
+              })
+            }catch(err){
+              console.log(err)
+            }
           }
-          console.log('almost there');
       });
 };

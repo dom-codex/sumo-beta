@@ -8,6 +8,14 @@ const messageSchema = new schema ({
         imageUrl:{
             type:String,
             default:''
+        },     
+           thumbId:{
+            type:String,
+            default:''
+        },
+        thumbnail:{
+            type:String,
+            default:''
         },
         downloadLink:{
             type:String,

@@ -36,21 +36,31 @@
     .view-image{
         width:90%;
         margin:auto;
-        height:200px;
-        max-width:300px;
+        max-height:500px;
+        max-width:500px;
+        overflow-y: scroll;
     }
     .view-image img{
         height: 100%;
-        width:100%
+        width:100%;
+        display:none;
+    }
+    .view-image-loading{
+        width:100%;
+        height:100%;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        color:#fff
     }
     </style>
     <div class="viewImage-cont">
+        <div class="view-image-loading">Loading...</div>
         <div class="view-contents">
             <button class="pal-close">
                 <i class="material-icons">highlight_off</i>
             </button>
             <div class="view-image">
-                <img class="user" src="<%=img%>" alt="a user"/>
             </div>
         </div>
     </div>

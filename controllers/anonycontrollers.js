@@ -5,14 +5,28 @@ const { validationResult } = require("express-validator");
 const moment = require("moment");
 const User = require("../models/user");
 const Message = require("../models/messages");
+const Request = require("../models/requests");
 const Feed = require("../models/feed");
 const modes = require("../utils/mode");
 const detectors = require("../utils/detectors");
 const mailer = require("../utils/mailer");
 const jwt = require("jsonwebtoken");
 const validator = require('validator');
+const requests = require("../models/requests");
 
 const io = require("../socket").getIO;
+module.exports.Menu = (req,res,next) =>{
+  const uid = req.query.su;
+  if(!uid.length) return res.redirect('/404');
+  User.findById(uid).select('isAnonymous')
+  .then(user=>{
+    if(!user)return res.redirect('/404');
+    if(user.isAnonymous){
+      return require('../utils/mode').goAnoymousMode(req,res,next,io);  
+    }else require('../utils/mode').mainMenu(req,res,next,io)  
+  })
+
+}
 module.exports.gethome = (req, res, next) => {
   //display success message if suggestion was sent sucessfully
   const didSave = req.flash("saved");
@@ -242,6 +256,9 @@ module.exports.loginUser = (req, res, next) => {
       } else if (!user.isVerified) {
         throw new Error("no verified");
       }
+       else if (user.isDeleted) {
+        throw new Error('invalid credentials');
+      }
       //validate the password
       bcrypt
         .compare(password, user.password)
@@ -262,7 +279,8 @@ module.exports.loginUser = (req, res, next) => {
             req.session.isVerified = user.isVerified;
             //save session to db and redirect user to main screen
             return req.session.save((err) => {
-              res.redirect(`/userchannel/${user._id}`);
+             res.redirect(`/sumouser?su=${user._id}`)
+              // res.redirect(`/userchannel/${user._id}`);
             });
           } else {
             //send flash message
@@ -296,6 +314,11 @@ module.exports.loginUser = (req, res, next) => {
         });
       } else if (err.message === "no verified") {
         req.flash("otherErr", { isSet: true, message: "user is not verified" });
+        return req.session.save(() => {
+          res.redirect("/getstarted");
+        });
+      } else if (err.message === "invalid credentials") {
+        req.flash("otherErr", { isSet: true, message: "invalid credentials" });
         return req.session.save(() => {
           res.redirect("/getstarted");
         });
@@ -604,13 +627,13 @@ module.exports.modifyPhone = (req, res, next) => {
     //in the get route
     req.flash("error", { field: "phone", message: error });
     return req.session.save(() => {
-      res.redirect(`profile/${req.session.user._id}`);
+      res.redirect(`/sumouser?su=${req.session.user._id}`);
     });
   }
-  if (!phone) {
+  if (!phone.length) {
     req.flash("error", { field: "phone", message: "field cannot be empty" });
     return req.session.save(() => {
-      req.redirect(`/profile/${req.session.user._id}`);
+      req.redirect(`/sumouser?su=${req.session.user._id}`);
     });
   }
   User.updateOne({ _id: req.session.user._id }, { $set: { phone: phone } })
@@ -619,7 +642,7 @@ module.exports.modifyPhone = (req, res, next) => {
       req.flash("success", { message: "phone changed successfully" });
       req.session.save(() => {
         //notify user of the change
-        res.redirect(`/profile/${req.session.user._id}`);
+        res.redirect(`/sumouser?su=${req.session.user._id}`);
       });
     })
     .catch((err) => {
@@ -636,19 +659,19 @@ module.exports.modifyEmail = (req, res, next) => {
     //in the get route
     req.flash("error", { field: "email", message: error });
     return req.session.save(() => {
-      res.redirect(`profile/${req.session.user._id}`);
+      res.redirect(`sumouser?su=${req.session.user._id}`);
     });
   }
   if (!email) {
     req.flash("error", { field: "email", message: "field cannot be empty" });
     return req.session.save(() => {
-      req.redirect(`/profile/${req.session.user._id}`);
+      req.redirect(`/sumouser?su=${req.session.user._id}`);
     });
   }
   if (!email) {
     req.flash("error", { field: "email", message: "field cannot be empty" });
     return req.session.save(() => {
-      req.redirect(`/profile/${req.session.user._id}`);
+      req.redirect(`/sumouser?su=${req.session.user._id}`);
     });
   }
   User.updateOne({ _id: req.session.user._id }, { $set: { email: email } })
@@ -657,7 +680,7 @@ module.exports.modifyEmail = (req, res, next) => {
       req.flash("success", { message: "email changed successfully" });
       req.session.save(() => {
         //notify user of the change
-        res.redirect(`/profile/${req.session.user._id}`);
+        res.redirect(`/sumouser?su=${req.session.user._id}`);
       });
     })
     .catch((err) => {
@@ -678,7 +701,7 @@ module.exports.changePassword = (req, res, next) => {
     //in the get route
     req.flash("error", { field: "new", message: error });
     return req.session.save(() => {
-      res.redirect(`profile/${req.session.user._id}`);
+      res.redirect(`sumouser?su=${req.session.user._id}`);
     });
   }
   User.findById(uid)
@@ -691,7 +714,7 @@ module.exports.changePassword = (req, res, next) => {
             message: "old password is incorrect",
           });
           return req.session.save(() => {
-            res.redirect(`profile/${req.session.user._id}`);
+            res.redirect(`sumouser?su=${req.session.user._id}`);
           });
           //send flash message that old password is incorrect
           //then reload page with the previously supplied data
@@ -703,12 +726,11 @@ module.exports.changePassword = (req, res, next) => {
           user
             .save()
             .then((user) => {
-              console.log("here");
               req.flash("success", {
                 message: "password changed successfully",
               });
               req.session.save(() => {
-                res.redirect(`/profile/${user._id}`);
+                res.redirect(`/sumouser?su=${user._id}`);
               });
             })
             .catch((err) => {
@@ -801,7 +823,7 @@ module.exports.goAnonymous = (req, res, next) => {
       //update anonymous mode property in  session
       req.session.user.isAnonymous = user.isAnonymous;
       return req.session.save((err) => {
-        res.redirect(`profile/${user._id}`);
+        res.redirect(`/sumouser?su=${req.session.user._id}`);
         //function to notify switching user that switching process is done
       });
     })
@@ -820,7 +842,7 @@ module.exports.getChatPage = (req, res, next) => {
         msg: "user does not exist",
       });
       return req.session.save(() => {
-        res.redirect(`/userchannel/${req.session.user._id}`);
+        res.redirect(`/sumouser?su=${req.session.user._id}`);
       });
     }
     if (!req.session.user.isAnonymous) {
@@ -837,22 +859,34 @@ module.exports.addChat = (req, res, next) => {
   let userId;
   let myChats;
   let Auser;
-  User.findById(req.session.user._id).then((user) => {
-    if (user.isAnonymous) {
-      userId = user.anonyString;
-      myChats = user.anonyChats;
+  let requestee;
+  let chatshare
+
+  let isUser;
+  let isSent;
+  let isFriend;
+  User.findById(req.session.user._id)
+  .then((mainuser) => {
+    chatshare = mainuser.chatShare
+    if (mainuser.isAnonymous) {
+      userId = mainuser.anonyString;
+      myChats = mainuser.anonyChats;
       Auser = {
-        name: user.anonymousName,
+        name: mainuser.anonymousName,
         desc: "anonymous user",
-        img: user.images.anonymous.link,
+        img: mainuser.images.anonymous.thumbnail,
+        view: mainuser.images.anonymous.link,
+        isAnonymous:true
       };
     } else {
-      userId = user._id;
-      myChats = user.chats;
+      userId = mainuser._id;
+      myChats = mainuser.chats;
       Auser = {
-        name: user.name,
-        desc: user.desc,
-        img: user.images.open.link,
+        name: mainuser.name,
+        desc: mainuser.desc,
+        img: mainuser.images.open.thumbnail,
+        view: mainuser.images.open.link,
+        isAnonymous:false
       };
     }
     //variable to hold the user details
@@ -868,118 +902,60 @@ module.exports.addChat = (req, res, next) => {
           });
           throw new Error(400);
         }
+        requestee = user
         //check if user already exists in our list
-        const isUser = myChats.some(
-          (chat) => chat.chatId.toString() === user._id.toString()
-        );
-        const alreadySent = user.requests.some(
-          (request) => request.id.toString() === userId.toString()
-        );
-        if (isUser) {
-          res.json({
-            code: 400,
-            message: "user is already in your chat list",
-          });
-          throw new Error(400);
+         isUser =  chatString.toString() === chatshare.toString()
+         isFriend = myChats.some(u=>u.chatId.toString() === user._id.toString() || u.chatId.toString() === user.anonyString.toString())
+        return Request.findOne({$and:[{requester:userId},{requestee:requestee._id}]})
+      })
+      .then(n=>{
+        if(n){
+          isSent = true
         }
-        if (
-          user._id.toString() === userId.toString() ||
-          user.anonyString.toString() === userId.toString()
-        ) {
-          //tell user they cant add themselves
-          res.json({
-            code: 400,
-            message: "you cannot add your self",
-          });
-          throw new Error(400);
-        } else if (alreadySent) {
-          //tell user they cant add themselves
-          res.json({
+        if(isSent){
+           res.json({
             code: 400,
             message: "request already sent",
           });
-          throw new Error(400);
-        } else {
-          newChat = user; //intialize variable with owner of chat string
-          //const chats = user.chats; //initialize variable with the chats array of user
-          const request = user.requests;
-          request.push({
-            id: userId,
-            name:Auser.name,
-            desc: Auser.desc,
-            img: Auser.img,
+          throw new Error(400)
+        }else if(isUser){
+         res.json({
+            code: 400,
+            message: "you cannot add your self",
           });
-          /*chats.push({
-              lastUpdate: new Date(),
-              chatId: userId, //add the id of the user requesting to join a chat to the requested chat array
-              messages: [],
-            });*/
-          uid = user._id; //store a copy of the requested  chat id
-          user.requests = request;
-          //user.chats = chats; //store updated version of the requested chat array
-          return user.save();
+          throw new Error(400)
+        }else if(isFriend){
+          res.json({
+            code: 400,
+            message: "already friends",
+          });
+          throw new Error(400);
+        }else{
+           const request = new Request({
+             requester:userId,
+             requestee:requestee
+           })
+           return request.save()
         }
       })
       .catch((err) => {
         throw err;
       })
-      .then((newchat) => {
-        newChat = newchat;
-        //retrieve requesting user details on the db
-        return User.findById(req.session.user._id);
+      .then((request) => {
+        return Request.find({requestee:requestee._id}).countDocuments()
       })
-      .catch((err) => {
-        throw err;
-      })
-      .then((user) => {
-        //update chat array of requesting user field with the id of
-        // chat
-        me = user;
-        /* const chats = myChats;
-           chats.push({
-             lastUpdate: new Date(),
-             chatId: uid,
-             messages: [],
-           });
-           if (req.session.user.isAnonymous) {
-             user.anonyChats = chats
-           } else {
-             user.chats = chats
-           }
-           return user.save();*/
-        return;
-      })
-      .catch((err) => {
-        throw err;
-      })
-      .then((_) => {
-        //call the callback function passed when requesting user
-        //trys to add a chat with the details of the
-        //chat
-        //inform the chat
-        //that user have joined their chat thus
-        //their ui can be updated accordingly
-        // req.session.user = me;
-        /* io().to(newChat._id).emit("online", {
-             name: req.session.user.anonymousName,
-             fid: userId,
-             anStatus: 'online' 
-           })*/
-
-        /* io().to(newChat._id).emit("online", {
-             name: req.session.user.name,
-             fid: userId,
-             status: 'online'
-           }) */
+      .then(nreq=>{
         io()
-          .to(newChat._id)
+          .to(requestee._id)
           .emit("new", {
             name: Auser.name,
+            isAnonymous:Auser.isAnonymous,
             fid: userId,
             status: "online",
             img: Auser.img,
+            view: Auser.view,
             desc: Auser.desc,
-            requests: newChat.requests.length,
+            requests: nreq,
           });
 
         res.json({
@@ -1006,6 +982,7 @@ module.exports.addChat = (req, res, next) => {
 module.exports.chatRequest = (req, res, next) => {
   const id = req.body.id;
   const state = req.body.state;
+  let me
   const { anonyString, _id } = req.session.user;
   let chatAccepter;
   //check if id  affiliated to user
@@ -1015,25 +992,51 @@ module.exports.chatRequest = (req, res, next) => {
     return;
   } else if (state === "grant") {
     // get user from db
-    User.findById(req.session.user._id)
+    User.findOne({$or:[{_id:id},{anonyString:id}]})
+    .then(u=>{
+      if(u.isAnonymous){
+        const palzAlready = u.anonyChats.some(c=>c.chatId.toString() === req.session.user._id.toString());
+        if(palzAlready){
+          res.json({
+            code:300,
+            message:'already friends'
+          })
+          throw new Error('already friends')
+        }
+      }else{
+        const palzAlready = u.chats.some(c=>c.chatId.toString() === req.session.user._id.toString());
+        if(palzAlready){
+          res.json({
+            code:300,
+            message:'already friends'
+          })
+          throw new Error('already friends')
+        }
+      }
+      return User.findById(req.session.user._id)
+    }).catch(err=>{
+      if(err.message === 'already friends'){
+        return
+      }
+    })
       .then((user) => {
+        me = user
         if (!user) return;
         chatAccepter = user;
-        const requests = user.requests.filter(
-          (request) => request.id.toString() !== id.toString()
-        );
+        return Request.deleteOne({$and:[{requestee:user._id},{requester:id}]})
+        .then(d=>{
         const chats = user.chats;
         chats.push({
           lastUpdate: new Date(),
           chatId: id,
-          messages: [],
         });
-        user.requests = requests;
+        //user.requests = requests;
         user.chats = chats;
         return user.save();
       })
+      })
       .then((user) => {
-        chatAccepter = user;
+        //chatAccepter = user;
         return User.findOne({ $or: [{ _id: id }, { anonyString: id }] }).select(
           "-password -phone -email -messages -feeds"
         );
@@ -1048,7 +1051,6 @@ module.exports.chatRequest = (req, res, next) => {
         chats.push({
           lastUpdate: new Date(),
           chatId: req.session.user._id,
-          messages: [],
         });
         if (user.isAnonymous) {
           user.anonyChats = chats;
@@ -1058,25 +1060,28 @@ module.exports.chatRequest = (req, res, next) => {
         return user.save();
       })
       .then((user) => {
+        Request.find({requestee:req.session.user._id}).countDocuments()
+        .then(n=>{
         const name = req.session.user.name;
         io()
           .to(id)
           .emit("online", {
-            name: name.length > 9 ? name.substring(0, 6) + "..." : name,
+            name: me.name,
             fid: req.session.user._id,
             status: "online",
-            img: chatAccepter.images.open.link,
+            img: chatAccepter.images.open.thumbnail,
+            view: chatAccepter.images.open.view
           });
         if (user.isAnonymous) {
-          const name = req.session.user.anonymousName;
           res.json({
             code: 200,
             newchat: {
               _id: user.anonyString,
-              name: name.length > 9 ? name.substring(0, 6) + "..." : name,
+              name: user.anonymousName,
               status: user.anonymousStatus,
-              img: user.images.anonymous.link,
-              nreq: chatAccepter.requests.length,
+              img: user.images.anonymous.thumbnail,
+              view:user.images.anonymous.link,
+              nreq:n,
             },
           });
         } else {
@@ -1085,66 +1090,92 @@ module.exports.chatRequest = (req, res, next) => {
             code: 200,
             newchat: {
               _id: user._id,
-              name: name.length > 9 ? name.substring(0, 6) + "..." : name,
+              name: name,
               status: user.status,
-              img: user.images.open.link,
-              nreq: chatAccepter.requests.length,
+              img: user.images.open.thumbnail,
+              view:user.images.open.link,
+              nreq: n,
             },
           });
-        }
+        }})
       });
   } else if (state === "decline") {
-    let me;
     User.findById(req.session.user._id)
       .then((user) => {
-        let requests = user.requests;
+       /* let requests = user.requests;
         requests = requests.filter(
           (request) => request.id.toString() !== id.toString()
-        );
-        user.requests = requests;
-        return user.save();
-      })
-      .then((user) => {
-        me = user;
-        return User.findOne({ $or: [{ _id: id }, { anonyString: id }] });
-      })
-      .then((user) => {
+        );*/
+        Request.deleteOne({$and:[{requestee:user._id},{requester:id}]})
+        .then(_=>{
+          return Request.find({requestee:req.session.user._id}).countDocuments()
+        })
+        .then(n=>{
         if (user.isAnonymous) {
           res.json({
             code: 301,
             newchat: {
-              _id: user.anonyString,
-              nreq: me.requests.length,
+            nreq: n,
+            _id:id
             },
           });
         } else {
           res.json({
             code: 301,
             newchat: {
-              _id: user._id,
-              nreq: me.requests.length,
+              nreq:n,
+              _id:id
             },
           });
         }
       });
+    })
   }
 };
 module.exports.retrieveRequests = (req, res, next) => {
+const page = +req.query.page || 1;
   User.findById(req.session.user._id)
     .then((user) => {
       if (!user) return;
       //return user.populate('requests.chat').execPopulate()
+      if(user.isAnonymous){
+        res.json({
+        code: 404,
+        requests: [],
+        requestLength: 0,
+      });
+      throw new Error('anonymous')
+    }
       return user;
+    }).catch(err=>{
+      if(err.message === "anonymous")return;
     })
     .then((user) => {
-      //retrieve the full doc
       if (!user) return;
-      res.json({
-        code: 200,
-        requests: user.requests,
-        requestLength: user.requests.length,
-      });
-    });
+      
+      Request.find({requestee:user._id}).countDocuments()
+      .then(n=>{
+      Request.find({requestee:user._id})
+      .sort({$natural:-1})
+      .skip((page - 1)*1)
+      .limit(1)
+      .then(requests=>{
+      require('../helpers/requestFilter')
+      .requestFilter(requests,User,(r)=>{
+
+        res.json({
+          code: 200,
+          requests: r,
+          requestLength:n,
+          hasPrev:page > 1,
+          prev:page - 1,
+          next:page + 1,
+          hasNext: ( 1 * page < n ),
+        });
+      })
+    })
+    })
+  });
 };
 module.exports.sendChat = (req, res, next) => {
   const receiver = req.body.receiver;
@@ -1156,9 +1187,11 @@ module.exports.sendChat = (req, res, next) => {
   User.findById(req.session.user._id)
     .then(async (user) => {
       let chat;
+      let mypal;
       for await (let pally of User.findOne({
         $or: [{ _id: receiver }, { anonyString: receiver }],
-      }).select("chats anonyChats isAnonymous")) {
+      }).select("chats anonyChats isAnonymous isDeleted")) {
+        mypal = pally
         if (pally.isAnonymous) {
           chat = pally.anonyChats;
         } else {
@@ -1185,6 +1218,13 @@ module.exports.sendChat = (req, res, next) => {
         (f) => f.chatId.toString() === userId.toString()
       );
       if (!stillPals) {
+        return res.json({
+          code: 300,
+          message:
+            "message not sent because you are no longer pals with this user",
+        });
+      }     
+       if (mypal.isDeleted) {
         return res.json({
           code: 300,
           message:
@@ -1286,7 +1326,7 @@ module.exports.sendChat = (req, res, next) => {
             .to(receiver)
             .emit("notify", {
               id: userId,
-              name: pal.split(" ")[0],
+              name: pal,
               msg: message,
               time: time,
             });
@@ -1310,7 +1350,8 @@ module.exports.sendChat = (req, res, next) => {
 };
 module.exports.removeAChat = (req, res, next) => {
   let myChats;
-  const uid = req.body.uid;
+  const uid = req.query.friend;
+  if(uid.length <= 0)return
   let userId;
   User.findById(req.session.user._id)
     .select(" isAnonymous chats anonyChats _id anonyString")
@@ -1346,13 +1387,14 @@ module.exports.removeAChat = (req, res, next) => {
             },
           ],
         })
-          .select("imageId")
+          .select("imageId thumbId")
           .then((ids) => {
             if(ids.length > 0){
             const deleteImage = require("../utils/driveUpload")
               .driveUploadDelete;
             ids.forEach((id) => {
               deleteImage(id.imageId);
+              deleteImage(id.thumbId);
             });
           }
             return Message.deleteMany({
@@ -1378,11 +1420,10 @@ module.exports.removeAChat = (req, res, next) => {
             if (result.n > 0) {
               return user.save()    
               .then((user) => {
-                console.log("user is ", user);
                 //take user to profile page after execution
                 req.session.user = user;
                 return req.session.save(() => {
-                  res.redirect(`/profile/${user._id}`);
+                  res.redirect(`/sumouser?su=${user._id}`);
                 });
               });
             } else {
@@ -1399,7 +1440,7 @@ module.exports.removeAChat = (req, res, next) => {
                   //take user to profile page after execution
                   req.session.user = user;
                   return req.session.save(() => {
-                    res.redirect(`/profile/${user._id}`);
+                    res.redirect(`/sumouser?su=${user._id}`);
                   });
                 });
               });
@@ -1425,12 +1466,13 @@ module.exports.removeAChat = (req, res, next) => {
             },
           ],
         })
-          .select("imageId")
+          .select("imageId thumbId")
           .then((ids) => {
             const deleteImage = require("../utils/driveUpload")
               .driveUploadDelete;
             ids.forEach((id) => {
               deleteImage(id.imageId);
+              deleteImage(id.thumbId);
             });
             return Message.deleteMany({
               $or: [
@@ -1458,7 +1500,7 @@ module.exports.removeAChat = (req, res, next) => {
                 //take user to profile page after execution
                 req.session.user = user;
                 return req.session.save(() => {
-                  res.redirect(`/profile/${user._id}`);
+                  res.redirect(`/sumouser?su=${user._id}`);
                 });
               });
             } else {
@@ -1476,11 +1518,10 @@ module.exports.removeAChat = (req, res, next) => {
                 { $set: { count: 1 } }
               ).then((_) => {
                user.save().then((user) => {
-                console.log("user is ", user);
                 //take user to profile page after execution
                 req.session.user = user;
                 return req.session.save(() => {
-                  res.redirect(`/profile/${user._id}`);
+                  res.redirect(`/sumouser?su=${user._id}`);
                 });
               });
               });
@@ -1502,18 +1543,115 @@ module.exports.deleteAccount = (req, res, next) => {
       }
       const oid = user.images.open.id;
       const aid = user.images.anonymous.id;
-      if (oid.length > 0) deleteImage(oid);
-      if (aid.length > 0) deleteImage(aid);
-      const ids = user.chats.map((users) => {
+      if (oid.length > 0) {
+        deleteImage(oid);
+        deleteImage(user.images.open.thumbId)
+      };
+      if (aid.length > 0) {
+        deleteImage(aid);
+        deleteImage(user.images.anonymous.thumbId);
+      };
+      /*const ids = user.chats.map((users) => {
         return users.chatId;
-      });
-      return User.find({ _id: { $in: ids } });
+      });*/
+      //return User.find({ _id: { $in: ids } });
+    user.email = '';
+    user.password = '';
+    user.desc = 'user account deleted',
+    user.status = 'account deleted',
+    user.anonymousStatus = 'account deleted';
+    user.chatShare = '';
+    user.isDeleted = true;
+    user.timeDeleted = Date.now();
+    user.userToken = ''
+    user.images.open.link =' https://drive.google.com/uc?export=view&id=1JRaLV1j3evf8p_F-zqtWBKu2Asn6ntqO';
+    user.images.open.thumbnail = ' https://drive.google.com/uc?export=view&id=1JRaLV1j3evf8p_F-zqtWBKu2Asn6ntqO'    
+    user.images.anonymous.link ='https://drive.google.com/uc?export=view&id=1nIQf8yGrjzFEV6v3BeIHIyVVO7yg7Xtt';
+    user.images.anonymous.thumbnail = 'https://drive.google.com/uc?export=view&id=1nIQf8yGrjzFEV6v3BeIHIyVVO7yg7Xtt'    
+    user.images.open.id ='';
+    user.images.open.thumbId = ''
+    return user.save()
     })
     .catch((err) => {
       if (err.message === "invalid id") {
         return;
       }
+    }).then(_=>{
+      return Feed.deleteMany({ user: req.session.user.share });
     })
+    .then(_=>{
+      return Message.find({
+        $or: [
+          {
+             sender: req.session.user._id ,
+             count: { $gt: 0 } ,
+          },
+          {
+           receiver:req.session.user._id ,
+          count: { $gt: 0 } ,
+          },
+          {
+             sender: req.session.user.anonyString ,
+             count: { $gt: 0 } ,
+          },
+          {
+           receiver:req.session.anonyString ,
+          count: { $gt: 0 } ,
+          },
+        ],
+      }).select('imageId thumbId')
+    }).then(ids=>{
+      if(ids.length > 0){
+        const deleteImage = require("../utils/driveUpload")
+          .driveUploadDelete;
+        ids.forEach((id) => {
+          deleteImage(id.imageId);
+          deleteImage(id.thumbId);
+        });
+      }
+      
+      return Message.deleteMany({
+        $or: [
+          {
+             sender: req.session.user._id ,
+             count: { $gt: 0 } ,
+          },
+          {
+           receiver:req.session.user._id ,
+          count: { $gt: 0 } ,
+          },
+          {
+             sender: req.session.user.anonyString ,
+             count: { $gt: 0 } ,
+          },
+          {
+           receiver:req.session.anonyString ,
+          count: { $gt: 0 } ,
+          },
+        ],
+      })
+    }).then(_=>{
+      return Message.updateMany(
+        {
+          $or: [
+            {$and:[{ sender: req.session.user._id },{count:{$lt:1}}]},
+            {$and:[{ receiver: req.session.user._id },{count:{$lt:1}}]},
+            {$and:[{ sender: req.session.user.anonyString },{count:{$lt:1}}]},
+            {$and:[{ sender: req.session.user.anonyString },{count:{$lt:1}}]},
+
+          ],
+        },
+        { $set: { count: 1 } }
+      )
+    }).then(_=>{
+      req.session.destroy(() => {
+        res.clearCookie("sumo.toks");
+        res.clearCookie("_csrf");
+        res.clearCookie("XSRF-TOKEN");
+        res.redirect("/getstarted");
+      });
+    })//
+    /*
     .then((chat) => {
       chat.forEach((chats) => {
         chats.chats.filter(
@@ -1550,11 +1688,11 @@ module.exports.deleteAccount = (req, res, next) => {
         res.redirect("/getstarted");
       });
     })
-    .catch((err) => {});
+    .catch((err) => {});*/
 };
 module.exports.logout = (req, res, next) => {
   //destroy users session
-  res.clearCookie("_csrf");
+  res.clearCookie("XSRF_TOKEN");
   req.session.destroy((err) => {
     res.clearCookie("sumo.toks");
     res.redirect("/getstarted");
@@ -1743,56 +1881,62 @@ module.exports.retrieveProfileChats = (req, res, next) => {
 };
 module.exports.searchUser = (req, res, next) => {
   User.findById(req.session.user._id)
-    .select("isAnonymous anonyString _id")
+    .select("isAnonymous anonyString _id chats anonyChats")
     .then((user) => {
       if (!user) return res.json("");
       const searchName = req.body.searchKey.toLowerCase().trim();
       const userId = user.isAnonymous ? user.anonyString : user._id;
+      const myUsers = user.isAnonymous ? user.anonyChats : user.chats;
       const regex = new RegExp(searchName, "i");
       if(searchName.length <= 0 ){
         return res.json({
           message:'input is empty',
         })
       }
-      User.find({ name: { $regex: regex } })
+      User.find({$and:[{ name: { $regex: regex } },{isDeleted:false}]})
         .select("_id name chats chatShare desc images")
         .then((users) => {
           if (users.length <= 0) {
             throw new Error("no user found");
           }
-          const result = users.map((user) => {
-            const isFriend = user.chats.some(
-              (chat) => chat.chatId.toString() === userId.toString()
+          const result = []
+           for(const user of users) {
+            const isFriend = myUsers.some(
+              (chat) => chat.chatId.toString() === user._id.toString()
             );
             const isMe = user._id.toString() === userId.toString();
             if (isFriend) {
-              return {
+              result.push( {
                 name: user.name,
                 desc: user.desc,
                 id: user._id,
                 chatId: user.chatShare,
-                img: user.images.open.link,
+                img: user.images.open.thumbnail,
+                view:user.images.open.link,
                 pals: true,
-              };
+              });
+            }else if(isMe){
+              continue
             }
-            if (isMe) {
-            } else {
-              return {
+            else {
+              result.push( {
                 name: user.name,
                 desc: user.desc,
                 id: user._id,
-                img: user.images.open.link,
+                img: user.images.open.thumbnail,
                 chatId: user.chatShare,
+                view:user.images.open.link,
                 pals: false,
-              };
+              });
             }
-          });
-          res.json({
+          };
+          return res.json({
             code: 200,
             result: result,
           });
         })
         .catch((err) => {
+          console.log(err)
           if (err.message === "no user found") {
             res.json({
               code: 400,
