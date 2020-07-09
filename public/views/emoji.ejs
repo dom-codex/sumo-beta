@@ -119,6 +119,7 @@
     document.querySelector('.tabs').style.display = 'grid';
     document.querySelector('#search').classList.remove('isActive');
     document.querySelector('#search').classList.add('hide');
+    $('.emoji').html('');
     reRenderList();
     tabs.forEach(tab => {
       tab.classList.remove('hide');

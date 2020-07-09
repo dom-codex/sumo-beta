@@ -56,14 +56,22 @@
 
     <script>
       const showSmiley = document.querySelector('.smiley button');
+      const emocont = document.querySelector('.emoticons');
+
+      //const showSmiley = document.querySelector('.openEmoji');
       showSmiley.addEventListener('click',()=>{
-        reRenderList()
-        document.querySelector('.emoticons').style.display = 'block';
+        if($('.emoticons').hasClass('showEmoji')){
+          $('.emoji').html('')
+          emocont.classList.remove('showEmoji')
+          return
+        }
+        reRenderList();
+        emocont.classList.add('showEmoji')
         document.querySelector('#face').classList.add('isActive')
       })
       const inputArea = document.querySelector('textarea')
       inputArea.addEventListener('focus',()=>{
-        document.querySelector('.emoticons').style.display = 'none'
+        emocont.classList.remove('showEmoji')
       })
     </script>
       <script src="/effect.js" type="text/javascript"></script>

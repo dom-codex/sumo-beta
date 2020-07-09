@@ -124,6 +124,7 @@
 
       showSmiley.addEventListener('click',()=>{
         if($('.emoticons').hasClass('showEmoji')){
+          $('.emoji').html('');
           emocont.classList.remove('showEmoji')
           $('.input').css('height','30vh');
         $('.chats').css('height','calc(70vh - 100px)');

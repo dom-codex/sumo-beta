@@ -3,16 +3,16 @@ body.b{
   }
   .nav,.tabs-section ul li{
     background-color:rgba(0,0,0,.8)!important;
-    color:darkgoldenrod
+    color:#ccc
   }
   .nav2 ul  li:nth-child(3) i{
-    color:darkgoldenrod
+    color:gray
   }
   .nav2{
-    color:darkgoldenrod
+    color:gray
   }
   .nav2 a i{
-    color:darkgoldenrod!important
+    color:gray!important
   }  
   .nav2 a i:hover{
     color:orange!important
@@ -23,11 +23,17 @@ body.b{
   section.display,section.search-window{
     background-color: transparent!important
   }
+  .tabs{
+    border-bottom-color:grey!important ;
+  }
   .app-name{
-    color:orange
+    color:darkgray
+  }
+  .fabbtn{
+    background-color: grey;
   }
   .banner{
-    background-color:orange;
+    background-color:grey;
     color:#000;
     font-weight: bold
   }
@@ -59,8 +65,19 @@ body.b{
   .profile-window label{
     color:#fff!important
   }
-  .profile-heading{
-    background-color:#ffa500d4
+  .profile-heading,.profile-pic-cont{
+    background-color:rgba(0,0,0,.6)!important
+  }
+  .profile-name,.profile-desc{
+    color:grey;
+  }
+  button.upload-button{
+    color:grey
+  }
+  .lay{
+    border-color:rgba(255,255,255,.1);
+    border-width:3px;
+    border-bottom: none!important;
   }
   .profile-window input{
     color:#fff!important

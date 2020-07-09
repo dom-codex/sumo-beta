@@ -244,7 +244,7 @@ section.tabs-section{
 }
 /* end of fab */
 section{
-  height:calc(100vh - 125px);
+  height:calc(100vh - 123px);
   overflow-y: scroll;
   overflow-x:hidden;
 }
@@ -786,7 +786,8 @@ input:not([type]):disabled,textarea.materialize-textarea:disabled{
 }
   
   section{
-    background-color:#fff
+    background-color:#fff;
+    height:calc(100vh - 133px);
   }
   .profile-heading{
     height:180px;
@@ -802,6 +803,7 @@ input:not([type]):disabled,textarea.materialize-textarea:disabled{
   .nav{
     display:block;
     height:120px;
+    padding-top:15px
   }
   .nav1{
     display:flex;
@@ -820,6 +822,41 @@ input:not([type]):disabled,textarea.materialize-textarea:disabled{
   .nav2 ul li:nth-child(2), .nav2 ul li:nth-child(3){
     margin-left:-40px
   }
+  section{
+    height:calc(100vh - 169px);
+  }
+  .profile-pic-cont,.lay{
+    position:static
+  }
+  .profile-heading{
+    flex-direction: column;
+    height:250px;
+    padding:0;
+    padding-top:10px
+  }
+  .lay{
+    display:none
+  }
+  .profile-details{
+    width:100%
+  }
+  .profile-name,.profile-desc{
+    text-align: center;
+    width:100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  button.upload-button{
+  position:absolute;
+  bottom:90px;
+  background-color:rgba(255,255,255,.1);
+  z-index:100;
+  border-radius: 50%;
+  height:50px;
+  width:50px;
+  left:20px
+  }
 }
 @media all and (max-width:330px){
   .app-logo-cont{
@@ -830,6 +867,14 @@ input:not([type]):disabled,textarea.materialize-textarea:disabled{
   }
   .chat-tile{
     width:99%
+  }
+}
+@media all and (max-width:298px){
+  .requests-window .chat-tile button{
+   margin-top: 4px; 
+  } 
+   .requests-window .chat-tile{
+   height:80px
   }
 }
 @media all and (max-width:252px){

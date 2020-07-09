@@ -166,14 +166,15 @@
         <section class="profile-window">
           <div class="profile">
             <div class="profile-heading">
+              <div class="lay z-depth-5" onclick="viewImage(`<%=view%>`)"></div>
+              <div class="profile-pic-cont">
+                <img src=" <%-img%>" onclick="viewImage(`<%=view%>`)"   alt=" <%- !anonymous ? user.name : user.anonymousName%>"/>
+              </div>
               <div class="profile-details">
                 <p class="profile-name"> <%- !anonymous ? user.name : user.anonymousName%></p>
                 <p class="profile-desc"><%- !anonymous ?user.desc: 'anonymous mode'%></p>
               </div>
-              <div class="lay z-depth-5" onclick="viewImage(`<%=view%>`)"></div>
-              <div class="profile-pic-cont">
-                <img src=" <%-img%>"   alt=" <%- !anonymous ? user.name : user.anonymousName%>"/>
-              </div>
+
               <div class="img-upload">
                 <button class="upload-button">
                   <i class="material-icons">add_a_photo</i>

@@ -128,3 +128,6 @@ align-items: center;
 .cancel, #btn-search{
   color:yellow !important
 }
+.showEmoji{
+  display:block!important
+}
