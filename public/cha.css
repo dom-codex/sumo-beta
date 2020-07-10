@@ -645,6 +645,7 @@ input:not([type]):disabled,textarea.materialize-textarea:disabled{
   display:flex;
   justify-content: space-between;
   margin-left:40px;
+  width:92%
 }
 .profile-settings #modetoggler{
   display:none
@@ -709,21 +710,25 @@ input:not([type]):disabled,textarea.materialize-textarea:disabled{
   align-items: center;
 }
 .change-pass-btn:focus{
-  background-color:orange
+  background-color:#efefef
 }
 #cpf{
   margin-left:40px;
   margin-top:12px;
   width:90%;
-  transition: all;
+  transition: height;
   transition-duration: 2s;
-  display: none;
+  display: block;
   height:0
   /*height:176px */
 }
+ .form{
+  height: 100%;
+  width:100%;
+  overflow:hidden;
+}
 .change{
-  display:block!important;
-  height:177px
+ height:200px!important
 }
 .changepassbtn{
   display: flex;
@@ -803,13 +808,10 @@ input:not([type]):disabled,textarea.materialize-textarea:disabled{
   .nav{
     display:block;
     height:120px;
-    padding-top:15px
   }
   .nav1{
-    display:flex;
-    justify-content: center;
     width:100%;
-    margin:6px 0
+    padding-bottom: 7px;
   }
   .nav2, .nav2 ul{
     width:100%;
@@ -817,10 +819,16 @@ input:not([type]):disabled,textarea.materialize-textarea:disabled{
   .nav2 ul{
     display:flex;
     justify-content: space-between;
-    padding-left:20px
+    padding-left:20px;
   }
   .nav2 ul li:nth-child(2), .nav2 ul li:nth-child(3){
     margin-left:-40px
+  }
+  .app-name{
+    margin-left: 8px;
+  }
+  .app-logo-cont{
+    display:none
   }
   section{
     height:calc(100vh - 169px);
@@ -850,12 +858,33 @@ input:not([type]):disabled,textarea.materialize-textarea:disabled{
   button.upload-button{
   position:absolute;
   bottom:90px;
-  background-color:rgba(255,255,255,.1);
+  background-color:rgba(0, 0, 0, 0.5);
+  color:#efefefef;
   z-index:100;
   border-radius: 50%;
   height:50px;
   width:50px;
   left:20px
+  }
+  .profile-window input, 
+  .profile-window textarea,
+  .profile-window h4,
+  .profile-window label,
+  .social-cont,
+  .go-anonymous,
+  button.change-pass-btn,
+  .delete-cont
+  {
+    margin-left:10px!important;
+  }
+  .profile-info input,
+  .profile-info textarea,
+  .change-pass-btn
+  .go-anonymous{
+    width:98%!important;
+  }
+  .delete-cont{
+    justify-content: center;
   }
 }
 @media all and (max-width:330px){

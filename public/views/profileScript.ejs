@@ -274,12 +274,15 @@ $('#modetoggler').submit()
 const changePasswordRevealer = $('.change-pass-btn');
 changePasswordRevealer.on('click',()=>{
 $('#cpf').toggleClass('change')
-$('#cpf').css('height','177px');
 const note = $('.change-pass-btn span').text();
 if(note ==='change password'){
-  $('.change-pass-btn').text('close window')
+  $('.form').css('height','100%');
+  $('.change-pass-btn i').text('expand_less')
+  $('.change-pass-btn span').text('close window')
 }else{
-  $('.change-pass-btn').text('change password')
+  $('.change-pass-btn i').text('expand_more')
+  $('.change-pass-btn span').text('change password')
+
 }
 })
  $('.changepassbtn button').on('click',()=>{

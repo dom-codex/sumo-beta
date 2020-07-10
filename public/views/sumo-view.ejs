@@ -276,16 +276,17 @@
                     <div class="change-password-form" id="cpf">
                       <form class="form" method="POST" action="/changepassword">
                         <input type="hidden" value="<%-csrfToken%>" name="_csrf">   
-                        <input autocomplete="off" name="uid" type="hidden" value="<%-user._id%>"/>
-                        <label>old password</label>
-                      <input name="old" type="text" autocomplete="off">
+                        
+                         <input autocomplete="off" name="uid" type="hidden" value="<%-user._id%>"/>
+                        <div><label>old password</label>
+                        <input name="old" type="text" autocomplete="off">
                       <small style="display:<%- errors.field === 'old'? 'block': 'none' %>;color:red"><%-errors.message%></small>
-                        <br /> 
+                        </div><br /> 
                         <!-- animate the password modal height -->
-      
-                      <label>new password</label>
+                      <div><label>new password</label>
                       <input name="new" type="text" autocomplete="off">
                       <small style="display:<%- errors.field === 'new'? 'block': 'none' %>;color:red"><%-errors.message%></small>
+                      </div>
                       <div class="changepassbtn"><button>submit</button></div>
                     </form>
                   </div>
